@@ -1,4 +1,4 @@
-package com.example.enums;
+package com.projetoles.enums;
 
 public enum EnumCategoria {
 	JUVENIL, INFANTIL;

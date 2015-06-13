@@ -1,10 +1,10 @@
-package com.example.model;
+package com.projetoles.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.example.enums.EnumCategoria;
+import com.projetoles.enums.EnumCategoria;
 
 public class Poema {
 	private String titulo, autor, poesia;
