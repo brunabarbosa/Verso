@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:padding="20dp" >
+
+    <EditText
+        android:id="@+id/poemaTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Título da poesia"
+        android:textColor="#4f3610"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/poemaAutor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Autor"
+        android:textColor="#4f3610"
+        android:textSize="20sp" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/poemaTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Tags (separadas por ; )"
+        android:textColor="#4f3610"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/categoriaTexto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Categoria"
+        android:textColor="#4f3610"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:id="@+id/poemaCategoria"
+        style="@style/AppBaseTheme"
+        android:layout_width="88dp"
+        android:layout_height="37dp"
+        android:prompt="@string/categoria_prompt" />
+
+    <ScrollView
+        android:id="@+id/poemaScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.63" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginBottom="12dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="6dip"
+                android:background="#ff106510" />
+
+            <TextView
+                android:id="@+id/poema"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="5.60"
+                android:paddingBottom="6dip"
+                android:paddingLeft="6dip"
+                android:paddingRight="6dip" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/criarPoema"
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Criar" />
+
+</LinearLayout>

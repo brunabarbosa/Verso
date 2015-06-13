@@ -4,5 +4,6 @@
     <string name="app_name">Ver(só)</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="categoria_prompt">Categoria</string>
 
 </resources>
