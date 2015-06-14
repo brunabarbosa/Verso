@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+     >
+
+    <EditText
+        android:id="@+id/editNomedoUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Nome"
+        android:textColor="#4f3610"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/editEmaildoUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Email"
+        android:textColor="#4f3610"
+        android:textSize="20sp" />
+        
+	<EditText
+	    android:id="@+id/editSenhaUsuario"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:hint="Senha"
+	    android:ems="10"
+	    android:inputType="textPassword" />
+	
+	<EditText
+	    android:id="@+id/editConfirmaSenha"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:ems="10"
+	    android:hint="Confirme sua Senha"
+	    android:inputType="textPassword" />
+   	
+  <Button
+      android:id="@+id/btnCriaConta"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="10dp"
+      android:text="Criar" />
+ 
+</LinearLayout>
