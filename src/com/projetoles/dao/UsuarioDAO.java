@@ -16,14 +16,25 @@ public class UsuarioDAO extends DAO {
 		return sInstance;
 	}
 
-	public void auth(Usuario usuario, OnRequestListener callbackListener) {
+	public void auth(Usuario usuario, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("email", usuario.getEmail())
 			.addParam("password", usuario.getSenha())
 			.setDomain(DOMAIN)
 			.setPath("auth");
 		POST post = (POST) postRequest.create();
-		post.execute(callbackListener);
+		post.execute(callback);
+	}
+	
+	public void registrar(Usuario usuario, OnRequestListener callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("email", usuario.getEmail())
+			.addParam("password", usuario.getSenha())
+			.addParam("name", usuario.getNome())
+			.setDomain(DOMAIN)
+			.setPath("user");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
 	}
 	
 }

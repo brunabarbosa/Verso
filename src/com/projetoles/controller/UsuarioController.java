@@ -18,11 +18,49 @@ public class UsuarioController extends Controller {
 		super(context);
 	}
 
+	public void registrar(final String nome, final String email, final String senha, 
+			final String repetirSenha, final OnRequestListener callback) {
+		if (!senha.equals(repetirSenha)) {
+			callback.onError("Senhas não coincidem.");
+		} else {
+			try {
+				final Usuario usuario = new Usuario(email, nome, senha);
+				sDao.registrar(usuario, new OnRequestListener(callback.getContext()) {
+					
+					@Override
+					public void onSuccess(Object result) {
+						try {
+							JSONObject json = new JSONObject(result.toString());
+							boolean success = json.getBoolean("success");
+							if (success) {
+								salvaUsuario(usuario);
+								callback.onSuccess(result);
+							} else {
+								callback.onError(json.getString("message"));
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							callback.onError(e.getMessage());
+						}
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				callback.onError(e.getMessage());
+			}
+		}
+	}
+	
 	public void login(final String email, final String senha, 
-			final OnRequestListener callbackListener) {
+			final OnRequestListener callback) {
 		try {
 			Usuario usuario = new Usuario(email, null, senha);
-			sDao.auth(usuario, new OnRequestListener(callbackListener.getContext()) {
+			sDao.auth(usuario, new OnRequestListener(callback.getContext()) {
 				
 				@Override
 				public void onSuccess(Object result) {
@@ -32,24 +70,24 @@ public class UsuarioController extends Controller {
 						if (success) {
 							Usuario encontrado = Usuario.converteJSON(json);
 							salvaUsuario(encontrado);
-							callbackListener.onSuccess(encontrado);
+							callback.onSuccess(encontrado);
 						} else {
-							callbackListener.onError(json.getString("message"));
+							callback.onError(json.getString("message"));
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
-						callbackListener.onError(e.getMessage());
+						callback.onError(e.getMessage());
 					}
 				}
 				
 				@Override
 				public void onError(String errorMessage) {
-					callbackListener.onError(errorMessage);
+					callback.onError(errorMessage);
 				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
-			callbackListener.onError(e.getMessage());
+			callback.onError(e.getMessage());
 		} 
 	}
 
