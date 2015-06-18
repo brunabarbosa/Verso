@@ -11,8 +11,6 @@ import android.net.NetworkInfo;
 
 public abstract class Controller {
 
-	public static Usuario loggedUser;
-	
 	protected Activity mContext;
 	protected SharedPreferences mSession;
 	protected Editor mEditor;

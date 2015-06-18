@@ -1,5 +1,8 @@
 package com.projetoles.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Classe responsável por guardar informações sobre o usuário
@@ -52,14 +55,16 @@ public class Usuario {
 	}
 
 	public void setSenha(String password) throws IllegalArgumentException {
-		if (password == null || password.trim().equals("")) {
-			throw new IllegalArgumentException("Senha é obrigatória.");
-		} else if (password.length() < MIN_LENGTH_PASSWORD) {
-			throw new IllegalArgumentException("Tamanho da senha é menor que o permitido.");
-		} else if (password.length() > MAX_LENGTH_PASSWORD) {
-			throw new IllegalArgumentException("Tamanho da senha é maior que o permitido.");
+		if (password != null) {
+			if (password.trim().equals("")) {
+				throw new IllegalArgumentException("Senha é obrigatória.");
+			} else if (password.length() < MIN_LENGTH_PASSWORD) {
+				throw new IllegalArgumentException("Tamanho da senha é menor que o permitido.");
+			} else if (password.length() > MAX_LENGTH_PASSWORD) {
+				throw new IllegalArgumentException("Tamanho da senha é maior que o permitido.");
+			}
+			this.mSenha = PasswordEncrypter.getEncryptedPassword(password);
 		}
-		this.mSenha = PasswordEncrypter.getEncryptedPassword(password);
 	}
 
 	@Override
@@ -76,6 +81,12 @@ public class Usuario {
 			return mNome.split(" ")[0];
 		}
 		return mEmail;
+	}
+	
+	public static Usuario converteJSON(JSONObject obj) throws JSONException {
+		String email = obj.getString("username");
+		String nome = obj.getString("name");
+		return new Usuario(email, nome, null);
 	}
 	
 }
