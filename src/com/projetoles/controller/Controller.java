@@ -1,7 +1,5 @@
 package com.projetoles.controller;
 
-import com.projetoles.model.Usuario;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
