@@ -18,7 +18,7 @@ public class UsuarioDAO extends DAO {
 
 	public void auth(Usuario usuario, OnRequestListener callbackListener) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("username", usuario.getEmail())
+			.addParam("email", usuario.getEmail())
 			.addParam("password", usuario.getSenha())
 			.setDomain(DOMAIN)
 			.setPath("auth");

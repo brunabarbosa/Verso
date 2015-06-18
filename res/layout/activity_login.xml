@@ -1,123 +1,125 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
 
-    <!-- Background -->
-     <View
+    <ScrollView
         android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="@drawable/background"
-		android:orientation="vertical" />
-       
-    <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:orientation="vertical"
-         android:focusable="true"
-         android:focusableInTouchMode="true"
-         android:weightSum="1" >
-	         
-         <!-- Logomarca -->
-
-	     <FrameLayout
-	         android:layout_width="match_parent"
-	         android:layout_height="146dp" >
-
+        android:layout_height="match_parent" >
+        
+	    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:focusable="true"
+			android:focusableInTouchMode="true"
+			android:weightSum="1" >
+		         
+	         <!-- Logomarca -->
 	         <ImageView
 	             android:layout_width="wrap_content"
-	             android:layout_height="match_parent"
+	             android:layout_height="150dp"
 	             android:layout_gravity="center_vertical"
 	             android:layout_marginTop="5dp"
 	             android:src="@drawable/logo2" />
+	
+		     <LinearLayout
+		         android:layout_width="match_parent"
+		         android:layout_height="0dp"
+		         android:orientation="vertical"
+		         android:padding="10dp"
+		         android:layout_margin="10dp"
+		         android:layout_weight="0.9"
+		         android:background="#F5DA81" >
+	
+		         <EditText
+		             android:id="@+id/editEmail"
+		             android:layout_width="match_parent"
+		             android:layout_height="wrap_content"
+		             android:singleLine="true"
+		             android:ems="30"
+		             android:inputType="textEmailAddress"
+		             android:hint="E-mail" >
+		             <requestFocus
+		                 android:layout_width="wrap_content"
+		                 android:layout_height="match_parent" />
+		         </EditText> 
+	       		 	
+		         <EditText
+		             android:id="@+id/editSenha"
+		             android:layout_width="match_parent"
+		             android:layout_height="wrap_content"
+		             android:singleLine="true"
+		             android:ems="20"
+		             android:inputType="textPassword"
+		             android:hint="Senha"/>
+	
+		         <LinearLayout
+		             android:id="@+id/FormLogin"
+		             android:layout_width="match_parent"
+		             android:layout_height="wrap_content" >
+	
+		             <Button
+		                 android:id="@+id/btnEntrar"
+		                 android:layout_width="wrap_content"
+		                 android:layout_height="wrap_content"
+		                 android:layout_weight="0.5"
+		                 android:text="Entrar" />
+	
+		             <Button
+		                 android:id="@+id/btnCadastrar"
+		                 android:layout_width="wrap_content"
+		                 android:layout_height="wrap_content"
+		                 android:layout_weight="0.5"
+		                 android:text="Cadastre-se" />
+	
+		         </LinearLayout>
+	
+		     </LinearLayout>
+		     
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="0.1"
+	            android:orientation="vertical" >
+		
+			     <TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_gravity="center_horizontal"
+			        android:text="ou"
+			        android:textSize="22sp" />
+			     
+			     <ImageButton
+			         android:id="@+id/btnContaFace"
+			         android:layout_width="match_parent"
+			         android:layout_height="wrap_content"
+			         android:adjustViewBounds="true"
+			         android:background="@drawable/background"
+			         android:src="@drawable/facebook_button" />
+		
+		  	 </LinearLayout>
+		  	 
+		  </LinearLayout>
+		
+	</ScrollView>
+ 
+  <RelativeLayout
+      android:id="@+id/loginLoading"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#CC000000" 
+      android:clickable="true"
+      android:visibility="gone" >
 
-	     </FrameLayout>
-
-	     <ImageButton
-	         android:id="@+id/btnContaFace"
-	         android:layout_width="match_parent"
-	         android:layout_height="wrap_content"
-	         android:layout_gravity="center_horizontal"
-	         android:layout_marginTop="20dp"
-	         android:adjustViewBounds="true"
-	         android:background="@drawable/background"
-	         android:src="@drawable/facebook_button" />
-
-	     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:text="ou"
-        android:textSize="25dp" />
-	    
-
-	     <FrameLayout
-	         android:layout_width="280dp"
-	         android:layout_height="wrap_content"
-	         android:layout_gravity="center_horizontal"
-	         android:layout_marginTop="10dp"
-	         android:layout_marginBottom="30dp"
-	         android:layout_weight="0.26"
-	         android:background="#F5DA81" >
-
-	         <EditText
-	             android:id="@+id/editEmail"
-	             android:layout_width="match_parent"
-	             android:layout_height="wrap_content"
-	             android:singleLine="true"
-	             android:layout_marginTop="10dp"
-	             android:ems="10"
-	             android:text="Email"
-        		 android:textColor="#4f3610"
-       		 	 android:textSize="20sp" /> 
-
-	             <requestFocus
-	                 android:layout_width="wrap_content"
-	                 android:layout_height="match_parent" />
-
-	         <EditText
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content" >
-
-</EditText>
-
-	         <EditText
-	             android:id="@+id/editSenha"
-	             android:layout_width="match_parent"
-	             android:layout_height="wrap_content"
-	             android:layout_marginTop="50dp"
-	             android:ems="10"
-	             android:inputType="textPassword"
-	             android:text="Senha"
-        		 android:textColor="#4f3610"
-       		 	 android:textSize="20sp" />
-
-	         <LinearLayout
-	             android:id="@+id/FormLogin"
-	             android:layout_width="match_parent"
-	             android:layout_height="197dp" >
-
-	             <Button
-	                 android:id="@+id/btnEntrar"
-	                 android:layout_width="wrap_content"
-	                 android:layout_height="wrap_content"
-	                 android:layout_marginTop="100dp"
-	                 android:layout_weight="1"
-	                 android:text="Entrar" />
-
-	             <Button
-	                 android:id="@+id/btnCadastrar"
-	                 android:layout_width="wrap_content"
-	                 android:layout_height="wrap_content"
-	                 android:layout_marginTop="100dp"
-	                 android:layout_weight="1"
-	                 android:text="Cadastre-se" />
-
-	         </LinearLayout>
-
-	     </FrameLayout>
-	     
-	  </LinearLayout>
+      <ProgressBar
+          style="?android:attr/progressBarStyleLarge"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true" />
+      
+  </RelativeLayout>
+  
 </FrameLayout>
 		 

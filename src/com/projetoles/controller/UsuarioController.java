@@ -20,36 +20,37 @@ public class UsuarioController extends Controller {
 
 	public void login(final String email, final String senha, 
 			final OnRequestListener callbackListener) {
-		Usuario usuario = null;
 		try {
-			usuario = new Usuario(email, null, senha);
+			Usuario usuario = new Usuario(email, null, senha);
+			sDao.auth(usuario, new OnRequestListener(callbackListener.getContext()) {
+				
+				@Override
+				public void onSuccess(Object result) {
+					try {
+						JSONObject json = new JSONObject(result.toString());
+						boolean success = json.getBoolean("success");
+						if (success) {
+							Usuario encontrado = Usuario.converteJSON(json);
+							salvaUsuario(encontrado);
+							callbackListener.onSuccess(encontrado);
+						} else {
+							callbackListener.onError(json.getString("message"));
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+						callbackListener.onError(e.getMessage());
+					}
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					callbackListener.onError(errorMessage);
+				}
+			});
 		} catch (Exception e) {
+			e.printStackTrace();
 			callbackListener.onError(e.getMessage());
 		} 
-		sDao.auth(usuario, new OnRequestListener(callbackListener.getContext()) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				try {
-					JSONObject json = new JSONObject(result.toString());
-					boolean success = json.getBoolean("success");
-					if (success) {
-						Usuario encontrado = Usuario.converteJSON(json);
-						salvaUsuario(encontrado);
-						callbackListener.onSuccess(encontrado);
-					} else {
-						callbackListener.onError(json.getString("message"));
-					}
-				} catch (JSONException e) {
-					callbackListener.onError(e.getMessage());
-				}
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				callbackListener.onError(errorMessage);
-			}
-		});
 	}
 
 	public void getLoggedUser(final OnRequestListener callbackListener) {

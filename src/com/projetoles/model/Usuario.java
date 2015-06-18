@@ -84,7 +84,7 @@ public class Usuario {
 	}
 	
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
-		String email = obj.getString("username");
+		String email = obj.getString("email");
 		String nome = obj.getString("name");
 		return new Usuario(email, nome, null);
 	}

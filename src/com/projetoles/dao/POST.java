@@ -1,7 +1,9 @@
 package com.projetoles.dao;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -14,6 +16,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
+import org.jsoup.Jsoup;
 
 import android.net.Uri;
 
@@ -52,9 +55,15 @@ public class POST extends HTTPRequest {
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new RuntimeException(response.getStatusLine().getReasonPhrase());
 		}
-		response.getEntity().consumeContent();
+		String output = "";
+		String line;
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(response.getEntity().getContent()));
+		while ((line = br.readLine()) != null) {
+			output += line;
+		}
 		client.getConnectionManager().shutdown();
-		return response.getStatusLine().getReasonPhrase();
+		return Jsoup.parse(output).text();
 	}
 	
 	public void execute(final OnRequestListener listener) {
@@ -80,6 +89,7 @@ public class POST extends HTTPRequest {
 						if (finalErrorMessage != null) {
 							listener.onError(finalErrorMessage);
 						} else {
+							System.out.println(finalMessage);
 							listener.onSuccess(finalMessage);
 						}
 					}
