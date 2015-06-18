@@ -9,7 +9,7 @@ import java.util.List;
  */
 public abstract class DAO {
 
-	public static final String DOMAIN  = "www.verso-projetoles.rhcloud.com";
+	public static final String DOMAIN  = "http://verso-projetoles.rhcloud.com";
 	
 	/**
 	 * Retorna a string sem espaços em branco em lugares que não são cercados por aspas

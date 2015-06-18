@@ -1,4 +1,4 @@
-package com.projetoles.enums;
+package com.projetoles.model;
 
 public enum EnumCategoria {
 	JUVENIL, INFANTIL;

@@ -1,20 +1,26 @@
 package com.projetoles.controller;
 
-import com.projetoles.model.User;
+import com.projetoles.model.Usuario;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public abstract class Controller {
 
-	public static User loggedUser;
+	public static Usuario loggedUser;
 	
 	protected Activity mContext;
-	
+	protected SharedPreferences mSession;
+	protected Editor mEditor;
+
 	public Controller(Activity context) {
 		this.mContext = context;
+		this.mSession = context.getSharedPreferences("User", 0); 
+		this.mEditor = mSession.edit();
 	}
 
 	public Activity getContext() {

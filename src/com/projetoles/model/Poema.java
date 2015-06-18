@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.projetoles.enums.EnumCategoria;
-
 public class Poema {
 	private String titulo, autor, poesia;
 	private Calendar dataDeCriacao;
