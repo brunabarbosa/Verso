@@ -30,15 +30,11 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".MenuInferiorActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
             android:name=".CriarPoemaActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name" >
         </activity>
     </application>
