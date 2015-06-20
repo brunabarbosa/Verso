@@ -25,7 +25,7 @@ public class UsuarioDAO extends DAO {
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
-	
+	 
 	public void registrar(Usuario usuario, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("email", usuario.getEmail())

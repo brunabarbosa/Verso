@@ -63,6 +63,7 @@ public class POST extends HTTPRequest {
 			output += line;
 		}
 		client.getConnectionManager().shutdown();
+		System.out.println(output);
 		return Jsoup.parse(output).text();
 	}
 	
