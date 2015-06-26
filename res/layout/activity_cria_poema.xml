@@ -4,88 +4,55 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:orientation="vertical"
-    android:padding="20dp" >
+    android:padding="10dp" >
 
-    <ScrollView
+    <RelativeLayout
         android:id="@+id/criarPoemaScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
 
         <LinearLayout
+            android:id="@+id/poemaHeader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <EditText
                 android:id="@+id/poemaTitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="Título da poesia"
-                android:textColor="#4f3610"
-                android:textSize="20sp" />
+                android:inputType="textCapWords" />
 
             <EditText
                 android:id="@+id/poemaAutor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="Autor"
-                android:textColor="#4f3610"
-                android:textSize="20sp" />
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/poemaTags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Tags (separadas por ; )"
-                android:textColor="#4f3610"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/categoriaTexto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Categoria"
-                android:textColor="#4f3610"
-                android:textSize="20sp" />
+                android:hint="Tags (separadas por ; )" />
 
             <Spinner
                 android:id="@+id/poemaCategoria"
                 style="@style/AppBaseTheme"
-                android:layout_width="88dp"
-                android:layout_height="37dp"
-                android:prompt="@string/categoria_prompt" />
-
-            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="257dp"
-                android:orientation="vertical" >
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginBottom="12dip"
-                    android:layout_marginLeft="6dip"
-                    android:layout_marginRight="6dip"
-                    android:layout_marginTop="6dip"
-                    android:background="#ff106510" />
-
-                <EditText
-                    android:id="@+id/poema"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.46"
-                    android:ems="10"
-                    android:hint="Escreva aqui" >
-
-                    <requestFocus />
-                </EditText>
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:prompt="@string/categoria_prompt" />
 
         </LinearLayout>
 
-    </ScrollView>
+        <EditText
+            android:id="@+id/poema"
+            android:layout_below="@+id/poemaHeader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Escreva aqui" />
+       
+    </RelativeLayout>
 
 </LinearLayout>

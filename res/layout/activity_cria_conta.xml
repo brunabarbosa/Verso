@@ -1,51 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    android:orientation="vertical"
-     >
-
-    <EditText
-        android:id="@+id/editNomedoUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="Nome"
-        android:textColor="#4f3610"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/editEmaildoUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="Email"
-        android:textColor="#4f3610"
-        android:textSize="20sp" />
-        
-	<EditText
-	    android:id="@+id/editSenhaUsuario"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:hint="Senha"
-	    android:ems="10"
-	    android:inputType="textPassword" />
+    android:background="@drawable/background" >
 	
-	<EditText
-	    android:id="@+id/editConfirmaSenha"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:ems="10"
-	    android:hint="Confirme sua Senha"
-	    android:inputType="textPassword" />
-   	
-  <Button
-      android:id="@+id/btnCriaConta"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"
-      android:layout_marginTop="10dp"
-      android:text="Criar" />
- 
-</LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:orientation="vertical">
+	        
+		    <ImageView
+			    android:layout_width="wrap_content"
+			    android:layout_height="150dp"
+			    android:layout_gravity="center"
+			    android:layout_marginTop="5dp"
+			    android:src="@drawable/cordel" />
+		
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	android:padding="10dp"
+		    	android:layout_margin="10dp"
+		    	android:orientation="vertical"
+		    	android:background="#F5DA81" >
+		    	
+		    	<EditText
+			        android:id="@+id/editNomedoUsuario"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ems="30"
+			        android:hint="Nome"
+			        android:inputType="textPersonName" />
+			
+			    <EditText
+			        android:id="@+id/editEmaildoUsuario"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ems="30" 
+			        android:hint="E-mail"
+			        android:inputType="textEmailAddress"/>
+			        
+				<EditText
+				    android:id="@+id/editSenhaUsuario"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:hint="Senha"
+				    android:ems="20"
+				    android:inputType="textPassword" />
+				
+				<EditText
+				    android:id="@+id/editConfirmaSenha"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:ems="20"
+				    android:hint="Confirme sua senha"
+				    android:inputType="textPassword" />
+			   	
+			  <Button
+			      android:id="@+id/btnCriaConta"
+			      android:layout_width="100dp"
+			      android:layout_height="wrap_content"
+			      android:layout_gravity="center_horizontal"
+			      android:text="Criar" />
+			  
+			</LinearLayout>
+			
+	    </LinearLayout>
+	    
+    </ScrollView>
+    
+    <RelativeLayout
+      android:id="@+id/cadastrarLoading"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#CC000000" 
+      android:clickable="true"
+      android:visibility="gone" >
+
+      <ProgressBar
+          style="?android:attr/progressBarStyleLarge"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true" />
+      
+  </RelativeLayout>
+  
+</FrameLayout>

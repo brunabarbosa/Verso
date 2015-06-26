@@ -1,6 +1,7 @@
-package com.projetoles.enums;
+package com.projetoles.model;
 
-public enum EnumCategoria {
+public enum Categoria {
+	
 	JUVENIL, INFANTIL;
 	
 	@Override
@@ -12,4 +13,5 @@ public enum EnumCategoria {
 			return "Infantil";
 		}
 	}
+	
 }

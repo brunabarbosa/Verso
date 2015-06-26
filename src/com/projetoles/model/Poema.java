@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.projetoles.enums.EnumCategoria;
-
 public class Poema {
+	
 	private String titulo, autor, poesia;
 	private Calendar dataDeCriacao;
-	private EnumCategoria categoria;
+	private Categoria categoria;
 	private List<String> tags;
 	
 	public Poema(String titulo, String autor, String poesia, Calendar dataDeCriacao, List<String> tags) {
@@ -17,10 +16,9 @@ public class Poema {
 		this.autor = autor;
 		this.poesia = poesia;
 		this.dataDeCriacao = dataDeCriacao;
-		
 		tags = new ArrayList<String>();
 		this.tags = tags;
-		this.categoria = EnumCategoria.INFANTIL;
+		this.categoria = Categoria.INFANTIL;
 	}
 
 	public String getTitulo() {
@@ -39,7 +37,7 @@ public class Poema {
 		return dataDeCriacao;
 	}
 
-	public EnumCategoria getCategoria() {
+	public Categoria getCategoria() {
 		return categoria;
 	}
 
