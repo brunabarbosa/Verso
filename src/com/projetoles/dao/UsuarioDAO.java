@@ -1,5 +1,9 @@
 package com.projetoles.dao;
 
+import java.io.File;
+import java.io.IOException;
+
+import com.projetoles.dao.POST.Builder;
 import com.projetoles.model.Usuario;
 
 /**
@@ -33,6 +37,32 @@ public class UsuarioDAO extends DAO {
 			.addParam("name", usuario.getNome())
 			.setDomain(DOMAIN)
 			.setPath("user");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
+	public void addFoto(Usuario usuario, File photo, OnRequestListener callback) {
+		try {
+			POST.Builder postRequest = (Builder) ((POST.Builder) (new POST.Builder()
+				.addParam("email", usuario.getEmail())))
+				.addPhoto(photo)
+				.setDomain(DOMAIN)
+				.setPath("photo_upload");
+			POST post = (POST) postRequest.create();
+			post.execute(callback);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			callback.onError(e.getMessage());
+		}
+	}
+	
+	public void editBio(Usuario usuario, String biografia, OnRequestListener callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("email", usuario.getEmail())
+			.addParam("bio", biografia)
+			.setDomain(DOMAIN)
+			.setPath("edit_bio");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}

@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
@@ -27,13 +26,11 @@ public class POST extends HTTPRequest {
 
 	private String mUrl;
 	private List<NameValuePair> mParams;
-	private File mPhoto;
 	
-	private POST(String url, List<NameValuePair> params, File photo) {
+	private POST(String url, List<NameValuePair> params) {
 		super(url);
 		this.mUrl = url;
 		this.mParams = params;
-		this.mPhoto = photo;
 	}
 
 	private String execute() throws ClientProtocolException, IOException {
@@ -43,9 +40,9 @@ public class POST extends HTTPRequest {
 		ContentType contentType = ContentType.create(HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 		//Adiciona foto
-		if (mPhoto != null) {
-		    builder.addPart("photo", new FileBody(mPhoto));
-		} 
+		//if (mPhoto != null) {
+		//    builder.addPart("photo", new FileBody(mPhoto));
+		//} 
 		//Adiciona outros parâmetros
 		for (NameValuePair param : mParams) {
 			builder.addTextBody(param.getName(), param.getValue(), contentType);
@@ -101,17 +98,17 @@ public class POST extends HTTPRequest {
 	
 	public static class Builder extends HTTPRequest.Builder {
 		
-		private File mPhoto;
-		
 		/**
 		 * Adiciona um arquivo (geralmente uma foto) à requisição
 		 * @param photo
 		 * 		Foto que se deseja anexar junto à requisição
 		 * @return
 		 * 		O próprio objeto
+		 * @throws IOException 
 		 */
-		public Builder addPhoto(File photo) {
-			this.mPhoto = photo;
+		public Builder addPhoto(File photo) throws IOException {
+			String encodedPhoto = ImageEncoder.encode(ImageEncoder.fileToByteArray(photo));
+			this.addParam("photo", encodedPhoto);
 			return this;
 		}
 
@@ -127,7 +124,7 @@ public class POST extends HTTPRequest {
 		@Override
 		public HTTPRequest create() {
 			String url = getFormattedUrl();
-			return new POST(url, mParams, mPhoto);
+			return new POST(url, mParams);
 		}
 
 	}
