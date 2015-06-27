@@ -3,6 +3,8 @@ package com.projetoles.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.projetoles.dao.ImageEncoder;
+
 
 /**
  * Classe responsável por guardar informações sobre o usuário
@@ -18,7 +20,9 @@ public class Usuario {
 	private String mEmail;
 	private String mNome;
 	private String mSenha;
-
+	private byte[] mFoto;
+	private String mBiografia;
+	
 	public Usuario(String email, String nome, String senha) 
 			throws IllegalArgumentException {
 		setEmail(email);
@@ -67,6 +71,22 @@ public class Usuario {
 		}
 	}
 
+	public void setFoto(byte[] foto) {
+		this.mFoto = foto;
+	}
+	
+	public byte[] getFoto() {
+		return this.mFoto;
+	}
+	
+	public void setBiografia(String biografia) {
+		this.mBiografia = biografia;
+	}
+	
+	public String getBiografia() {
+		return this.mBiografia;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Usuario))
@@ -86,7 +106,16 @@ public class Usuario {
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");
-		return new Usuario(email, nome, null);
+		String bio = "";
+		if (obj.has("bio"))
+			bio = obj.getString("bio");
+		byte[] foto = {};
+		if (obj.has("foto"))
+			foto = ImageEncoder.decode(obj.getString("foto"));
+		Usuario u = new Usuario(email, nome, null);
+		u.setBiografia(bio);
+		u.setFoto(foto);
+		return u;
 	}
 	
 }
