@@ -1,5 +1,7 @@
 package com.projetoles.controller;
 
+import java.io.File;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,6 +93,34 @@ public class UsuarioController extends Controller {
 		} 
 	}
 
+	public void addFoto(final Usuario usuario, final byte[] foto, final OnRequestListener callback) {
+		sDao.addFoto(usuario, foto, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				JSONObject json;
+				try {
+					json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						callback.onSuccess(null);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	}
+	
 	public void getLoggedUser(final OnRequestListener callbackListener) {
 		if (usuarioLogado != null) {
 			callbackListener.onSuccess(usuarioLogado);

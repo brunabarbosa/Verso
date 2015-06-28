@@ -41,7 +41,7 @@ public class UsuarioDAO extends DAO {
 		post.execute(callback);
 	}
 	
-	public void addFoto(Usuario usuario, File photo, OnRequestListener callback) {
+	public void addFoto(Usuario usuario, byte[] photo, OnRequestListener callback) {
 		try {
 			POST.Builder postRequest = (Builder) ((POST.Builder) (new POST.Builder()
 				.addParam("email", usuario.getEmail())))

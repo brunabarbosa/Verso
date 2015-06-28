@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
-public class CriarPoemaActivity extends Activity{
+public class CriarPoemaActivity extends Activity {
 	
 	private PoemaController mController;
 
@@ -26,7 +26,7 @@ public class CriarPoemaActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cria_poema);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mController = new PoemaController(this);
 		//verificar se vai precisar
@@ -35,7 +35,7 @@ public class CriarPoemaActivity extends Activity{
 		final EditText etAutor = (EditText) findViewById(R.id.poemaAutor);
 		final EditText etPoesia = (EditText) findViewById(R.id.poema);
 		final EditText etTags = (EditText) findViewById(R.id.poemaTags);
-		final Button criar = (Button) findViewById(R.id.btnCriaConta);
+		/*final Button criar = (Button) findViewById(R.id.btnCriaConta);
 		criar.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -86,7 +86,7 @@ public class CriarPoemaActivity extends Activity{
 					}
 				});
 			}
-		});
+		});*/
 	}
 
 	@Override

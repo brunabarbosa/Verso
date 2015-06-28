@@ -17,6 +17,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 
+import com.projetoles.model.ImageEncoder;
+
 import android.net.Uri;
 
 /**
@@ -106,9 +108,9 @@ public class POST extends HTTPRequest {
 		 * 		O próprio objeto
 		 * @throws IOException 
 		 */
-		public Builder addPhoto(File photo) throws IOException {
-			String encodedPhoto = ImageEncoder.encode(ImageEncoder.fileToByteArray(photo));
-			this.addParam("photo", encodedPhoto);
+		public Builder addPhoto(byte[] photo) throws IOException {
+			String encodedPhoto = ImageEncoder.encode(photo);
+			this.addParam("foto", encodedPhoto);
 			return this;
 		}
 

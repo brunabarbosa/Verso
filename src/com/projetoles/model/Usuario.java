@@ -3,8 +3,6 @@ package com.projetoles.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.projetoles.dao.ImageEncoder;
-
 
 /**
  * Classe responsável por guardar informações sobre o usuário
@@ -106,15 +104,16 @@ public class Usuario {
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");
-		String bio = "";
-		if (obj.has("bio"))
-			bio = obj.getString("bio");
+		String bio = obj.getString("bio");
+		String fotoEncoded = obj.getString("foto");
 		byte[] foto = {};
-		if (obj.has("foto"))
+		if (!fotoEncoded.equals("undefined"))
 			foto = ImageEncoder.decode(obj.getString("foto"));
 		Usuario u = new Usuario(email, nome, null);
-		u.setBiografia(bio);
-		u.setFoto(foto);
+		if (!bio.equals("undefined"))
+			u.setBiografia(bio);
+		if (foto.length > 0)
+			u.setFoto(foto);
 		return u;
 	}
 	

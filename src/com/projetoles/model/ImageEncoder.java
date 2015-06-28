@@ -1,4 +1,4 @@
-package com.projetoles.dao;
+package com.projetoles.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.codec.binary.Base64;
+import android.util.Base64;
 
 public class ImageEncoder {
 
@@ -36,14 +36,13 @@ public class ImageEncoder {
 	    }
 	    return ous.toByteArray();
 	}
-	
+	 
 	public static String encode(byte[] data) {
-		return new String(Base64.encodeBase64(data));
+		return Base64.encodeToString(data, Base64.DEFAULT);
 	}
-	
+	 
 	public static byte[] decode(String encodedImage) {
-		byte[] decodedBytes = Base64.decodeBase64(encodedImage);
-		return decodedBytes;
+		return Base64.decode(encodedImage, Base64.DEFAULT);
 	}
 	
 }

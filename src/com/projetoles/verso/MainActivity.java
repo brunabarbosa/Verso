@@ -22,24 +22,26 @@ public class MainActivity extends TabActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu_inferior);
 		mController = new UsuarioController(this);
-		mTabHost = getTabHost();
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup();
 		
 		TabSpec homeSpec = mTabHost.newTabSpec("Home");
+		TabSpec comporSpec = mTabHost.newTabSpec("Compor");
+		TabSpec sobreSpec = mTabHost.newTabSpec("Sobre");
+		TabSpec buscaSpec = mTabHost.newTabSpec("Home");
+		
 		homeSpec.setIndicator("", getResources().getDrawable(R.drawable.home));
 		Intent homeIntent = new Intent(this, CriarPoemaActivity.class);
 		homeSpec.setContent(homeIntent);
 		 
-		TabSpec comporSpec = mTabHost.newTabSpec("Compor");
 		comporSpec.setIndicator("", getResources().getDrawable(R.drawable.compor));
 		Intent comporIntent = new Intent(this, CriarPoemaActivity.class);
 		comporSpec.setContent(comporIntent);
 
-		TabSpec sobreSpec = mTabHost.newTabSpec("Sobre");
 		sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
 		Intent sobreIntent = new Intent(this, CriarPoemaActivity.class);
 		sobreSpec.setContent(sobreIntent);
 
-		TabSpec buscaSpec = mTabHost.newTabSpec("Home");
 		buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
 		Intent buscaIntent = new Intent(this, CriarPoemaActivity.class);
 		buscaSpec.setContent(buscaIntent);
