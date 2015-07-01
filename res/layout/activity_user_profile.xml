@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:weightSum="3"
-    android:padding="5dp"> <!-- to show what the parent is -->
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:weightSum="3" >
+ <!-- to show what the parent is -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.60"
-        android:background="#d9b476" >
+        android:background="@drawable/barra_user" >
 
         <GridLayout
             android:layout_width="match_parent"
@@ -25,18 +26,19 @@
                 android:layout_column="1"
                 android:layout_gravity="left|top"
                 android:layout_row="0"
-                android:src="@drawable/back" />
+                android:src="@drawable/icone_foto" />
 
             <TextView
                 android:id="@+id/userName"
                 android:layout_column="1"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="center"
+                android:layout_marginLeft="40dp"
                 android:layout_row="0"
+                android:paddingEnd="25dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="25dp"
-                android:paddingEnd="25dp"
                 android:text="UserName"
-                android:textColor="#3a2004"
+                android:textColor="#866a3f"
                 android:textSize="30sp" />
 
         </GridLayout>
@@ -47,8 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.32"
-        android:background="#b8733f"
-         >
+        android:background="@drawable/barra_perfil" >
 
         <GridLayout
             android:layout_width="match_parent"
@@ -89,17 +90,20 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.39"
-        android:background="@drawable/back"
+        android:layout_height="94dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/biografiia"
+        android:gravity="center"
         android:padding="20dp"
-        android:text="Sua biografia " />
+        android:text="Biografia "
+        android:textColor="#382508" />
     
     <ExpandableListView
         android:id="@+id/lvExp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.67"
-         >
+        android:background="@drawable/barra_poesia" >
+
     </ExpandableListView>
 </LinearLayout>
