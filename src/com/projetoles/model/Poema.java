@@ -16,6 +16,10 @@ public class Poema {
 		this.tags = tags;
 	}
 
+	public Poema() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getTitulo() {
 		return titulo;
 	}
