@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,17 @@ public class UserProfileActivity extends Activity {
 		prepareListData();
 		
 		listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+		
+		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+	        int previousGroup = -1;
+
+	        @Override
+	        public void onGroupExpand(int groupPosition) {
+	            if(groupPosition != previousGroup)
+	            	expListView.collapseGroup(previousGroup);
+	            previousGroup = groupPosition;
+	        }
+	    });
 		
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
