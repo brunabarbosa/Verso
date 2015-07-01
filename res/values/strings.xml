@@ -5,5 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="categoria_prompt">Categoria</string>
+    <string name="title_activity_user_profile">Ver(só)</string>
+    <string name="title_activity_perfil_menu_inferior">PerfilMenuInferiorActivity</string>
+    <string name="user_biography">Sua biografia</string>
 
 </resources>

@@ -21,6 +21,7 @@ public class Usuario {
 	private byte[] mFoto;
 	private String mBiografia;
 	
+	
 	public Usuario(String email, String nome, String senha) 
 			throws IllegalArgumentException {
 		setEmail(email);

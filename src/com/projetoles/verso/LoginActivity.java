@@ -54,7 +54,7 @@ public class LoginActivity extends Activity {
 							
 							@Override
 							public void run() {
-								Intent i = new Intent(LoginActivity.this, MainActivity.class);
+								Intent i = new Intent(LoginActivity.this, PerfilMenuInferiorActivity.class);
 								startActivity(i);
 								finish();
 							}

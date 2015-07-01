@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:weightSum="3"
+    android:padding="5dp"> <!-- to show what the parent is -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.60"
+        android:background="#d9b476" >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2" >
+
+            <ImageView
+                android:id="@+id/userPicture"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_gravity="left|top"
+                android:layout_row="0"
+                android:src="@drawable/back" />
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_column="1"
+                android:layout_gravity="right|center_vertical"
+                android:layout_row="0"
+                android:paddingLeft="5dp"
+                android:paddingRight="25dp"
+                android:paddingEnd="25dp"
+                android:text="UserName"
+                android:textColor="#3a2004"
+                android:textSize="30sp" />
+
+        </GridLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.32"
+        android:background="#b8733f"
+         >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="3" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_column="2"
+                android:layout_gravity="center_vertical"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:layout_row="0"
+                android:text="Seguindo" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:layout_row="0"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Seguidores" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_row="0"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Poesias" />
+
+        </GridLayout>
+        
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.39"
+        android:background="@drawable/back"
+        android:padding="5dp"
+        android:text="Sua biografia " />
+    
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.67"
+         >
+    </ExpandableListView>
+</LinearLayout>
