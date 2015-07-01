@@ -56,7 +56,7 @@
             android:columnCount="3" >
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/txtNumSeguindo"
                 android:layout_column="2"
                 android:layout_gravity="center_vertical"
                 android:paddingRight="5dp"
@@ -65,7 +65,7 @@
                 android:text="Seguindo" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/txtNumSeguidores"
                 android:layout_column="1"
                 android:layout_gravity="center"
                 android:layout_row="0"
@@ -74,7 +74,7 @@
                 android:text="Seguidores" />
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/txtNumPoesias"
                 android:layout_column="0"
                 android:layout_gravity="center"
                 android:layout_row="0"
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.39"
         android:background="@drawable/back"
-        android:padding="5dp"
+        android:padding="20dp"
         android:text="Sua biografia " />
     
     <ExpandableListView

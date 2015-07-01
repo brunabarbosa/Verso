@@ -61,7 +61,6 @@ public class UserProfileActivity extends Activity {
         listDataHeader.add("Poesia 01");
         listDataHeader.add("Poesia 02");
  
-        //Esses dados sao so um exemplo
         // Adding child data
         List<String> poesia1 = new ArrayList<String>();
         poesia1.add("Quantas vezes a gente, em busca da ventura, Procede tal e qual o avozinho infeliz: Em vão, por toda parte, os óculos procura Tendo-os na ponta do nariz!");
