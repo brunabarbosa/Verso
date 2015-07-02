@@ -35,8 +35,7 @@ public class UserProfileActivity extends Activity {
 		
 		usuarioController = new UsuarioController(this);
 		poemaController = new PoemaController(this);
-		
-		
+
 		//set userName
 		TextView usuarioName = (TextView) findViewById(R.id.userName);
 		usuarioName.setText(UsuarioController.usuarioLogado.getNome());
@@ -70,8 +69,7 @@ public class UserProfileActivity extends Activity {
 	private void prepareListData() {
 		listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
- 
-        
+
         // Adding child data
         listDataHeader.add("Poesia 01");
         listDataHeader.add("Poesia 02");
@@ -80,15 +78,11 @@ public class UserProfileActivity extends Activity {
         List<String> poesia1 = new ArrayList<String>();
         poesia1.add("Quantas vezes a gente, em busca da ventura, Procede tal e qual o avozinho infeliz: Em vão, por toda parte, os óculos procura Tendo-os na ponta do nariz!");
 
- 
         List<String> poesia2 = new ArrayList<String>();
         poesia2.add("Minha energia é o desafio, minha motivação é o impossível, e é por isso que eu preciso ser, à força e a esmo, inabalável.");
        
-      
- 
         listDataChild.put(listDataHeader.get(0), poesia1); // Header, Child data
         listDataChild.put(listDataHeader.get(1), poesia2);
-		
 	}
 
 	@Override
@@ -110,10 +104,7 @@ public class UserProfileActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-
-	
 	private final void setFonts() {
- 
         // text view label
         TextView txtBiografia = (TextView) findViewById(R.id.biografia);
         TextView txtPoesias = (TextView) findViewById(R.id.txtNumPoesias);
@@ -125,6 +116,6 @@ public class UserProfileActivity extends Activity {
         txtSeguidores.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
         txtSeguindo.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
         txtBiografia.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));       
- 
 	}
+	
 }
