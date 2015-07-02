@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
@@ -22,6 +24,8 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+		FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/calphi_t.ttf");
 		getActionBar().hide();
 	
 		mController = new UsuarioController(this);

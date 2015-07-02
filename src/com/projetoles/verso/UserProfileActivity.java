@@ -30,6 +30,9 @@ public class UserProfileActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_profile);
 		
+		//change fonts
+		setFonts();
+		
 		usuarioController = new UsuarioController(this);
 		poemaController = new PoemaController(this);
 		
@@ -105,5 +108,29 @@ public class UserProfileActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+
+	
+	private final void setFonts() {
+ 
+        // text view label
+        TextView txtBiografia = (TextView) findViewById(R.id.biografia);
+        TextView txtPoesias = (TextView) findViewById(R.id.txtNumPoesias);
+        
+        TextView txtSeguidores = (TextView) findViewById(R.id.txtNumSeguidores);
+        TextView txtSeguindo = (TextView) findViewById(R.id.txtNumSeguindo);
+        
+        TextView numComents = (TextView) findViewById(R.id.num_comments);
+        TextView numLikes = (TextView) findViewById(R.id.num_likes);
+        
+        txtPoesias.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        txtSeguidores.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        txtSeguindo.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        txtBiografia.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        numComents.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        numLikes.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        
+ 
 	}
 }

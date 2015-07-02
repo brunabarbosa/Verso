@@ -3,12 +3,14 @@ package com.projetoles.verso;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
 
@@ -20,6 +22,7 @@ public class MainActivity extends TabActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_menu_inferior);
 		mController = new UsuarioController(this);
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);

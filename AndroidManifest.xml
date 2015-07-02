@@ -47,7 +47,7 @@
         </activity>
         <activity
             android:name=".PerfilMenuInferiorActivity"
-            android:label="@string/title_activity_perfil_menu_inferior" >
+            android:label="@string/app_name" >
         </activity>
     </application>
 

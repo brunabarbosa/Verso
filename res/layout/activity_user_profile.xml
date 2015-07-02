@@ -39,7 +39,7 @@
                 android:paddingRight="25dp"
                 android:text="UserName"
                 android:textColor="#866a3f"
-                android:textSize="30sp" />
+                android:textSize="50sp" />
 
         </GridLayout>
 
@@ -60,10 +60,13 @@
                 android:id="@+id/txtNumSeguindo"
                 android:layout_column="2"
                 android:layout_gravity="center_vertical"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp"
+                android:layout_marginRight="15dp"
                 android:layout_row="0"
-                android:text="Seguindo" />
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Seguindo"
+                android:textColorHint="#525151"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/txtNumSeguidores"
@@ -72,23 +75,28 @@
                 android:layout_row="0"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:text="Seguidores" />
+                android:text="Seguidores"
+                android:textColorHint="#525151"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/txtNumPoesias"
                 android:layout_column="0"
                 android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
                 android:layout_row="0"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:text="Poesias" />
+                android:text="Poesias"
+                android:textColorHint="#525151"
+                android:textSize="20sp" />
 
         </GridLayout>
         
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/biografia"
         android:layout_width="match_parent"
         android:layout_height="94dp"
         android:layout_margin="10dp"
@@ -96,14 +104,14 @@
         android:gravity="center"
         android:padding="20dp"
         android:text="Biografia "
-        android:textColor="#382508" />
+        android:textColor="#382508"
+        android:textSize="40sp" />
     
     <ExpandableListView
         android:id="@+id/lvExp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.67"
-        android:background="@drawable/barra_poesia" >
+        android:layout_weight="1.67" >
 
     </ExpandableListView>
 </LinearLayout>
