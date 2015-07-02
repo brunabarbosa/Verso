@@ -26,23 +26,13 @@
                 android:textColorHint="#382508" />
 
             <EditText
-                android:id="@+id/poemaAutor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Autor"
-                android:inputType="textPersonName"
-                android:background="@drawable/white"
-                android:padding="10dp"
-                android:layout_margin="5dp"
-                android:textColorHint="#382508" />
-
-            <EditText
                 android:id="@+id/poemaTags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tags (separadas por ; )"
                 android:background="@drawable/white"
                 android:padding="10dp"
+                android:singleLine="true"
                 android:layout_margin="5dp"
                 android:textColorHint="#382508" />
 

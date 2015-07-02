@@ -2,6 +2,9 @@ package com.projetoles.model;
 
 import java.util.Calendar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Poema {
 	
 	private String mTitulo;
@@ -72,8 +75,56 @@ public class Poema {
 		this.mTags = tags;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mAutor == null) ? 0 : mAutor.hashCode());
+		result = prime * result + ((mPoesia == null) ? 0 : mPoesia.hashCode());
+		result = prime * result + ((mTitulo == null) ? 0 : mTitulo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Poema other = (Poema) obj;
+		if (mAutor == null) {
+			if (other.mAutor != null)
+				return false;
+		} else if (!mAutor.equals(other.mAutor))
+			return false;
+		if (mPoesia == null) {
+			if (other.mPoesia != null)
+				return false;
+		} else if (!mPoesia.equals(other.mPoesia))
+			return false;
+		if (mTitulo == null) {
+			if (other.mTitulo != null)
+				return false;
+		} else if (!mTitulo.equals(other.mTitulo))
+			return false;
+		return true;
+	}
+
 	public String getStringDataCriacao(){
-		return mDataDeCriacao.toString();
+		return String.valueOf(mDataDeCriacao.getTimeInMillis());
+	}
+
+	public static Poema converteJson(JSONObject json) throws JSONException {
+		String titulo = json.getString("titulo");
+		String poesia = json.getString("poesia");
+		String tags = json.getString("tags");
+		String autor = json.getString("autor");
+		Long tempo = Long.valueOf(json.getString("dataCriacao"));
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(tempo);
+		return new Poema(titulo, autor, poesia, c, tags);
 	}
 
 }

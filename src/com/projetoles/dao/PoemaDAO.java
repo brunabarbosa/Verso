@@ -1,5 +1,6 @@
 package com.projetoles.dao;
 
+import com.projetoles.dao.GET.Builder;
 import com.projetoles.model.Poema;
 
 /**
@@ -28,8 +29,13 @@ public class PoemaDAO extends DAO{
 		post.execute(callback);
 	}
 	
-
-	
-	
+	public void getPoema(String id, OnRequestListener callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("id", id)
+			.setDomain(DOMAIN)
+			.setPath("poetry");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
 	
 }

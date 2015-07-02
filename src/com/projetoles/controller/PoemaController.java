@@ -19,7 +19,34 @@ public class PoemaController extends Controller {
 		super(context);
 	}
 
-	public void CriarPoema(final String titulo, final String autor,
+	public void getPoema(final String id, final OnRequestListener callback) {
+		pDao.getPoema(id, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						Poema poema = Poema.converteJson(json);
+						callback.onSuccess(poema);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	}
+	
+	public void criarPoema(final String titulo, final String autor,
 			final String poesia, final Calendar dataDeCriacao,
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
@@ -34,7 +61,7 @@ public class PoemaController extends Controller {
 							JSONObject json = new JSONObject(result.toString());
 							boolean success = json.getBoolean("success");
 							if (success) {
-								callback.onSuccess(result);
+								callback.onSuccess(poema);
 							} else {
 								callback.onError(json.getString("message"));
 							}

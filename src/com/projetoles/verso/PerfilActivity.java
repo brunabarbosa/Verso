@@ -5,26 +5,28 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.projetoles.controller.PoemaController;
 import com.projetoles.controller.UsuarioController;
-import com.projetoles.model.Usuario;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Poema;
 
 public class PerfilActivity extends Activity {
 
-	UsuarioController usuarioController;
-	PoemaController poemaController;
-	ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+	private UsuarioController usuarioController;
+	private PoemaController poemaController;
+	private ExpandableListAdapter listAdapter;
+    private ExpandableListView expListView;
+    private List<String> listDataHeader;
+    private int countCarregados;
+    private HashMap<String, List<String>> listDataChild;
+    
+    private void setData() {
+    	
+    }
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,10 @@ public class PerfilActivity extends Activity {
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		
 		//preparing list data
-		prepareListData();
-		
-		listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+		listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+        listAdapter = new ExpandableListAdapter(PerfilActivity.this, 
+				listDataHeader, listDataChild);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;
@@ -57,25 +60,41 @@ public class PerfilActivity extends Activity {
 		
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
-	}
+		
+		for (Poema p : usuarioController.usuarioLogado.getPoemasCarregados()) {
+			// Adding child data
+	        listDataHeader.add(p.getTitulo());
+	 
+	        // Adding child data
+	        List<String> poesia = new ArrayList<String>();
+	        poesia.add(p.getPoesia());
 
-	private void prepareListData() {
-		listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+	        listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
+		}
+		listAdapter.notifyDataSetChanged();
+		for (String id : usuarioController.usuarioLogado.getPoemas()) {
+			poemaController.getPoema(id, new OnRequestListener(this) {
+				
+				@Override
+				public void onSuccess(Object result) {
+					Poema p = (Poema) result;
+					// Adding child data
+			        listDataHeader.add(p.getTitulo());
+			 
+			        // Adding child data
+			        List<String> poesia = new ArrayList<String>();
+			        poesia.add(p.getPoesia());
 
-        // Adding child data
-        listDataHeader.add("Poesia 01");
-        listDataHeader.add("Poesia 02");
- 
-        // Adding child data
-        List<String> poesia1 = new ArrayList<String>();
-        poesia1.add("Quantas vezes a gente, em busca da ventura, Procede tal e qual o avozinho infeliz: Em vão, por toda parte, os óculos procura Tendo-os na ponta do nariz!");
-
-        List<String> poesia2 = new ArrayList<String>();
-        poesia2.add("Minha energia é o desafio, minha motivação é o impossível, e é por isso que eu preciso ser, à força e a esmo, inabalável.");
-       
-        listDataChild.put(listDataHeader.get(0), poesia1); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), poesia2);
+			        listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
+			        listAdapter.notifyDataSetChanged();
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					System.out.println(errorMessage);
+				}
+			});
+		}
 	}
 
 }

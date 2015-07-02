@@ -1,5 +1,10 @@
 package com.projetoles.model;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +25,8 @@ public class Usuario {
 	private String mSenha;
 	private byte[] mFoto;
 	private String mBiografia;
-	
+	private Set<String> mPoemas;
+	private Set<Poema> mPoemasCarregados;
 	
 	public Usuario(String email, String nome, String senha) 
 			throws IllegalArgumentException {
@@ -28,6 +34,8 @@ public class Usuario {
 		setNome(nome);
 		setSenha(senha);
 		setFoto(new byte[]{});
+		this.mPoemas = new HashSet<String>();
+		this.mPoemasCarregados = new HashSet<Poema>();
 	}
 
 	public String getEmail() {
@@ -103,6 +111,14 @@ public class Usuario {
 		return mEmail;
 	}
 	
+	public void addPoema(String poemaId) {
+		this.mPoemas.add(poemaId);
+	}
+	
+	public void addPoemaCarregado(Poema poema) {
+		this.mPoemasCarregados.add(poema);
+	}
+	
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");
@@ -116,7 +132,20 @@ public class Usuario {
 			u.setBiografia(bio);
 		if (foto.length > 0)
 			u.setFoto(foto);
+		JSONArray poemas = obj.getJSONArray("poemas");
+		for (int i = 0; i < poemas.length(); i++) {
+			String id = poemas.get(i).toString();
+			u.addPoema(id);
+		}
 		return u;
+	}
+	
+	public Set<Poema> getPoemasCarregados() {
+		return Collections.unmodifiableSet(mPoemasCarregados);
+	}
+	
+	public Set<String> getPoemas() {
+		return Collections.unmodifiableSet(mPoemas);
 	}
 	
 }

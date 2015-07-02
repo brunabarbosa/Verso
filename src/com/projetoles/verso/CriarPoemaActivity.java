@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.projetoles.controller.PoemaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Poema;
 
 public class CriarPoemaActivity extends Activity {
 	
@@ -30,9 +31,8 @@ public class CriarPoemaActivity extends Activity {
 		mPoemaController = new PoemaController(this);
 		mUsuarioController = new UsuarioController(this);
 		//verificar se vai precisar
-		final RelativeLayout loading = (RelativeLayout) findViewById(R.id.cadastrarLoading);
+		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
 		final EditText etTitulo = (EditText) findViewById(R.id.poemaTitulo);
-		final EditText etAutor = (EditText) findViewById(R.id.poemaAutor);
 		final EditText etPoesia = (EditText) findViewById(R.id.poema);
 		final EditText etTags = (EditText) findViewById(R.id.poemaTags);
 		final ImageView criar = (ImageView) MainActivity.sInstance.findViewById(R.id.btnCriarPoema);
@@ -41,17 +41,18 @@ public class CriarPoemaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String titulo = etTitulo.getText().toString(); 
-				String autor = etAutor.getText().toString();
 				String poesia = etPoesia.getText().toString(); 
 				String tags = etTags.getText().toString();
 				Calendar dataDeCriacao = Calendar.getInstance();
 				
 				//verificar se vai precisar
 				loading.setVisibility(View.VISIBLE);
-				mPoemaController.CriarPoema(titulo, autor, poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoemaActivity.this) {
+				mPoemaController.criarPoema(titulo, mUsuarioController.usuarioLogado.getEmail(), 
+						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoemaActivity.this) {
 					
 					@Override
 					public void onSuccess(Object result) {
+						mUsuarioController.usuarioLogado.addPoemaCarregado((Poema)result);
 						runOnUiThread(new Runnable() {
 							
 							@Override
