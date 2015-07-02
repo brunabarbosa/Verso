@@ -1,22 +1,11 @@
 package com.projetoles.verso;
 
-import java.util.Calendar;
-
-import com.projetoles.controller.PoemaController;
-import com.projetoles.dao.OnRequestListener;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+
+import com.projetoles.controller.PoemaController;
 
 public class CriarPoemaActivity extends Activity {
 	
@@ -25,9 +14,6 @@ public class CriarPoemaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//getActionBar().hide();
-		
 		setContentView(R.layout.activity_cria_poema);
 		
 		mController = new PoemaController(this);

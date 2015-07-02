@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.projetoles.controller.PoemaController;
-import com.projetoles.controller.UsuarioController;
-
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.projetoles.controller.PoemaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
 
@@ -28,11 +29,8 @@ public class UserProfileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//getActionBar().hide();
-		
 		setContentView(R.layout.activity_user_profile);
-		
+
 		//change fonts
 		//setFonts();
 		
@@ -40,11 +38,17 @@ public class UserProfileActivity extends Activity {
 		poemaController = new PoemaController(this);
 
 		//set userName
+		Usuario usuario = UsuarioController.usuarioLogado;
 		TextView usuarioName = (TextView) findViewById(R.id.userName);
-		usuarioName.setText(UsuarioController.usuarioLogado.getNome());
+		usuarioName.setText(usuario.getNome());
 		
 		//set userPicture
 		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
+		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
+			Bitmap bmp = BitmapFactory.decodeByteArray(usuario.getFoto(), 0, 
+					usuario.getFoto().length);
+			userPicture.setImageBitmap(bmp);
+		}
 		
 		// get the listview 
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);

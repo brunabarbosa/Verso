@@ -1,25 +1,27 @@
 package com.projetoles.verso;
 
+import com.projetoles.controller.UsuarioController;
+
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Window;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
-import com.projetoles.controller.UsuarioController;
+public class MainActivity extends TabActivity {
 
-public class MainActivity extends Activity {
-	
 	private UsuarioController mController;
 	private TabHost mTabHost;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState){
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_menu_inferior);
+		setContentView(R.layout.activity_perfil_menu_inferior);
 		
 		getActionBar().hide(); 
 		
@@ -33,7 +35,7 @@ public class MainActivity extends Activity {
 		TabSpec buscaSpec = mTabHost.newTabSpec("Home");
 		
 		homeSpec.setIndicator("", getResources().getDrawable(R.drawable.home));
-		Intent homeIntent = new Intent(this, CriarPoemaActivity.class);
+		Intent homeIntent = new Intent(this, UserProfileActivity.class);
 		homeSpec.setContent(homeIntent);
 		 
 		comporSpec.setIndicator("", getResources().getDrawable(R.drawable.compor));
@@ -62,8 +64,9 @@ public class MainActivity extends Activity {
 			}
 		});
 		setTabColor(mTabHost);
+		
 	}
-
+	
 	private void setTabColor(TabHost tabhost) {
 		for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
 			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#f8f5af")); //unselected
@@ -75,4 +78,28 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		} else if (id == R.id.action_logout) {
+			mController.logout();
+			Intent i = new Intent(this, LoginActivity.class);
+			startActivity(i);
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 }

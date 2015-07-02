@@ -42,9 +42,6 @@
         <activity
             android:name=".UserProfileActivity">
         </activity>
-        <activity
-            android:name=".PerfilMenuInferiorActivity" >
-        </activity>
     </application>
 
 </manifest>
