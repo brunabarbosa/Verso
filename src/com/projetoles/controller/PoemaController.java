@@ -26,36 +26,29 @@ public class PoemaController extends Controller {
 			try {
 				final Poema poema = new Poema(titulo, autor, poesia,
 						dataDeCriacao, tags);
+				pDao.criarPoema(poema, new OnRequestListener(callback.getContext()) {
 
-				pDao.criarPoema(poema,
-						new OnRequestListener(callback.getContext()) {
-
-							@Override
-							public void onSuccess(Object result) {
-								try {
-									JSONObject json = new JSONObject(result
-											.toString());
-									boolean success = json
-											.getBoolean("success");
-									if (success) {
-										salvarPoema(poema);
-										callback.onSuccess(result);
-									} else {
-										callback.onError(json
-												.getString("message"));
-									}
-								} catch (JSONException e) {
-									e.printStackTrace();
-									callback.onError(e.getMessage());
-								}
+					@Override
+					public void onSuccess(Object result) {
+						try {
+							JSONObject json = new JSONObject(result.toString());
+							boolean success = json.getBoolean("success");
+							if (success) {
+								callback.onSuccess(result);
+							} else {
+								callback.onError(json.getString("message"));
 							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							callback.onError(e.getMessage());
+						}
+					}
 
-							@Override
-							public void onError(String errorMessage) {
-								callback.onError(errorMessage);
-							}
-						});
-
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+				});
 			} catch (Exception e) {
 				e.printStackTrace();
 				callback.onError(e.getMessage());
@@ -65,13 +58,4 @@ public class PoemaController extends Controller {
 		}
 	}
 	
-	private void salvarPoema(Poema poema) {
-		mEditor.putString("autor", poema.getAutor());
-		mEditor.putString("poesia", poema.getPoesia());
-		mEditor.putString("titulo", poema.getTitulo());
-		mEditor.putString("dataCriacao", poema.getStringDataCriacao());
-		mEditor.putString("tags", poema.getTags());
-		mEditor.commit();
-	}
-
 }

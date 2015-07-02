@@ -32,6 +32,8 @@ import com.projetoles.model.Usuario;
 
 public class MainActivity extends TabActivity {
 	
+	public static TabActivity sInstance;
+	
 	private static final int MAX_PHOTO_SIZE = 600;
 	private static final int SELECT_PHOTO = 100;
 	private static final int CAMERA_REQUEST = 1888; 
@@ -65,6 +67,8 @@ public class MainActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tabbed_main);
+		
+		sInstance = this;
 		
 		getActionBar().hide(); 
 		

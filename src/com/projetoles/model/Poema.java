@@ -4,16 +4,19 @@ import java.util.Calendar;
 
 public class Poema {
 	
-	private String titulo, autor, poesia;
-	private Calendar dataDeCriacao;
-	private String tags;
+	private String mTitulo;
+	private String mAutor;
+	private String mPoesia;
+	private Calendar mDataDeCriacao;
+	private String mTags;
 	
-	public Poema(String titulo, String autor, String poesia, Calendar dataDeCriacao, String tags) {
-		this.titulo = titulo;
-		this.autor = autor;
-		this.poesia = poesia;
-		this.dataDeCriacao = dataDeCriacao;
-		this.tags = tags;
+	public Poema(String titulo, String autor, String poesia, Calendar dataDeCriacao, String tags) 
+			throws IllegalArgumentException  {
+		setTitulo(titulo);
+		setAutor(autor);
+		setPoesia(poesia);
+		setDataDeCriacao(dataDeCriacao);
+		setTags(tags);
 	}
 
 	public Poema() {
@@ -21,27 +24,56 @@ public class Poema {
 	}
 
 	public String getTitulo() {
-		return titulo;
+		return mTitulo;
 	}
 
+	public void setTitulo(String titulo) throws IllegalArgumentException {
+		if (titulo == null || titulo.trim().equals("")) {
+			throw new IllegalArgumentException("Título é obrigatório.");
+		}
+		this.mTitulo = titulo;
+	}
+	
 	public String getAutor() {
-		return autor;
+		return mAutor;
+	}
+	
+	public void setAutor(String autor) throws IllegalArgumentException {
+		if (autor == null || autor.trim().equals("")) {
+			throw new IllegalArgumentException("Autor é obrigatório.");
+		}
+		this.mAutor = autor;
 	}
 
 	public String getPoesia() {
-		return poesia;
+		return mPoesia;
+	}
+	
+	public void setPoesia(String poesia) throws IllegalArgumentException {
+		if (poesia == null || poesia.trim().equals("")) {
+			throw new IllegalArgumentException("É preciso escrever algo antes de publicar.");
+		}
+		this.mPoesia = poesia;
 	}
 
 	public Calendar getDataDeCriacao() {
-		return dataDeCriacao;
+		return mDataDeCriacao;
 	}
 
+	public void setDataDeCriacao(Calendar dataCriacao) {
+		this.mDataDeCriacao = dataCriacao;
+	}
+	
 	public String getTags() {
-		return tags;
+		return mTags;
+	}
+	
+	public void setTags(String tags) {
+		this.mTags = tags;
 	}
 	
 	public String getStringDataCriacao(){
-		return dataDeCriacao.toString();
+		return mDataDeCriacao.toString();
 	}
 
 }

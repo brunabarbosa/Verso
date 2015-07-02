@@ -23,7 +23,7 @@ public class PoemaDAO extends DAO{
 			.addParam("dataCriacao", poema.getStringDataCriacao())
 			.addParam("tags", poema.getTags())
 			.setDomain(DOMAIN)
-			.setPath("poema");
+			.setPath("poetry");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
