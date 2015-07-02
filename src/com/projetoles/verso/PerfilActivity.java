@@ -17,7 +17,7 @@ import com.projetoles.controller.PoemaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.model.Usuario;
 
-public class UserProfileActivity extends Activity {
+public class PerfilActivity extends Activity {
 
 	UsuarioController usuarioController;
 	PoemaController poemaController;
@@ -29,27 +29,13 @@ public class UserProfileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user_profile);
+		setContentView(R.layout.activity_perfil);
 
 		//change fonts
-		//setFonts();
 		
 		usuarioController = new UsuarioController(this);
 		poemaController = new PoemaController(this);
 
-		//set userName
-		Usuario usuario = UsuarioController.usuarioLogado;
-		TextView usuarioName = (TextView) findViewById(R.id.userName);
-		usuarioName.setText(usuario.getNome());
-		
-		//set userPicture
-		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
-		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(usuario.getFoto(), 0, 
-					usuario.getFoto().length);
-			userPicture.setImageBitmap(bmp);
-		}
-		
 		// get the listview 
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		
@@ -92,18 +78,4 @@ public class UserProfileActivity extends Activity {
         listDataChild.put(listDataHeader.get(1), poesia2);
 	}
 
-	private final void setFonts() {
-        // text view label
-        //TextView txtBiografia = (TextView) findViewById(R.id.biografia);
-        //TextView txtPoesias = (TextView) findViewById(R.id.txtNumPoesias);
-        
-        TextView txtSeguidores = (TextView) findViewById(R.id.txtNumSeguidores);
-        TextView txtSeguindo = (TextView) findViewById(R.id.txtNumSeguindo);
-        
-        //txtPoesias.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
-        txtSeguidores.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
-        txtSeguindo.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
-        //txtBiografia.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));       
-	}
-	
 }

@@ -101,6 +101,7 @@ public class UsuarioController extends Controller {
 					json = new JSONObject(result.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
+						usuario.setFoto(foto);
 						callback.onSuccess(null);
 					} else {
 						callback.onError(json.getString("message"));

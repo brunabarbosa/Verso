@@ -40,7 +40,7 @@
             android:name=".MainActivity" >
         </activity>
         <activity
-            android:name=".UserProfileActivity">
+            android:name=".PerfilActivity">
         </activity>
     </application>
 
