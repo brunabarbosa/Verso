@@ -24,8 +24,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
-		FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/calphi_t.ttf");
+	
 		getActionBar().hide();
 	
 		mController = new UsuarioController(this);
