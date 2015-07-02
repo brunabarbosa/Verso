@@ -1,113 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    android:orientation="vertical"
-    android:padding="5dp"
-    android:weightSum="3" >
- <!-- to show what the parent is -->
+    android:background="@drawable/background"  >
+ 
+ 	<!-- to show what the parent is -->
+	<GridLayout
+	    android:id="@+id/profileBar"
+	    android:layout_width="match_parent"
+	    android:layout_height="80dp"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/barra_user"
+	    android:padding="5dp"
+	    android:columnCount="2" >
+	
+	    <ImageView
+	        android:id="@+id/userPicture"
+	        android:layout_width="70dp"
+	        android:layout_height="70dp"
+	        android:layout_column="0"
+	        android:layout_marginRight="10dp"
+	        android:layout_gravity="left|top"
+	        android:layout_row="0"
+	        android:src="@drawable/icone_foto" />
+	
+	    <TextView
+	        android:id="@+id/userName"
+	        android:layout_column="1"
+	        android:layout_row="0"
+	        android:layout_gravity="left|center_vertical"
+	        android:text="UserName"
+	        android:textColor="#866a3f"
+	        android:textSize="30sp" />
+
+	</GridLayout>
 
     <LinearLayout
+        android:id="@+id/profileTabs"
+    	android:layout_below="@+id/profileBar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.60"
-        android:background="@drawable/barra_user" >
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="@drawable/barra_perfil"
+        android:weightSum="3" >
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:columnCount="2" >
-
-            <ImageView
-                android:id="@+id/userPicture"
-                android:layout_width="88dp"
-                android:layout_height="match_parent"
-                android:layout_column="1"
-                android:layout_gravity="left|top"
-                android:layout_row="0"
-                android:src="@drawable/icone_foto" />
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_column="1"
-                android:layout_gravity="center"
-                android:layout_marginLeft="40dp"
-                android:layout_row="0"
-                android:paddingEnd="25dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="25dp"
-                android:text="UserName"
-                android:textColor="#866a3f"
-                android:textSize="@dimen/activity_horizontal_margin" />
-
-        </GridLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.32"
-        android:background="@drawable/barra_perfil" >
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:columnCount="3" >
-
-            <TextView
-                android:id="@+id/txtNumSeguindo"
-                android:layout_column="2"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="15dp"
-                android:layout_row="0"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="Seguindo"
-                android:textColorHint="#525151" />
-
-            <TextView
-                android:id="@+id/txtNumSeguidores"
-                android:layout_column="1"
-                android:layout_gravity="center"
-                android:layout_row="0"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="Seguidores"
-                android:textColorHint="#525151" />
-
-            <TextView
-                android:id="@+id/txtNumPoesias"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_row="0"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="Poesias"
-                android:textColorHint="#525151" />
-
-        </GridLayout>
+        <TextView
+            android:id="@+id/textBiografia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="Biografia"
+            android:textColorHint="#525151" />
         
-    </LinearLayout>
+        <TextView
+            android:id="@+id/txtNumSeguindo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="Seguindo"
+            android:textColorHint="#525151" />
 
-    <TextView
-        android:id="@+id/biografia"
-        android:layout_width="match_parent"
-        android:layout_height="94dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/biografiia"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="Biografia "
-        android:textColor="#382508" />
-    
+        <TextView
+            android:id="@+id/txtNumSeguidores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="Seguidores"
+            android:textColorHint="#525151" />
+
+    </LinearLayout>
+        
     <ExpandableListView
+        android:layout_below="@+id/profileTabs"
         android:id="@+id/lvExp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.67" >
+        android:layout_height="match_parent" >
 
     </ExpandableListView>
-</LinearLayout>
+    
+</RelativeLayout>

@@ -27,8 +27,6 @@ public class LoginActivity extends Activity {
 	
 		getActionBar().hide();
 	
-		mController = new UsuarioController(this);
-		
 		final RelativeLayout etLoading = (RelativeLayout) findViewById(R.id.loginLoading);
 		final EditText etEmail = (EditText) findViewById(R.id.editEmail);
 		final EditText etSenha = (EditText) findViewById(R.id.editSenha);
@@ -87,6 +85,29 @@ public class LoginActivity extends Activity {
 				});
 			}
 		});
+
+		mController = new UsuarioController(this);
+		mController.getLoggedUser(new OnRequestListener(this) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				Intent i = new Intent(LoginActivity.this, PerfilMenuInferiorActivity.class);
+				startActivity(i);
+				finish();
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						etLoading.setVisibility(View.GONE);
+					}
+				});
+			}
+		});
+		
 	}
 
 }

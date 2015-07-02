@@ -34,20 +34,16 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".CriarPoemaActivity"
-            android:label="@string/app_name" >
+            android:name=".CriarPoemaActivity" >
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:name=".MainActivity" >
         </activity>
         <activity
-            android:name=".UserProfileActivity"
-            android:label="@string/title_activity_user_profile" >
+            android:name=".UserProfileActivity">
         </activity>
         <activity
-            android:name=".PerfilMenuInferiorActivity"
-            android:label="@string/app_name" >
+            android:name=".PerfilMenuInferiorActivity" >
         </activity>
     </application>
 

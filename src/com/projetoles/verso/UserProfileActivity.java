@@ -28,6 +28,9 @@ public class UserProfileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//getActionBar().hide();
+		
 		setContentView(R.layout.activity_user_profile);
 		
 		//change fonts
@@ -85,37 +88,18 @@ public class UserProfileActivity extends Activity {
         listDataChild.put(listDataHeader.get(1), poesia2);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.user_profile, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
 	private final void setFonts() {
         // text view label
-        TextView txtBiografia = (TextView) findViewById(R.id.biografia);
-        TextView txtPoesias = (TextView) findViewById(R.id.txtNumPoesias);
+        //TextView txtBiografia = (TextView) findViewById(R.id.biografia);
+        //TextView txtPoesias = (TextView) findViewById(R.id.txtNumPoesias);
         
         TextView txtSeguidores = (TextView) findViewById(R.id.txtNumSeguidores);
         TextView txtSeguindo = (TextView) findViewById(R.id.txtNumSeguindo);
         
-        txtPoesias.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
+        //txtPoesias.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
         txtSeguidores.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
         txtSeguindo.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));
-        txtBiografia.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));       
+        //txtBiografia.setTypeface(FontsOverride.setAltheaRegular(getApplicationContext()));       
 	}
 	
 }

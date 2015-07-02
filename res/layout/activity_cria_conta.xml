@@ -4,75 +4,99 @@
     android:layout_height="match_parent"
     android:background="@drawable/background" >
 	
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" >
 
-	    <LinearLayout 
+	    <ImageView
+	        android:id="@+id/cadastrarLogo"
+		    android:layout_width="wrap_content"
+		    android:layout_height="150dp"
+		    android:layout_centerInParent="true"
+		    android:layout_alignParentTop="true"
+		    android:layout_marginTop="5dp"
+		    android:src="@drawable/cordel" />
+    
+	    <ScrollView
+	        android:layout_below="@+id/cadastrarLogo"
+	        android:layout_centerInParent="true"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:orientation="vertical">
-	        
-		    <ImageView
-			    android:layout_width="wrap_content"
-			    android:layout_height="150dp"
-			    android:layout_gravity="center"
-			    android:layout_marginTop="5dp"
-			    android:src="@drawable/cordel" />
-		
-		    <LinearLayout
+	        android:layout_height="match_parent" >
+	
+		    <LinearLayout 
 		        android:layout_width="match_parent"
-		    	android:layout_height="wrap_content"
-		    	android:padding="10dp"
-		    	android:layout_margin="10dp"
-		    	android:orientation="vertical"
-		    	android:background="#F5DA81" >
-		    	
-		    	<EditText
-			        android:id="@+id/editNomedoUsuario"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+	
+			    <LinearLayout
 			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:ems="30"
-			        android:hint="Nome"
-			        android:inputType="textPersonName" />
-			
-			    <EditText
-			        android:id="@+id/editEmaildoUsuario"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:ems="30" 
-			        android:hint="E-mail"
-			        android:inputType="textEmailAddress"/>
-			        
-				<EditText
-				    android:id="@+id/editSenhaUsuario"
-				    android:layout_width="match_parent"
-				    android:layout_height="wrap_content"
-				    android:hint="Senha"
-				    android:ems="20"
-				    android:inputType="textPassword" />
+			    	android:layout_height="wrap_content"
+			    	android:padding="10dp"
+			    	android:layout_margin="10dp"
+			    	android:orientation="vertical"
+			    	android:background="#F5DA81" >
+			    	
+			    	<EditText
+				        android:id="@+id/editNomedoUsuario"
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:ems="30"
+				        android:hint="Nome"
+				        android:background="@drawable/white"
+		                android:padding="10dp"
+		                android:layout_margin="5dp"
+				        android:inputType="textPersonName" />
 				
-				<EditText
-				    android:id="@+id/editConfirmaSenha"
-				    android:layout_width="match_parent"
-				    android:layout_height="wrap_content"
-				    android:ems="20"
-				    android:hint="Confirme sua senha"
-				    android:inputType="textPassword" />
-			   	
-			  <Button
-			      android:id="@+id/btnCriaConta"
-			      android:layout_width="100dp"
-			      android:layout_height="wrap_content"
-			      android:layout_gravity="center_horizontal"
-			      android:text="Criar" />
-			  
-			</LinearLayout>
-			
-	    </LinearLayout>
+				    <EditText
+				        android:id="@+id/editEmaildoUsuario"
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:ems="30" 
+				        android:hint="E-mail"
+				        android:background="@drawable/white"
+		                android:padding="10dp"
+		                android:layout_margin="5dp"
+				        android:inputType="textEmailAddress"/>
+				        
+					<EditText
+					    android:id="@+id/editSenhaUsuario"
+					    android:layout_width="match_parent"
+					    android:layout_height="wrap_content"
+					    android:hint="Senha"
+					    android:ems="20"
+					    android:background="@drawable/white"
+		                android:padding="10dp"
+		                android:layout_margin="5dp"
+					    android:inputType="textPassword" />
+					
+					<EditText
+					    android:id="@+id/editConfirmaSenha"
+					    android:layout_width="match_parent"
+					    android:layout_height="wrap_content"
+					    android:ems="20"
+					    android:hint="Confirme sua senha"
+					    android:background="@drawable/white"
+		                android:padding="10dp"
+		                android:layout_margin="5dp"
+					    android:inputType="textPassword" />
+				   	
+				  <Button
+				      android:id="@+id/btnCriaConta"
+				      android:layout_width="100dp"
+				      android:layout_height="50dp"
+				      android:layout_gravity="center_horizontal"
+				      android:background="@drawable/entrar"
+				      android:paddingLeft="30dp"
+				      android:text="Criar" />
+				  
+				</LinearLayout>
+				
+		    </LinearLayout>
+		    
+	    </ScrollView>
 	    
-    </ScrollView>
+    </RelativeLayout>
     
     <RelativeLayout
       android:id="@+id/cadastrarLoading"
@@ -89,5 +113,5 @@
           android:layout_centerInParent="true" />
       
   </RelativeLayout>
-  
+
 </FrameLayout>
