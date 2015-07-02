@@ -27,6 +27,7 @@ public class Usuario {
 		setEmail(email);
 		setNome(nome);
 		setSenha(senha);
+		setFoto(new byte[]{});
 	}
 
 	public String getEmail() {

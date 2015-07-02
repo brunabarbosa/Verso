@@ -17,7 +17,7 @@
 		    android:layout_alignParentTop="true"
 		    android:background="@drawable/barra_user"
 		    android:padding="5dp"
-		    android:columnCount="2" >
+		    android:columnCount="3" >
 		
 		    <ImageView
 		        android:id="@+id/userPicture"
@@ -39,6 +39,19 @@
 		        android:textColor="#866a3f"
 		        android:textSize="23sp" />
 	
+		    <ImageView
+		        android:visibility="gone"
+		        android:id="@+id/btnCriarPoema"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_column="2"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="right|center_vertical"
+		        android:layout_row="0"
+		        android:alpha="0.6"
+		        android:clickable="true"
+		        android:src="@drawable/ic_send_black_24dp" />
+		    
 		</GridLayout>
 	
 	    <LinearLayout

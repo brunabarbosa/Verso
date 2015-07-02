@@ -38,9 +38,12 @@ public class MainActivity extends TabActivity {
 	
 	private UsuarioController mController;
 	private TabHost mTabHost;
+	private ImageView mBtnCriarPoema;
+	private ImageView mUserPicturePreview;
+	private ImageView mUserPicture;
+	private RelativeLayout mProfilePhotoContent;
 	
 	private void setPhoto(byte[] photo) {
-		final ImageView userPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
 		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
 		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
@@ -52,9 +55,9 @@ public class MainActivity extends TabActivity {
 				int height = dm.heightPixels / 2;
 				bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
 			}
-			userPicturePreview.setImageBitmap(bmp);
+			mUserPicturePreview.setImageBitmap(bmp);
 		} else {
-			userPicturePreview.setImageResource(R.drawable.icone_foto);
+			mUserPicturePreview.setImageResource(R.drawable.icone_foto);
 		}
 	}
 	
@@ -69,28 +72,30 @@ public class MainActivity extends TabActivity {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		
+		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
+		
 		//set userName
 		Usuario usuario = UsuarioController.usuarioLogado;
 		TextView usuarioName = (TextView) findViewById(R.id.userName);
 		usuarioName.setText(usuario.getNome());
 		
 		//set userPicture
-		final ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
+		mUserPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
+		mUserPicture = (ImageView) findViewById(R.id.userPicture);
+		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.profilePhotoContent);
 		setPhoto(usuario.getFoto());
-		final RelativeLayout profilePhotoContent = 
-				(RelativeLayout) findViewById(R.id.profilePhotoContent);
-		userPicture.setOnClickListener(new OnClickListener() {
+		mUserPicture.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				profilePhotoContent.setVisibility(View.VISIBLE);
+				mProfilePhotoContent.setVisibility(View.VISIBLE);
 			}
 		});
-		profilePhotoContent.setOnClickListener(new OnClickListener() {
+		mProfilePhotoContent.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				profilePhotoContent.setVisibility(View.GONE);
+				mProfilePhotoContent.setVisibility(View.GONE);
 			}
 		});
 		final Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
@@ -151,7 +156,11 @@ public class MainActivity extends TabActivity {
 
 			@Override
 			public void onTabChanged(String arg0) {
-
+				if (mTabHost.getCurrentTab() == 1) {
+					mBtnCriarPoema.setVisibility(View.VISIBLE);
+				} else {
+					mBtnCriarPoema.setVisibility(View.GONE);
+				}
 				setTabColor(mTabHost);
 			}
 		});
@@ -233,9 +242,7 @@ public class MainActivity extends TabActivity {
 				@Override
 				public void onSuccess(Object result) {
 					setPhoto(mController.usuarioLogado.getFoto());
-					final RelativeLayout profilePhotoContent = 
-							(RelativeLayout) findViewById(R.id.profilePhotoContent);
-					profilePhotoContent.setVisibility(View.GONE);
+					mProfilePhotoContent.setVisibility(View.GONE);
 				}
 				
 				@Override
