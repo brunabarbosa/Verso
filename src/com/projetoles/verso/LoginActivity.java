@@ -1,18 +1,28 @@
 package com.projetoles.verso;
 
+import java.util.Arrays;
+
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import android.widget.Toast;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.*;
+import com.facebook.login.widget.LoginButton;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 
@@ -20,11 +30,47 @@ public class LoginActivity extends Activity {
 
 	private UsuarioController mController;
 	
+	private LoginButton buttonFacebook;  
+    //permissões que usaremos para recuperar dados do usuário
+	private List<String> facebookPermitions;  
+	//responsável por gerenciar as ações em suas aplicações após o retorno das chamadas ao FacebookSDK
+    private CallbackManager callbackManager;  
+    
+
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	
+		FacebookSdk.sdkInitialize(this);   
 		setContentView(R.layout.activity_login);
 	
+		setContentView(R.layout.activity_login);  
+		callbackManager = CallbackManager.Factory.create(); 
+		
+		facebookPermitions = Arrays.asList("email", "public_profile", "user_friends"); 
+		   
+		buttonFacebook = (LoginButton)findViewById(R.id.login_button);
+		buttonFacebook.setReadPermissions(facebookPermitions); 
+		
+		buttonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {            
+	          
+	        public void onSuccess(LoginResult arg0) {  
+	             Toast.makeText(getBaseContext(), "SUCESSO!", Toast.LENGTH_LONG).show();  
+	        }  
+	                  
+	        public void onError(FacebookException arg0) {  
+	             Toast.makeText(getBaseContext(), "ERROR!", Toast.LENGTH_LONG).show();  
+	        }  
+	                  
+	         
+	        public void onCancel() {  
+	             Toast.makeText(getBaseContext(), "CANCEL!", Toast.LENGTH_LONG).show();  
+	        }  
+	    });  
+		
+		
 		getActionBar().hide();
 	
 		final RelativeLayout etLoading = (RelativeLayout) findViewById(R.id.loginLoading);
@@ -62,6 +108,7 @@ public class LoginActivity extends Activity {
 						});
 					}
 					
+					
 					@Override
 					public void onError(final String errorMessage) {
 						runOnUiThread(new Runnable() {
@@ -85,6 +132,9 @@ public class LoginActivity extends Activity {
 				});
 			}
 		});
+		
+		
+		   
 
 		mController = new UsuarioController(this);
 		mController.getLoggedUser(new OnRequestListener(this) {

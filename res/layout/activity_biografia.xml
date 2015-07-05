@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp" >
+
+       <LinearLayout
+           android:id="@+id/poemaHeader"
+           android:layout_width="match_parent"
+           android:layout_height="277dp"
+           android:orientation="vertical" >
+            //perguntar a Abner como deixar preenchido o edittext com a biografia anterior!!!
+            
+            
+            
+            
+            <EditText
+                android:id="@+id/biografia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Biografia"
+                android:inputType="textCapWords"
+                android:background="@drawable/white"
+                android:padding="80dp"
+                android:layout_margin="5dp"
+                android:textColorHint="#382508" />
+            
+            <Button 
+                android:id="@+id/btnSalvaBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="fSalvaBio"
+                android:text="Salvar Bio"
+                />
+	    </LinearLayout>
+        
+    </ScrollView>
+
+</RelativeLayout>
