@@ -83,6 +83,18 @@ public class MainActivity extends TabActivity {
 		TextView usuarioName = (TextView) findViewById(R.id.userName);
 		usuarioName.setText(usuario.getNome());
 		
+		// submenu
+		TextView biografia = (TextView) findViewById(R.id.textBiografia);
+		biografia.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
+				intent.putExtra("usuario", UsuarioController.usuarioLogado);
+				startActivity(intent);
+			}
+		});
+		
 		//set userPicture
 		mUserPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
 		mUserPicture = (ImageView) findViewById(R.id.userPicture);
@@ -241,11 +253,11 @@ public class MainActivity extends TabActivity {
         	ByteArrayOutputStream stream = new ByteArrayOutputStream();
         	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         	byte[] b = stream.toByteArray();
-        	mController.addFoto(mController.usuarioLogado, b, new OnRequestListener(this) {
+        	mController.addFoto(UsuarioController.usuarioLogado, b, new OnRequestListener(this) {
 				
 				@Override
 				public void onSuccess(Object result) {
-					setPhoto(mController.usuarioLogado.getFoto());
+					setPhoto(UsuarioController.usuarioLogado.getFoto());
 					mProfilePhotoContent.setVisibility(View.GONE);
 				}
 				

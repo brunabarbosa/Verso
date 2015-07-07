@@ -37,6 +37,12 @@
             android:name=".CriarPoemaActivity" >
         </activity>
         <activity
+            android:name=".BiografiaActivity" >
+        </activity>
+        <activity
+            android:name=".EditarPerfilActivity" >
+        </activity>
+        <activity
             android:name=".MainActivity" >
         </activity>
         <activity

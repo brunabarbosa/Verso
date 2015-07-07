@@ -40,7 +40,7 @@
 			         android:background="#F5DA81"
 			         android:orientation="vertical"
 			         android:padding="10dp" >
-	
+	 
 			         <EditText
 			             android:id="@+id/editEmail"
 			             android:layout_width="match_parent"

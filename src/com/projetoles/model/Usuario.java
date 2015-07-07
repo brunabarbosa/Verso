@@ -8,11 +8,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * Classe responsável por guardar informações sobre o usuário
  */
-public class Usuario {
+public class Usuario implements Parcelable {
 
 	private static final int MAX_LENGTH_NAME = 30;
 	private static final int MIN_LENGTH_PASSWORD = 6;
@@ -27,6 +30,18 @@ public class Usuario {
 	private String mBiografia;
 	private Set<String> mPoemas;
 	private Set<Poema> mPoemasCarregados;
+	
+	public Usuario(Parcel in) {
+		setEmail(in.readString()); 
+		setNome(in.readString()); 
+		int fotoLength = in.readInt();
+		byte[] foto = new byte[fotoLength];
+		setFoto(foto);
+		in.readByteArray(foto);
+		setBiografia(in.readString());
+		this.mPoemas = new HashSet<String>();
+		this.mPoemasCarregados = new HashSet<Poema>();
+	}
 	
 	public Usuario(String email, String nome, String senha) 
 			throws IllegalArgumentException {
@@ -147,5 +162,30 @@ public class Usuario {
 	public Set<String> getPoemas() {
 		return Collections.unmodifiableSet(mPoemas);
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.mEmail);
+		dest.writeString(this.mNome);
+		dest.writeInt(this.mFoto.length);
+		dest.writeByteArray(this.mFoto);
+		dest.writeString(this.mBiografia);
+	}
 	
+	public static final Parcelable.Creator<Usuario> CREATOR = 
+			new Parcelable.Creator<Usuario>() {
+        public Usuario createFromParcel(Parcel in) {
+            return new Usuario(in); 
+        }
+
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
+        }
+    };
+    
 }
