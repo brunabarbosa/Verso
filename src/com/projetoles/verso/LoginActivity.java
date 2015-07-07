@@ -36,9 +36,6 @@ public class LoginActivity extends Activity {
 	//responsável por gerenciar as ações em suas aplicações após o retorno das chamadas ao FacebookSDK
     private CallbackManager callbackManager;  
     
-
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
