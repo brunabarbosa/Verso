@@ -49,6 +49,7 @@ public class Usuario implements Parcelable {
 		setNome(nome);
 		setSenha(senha);
 		setFoto(new byte[]{});
+		setBiografia("");
 		this.mPoemas = new HashSet<String>();
 		this.mPoemasCarregados = new HashSet<Poema>();
 	}

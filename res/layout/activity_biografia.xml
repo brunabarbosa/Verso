@@ -14,29 +14,66 @@
            android:layout_height="wrap_content"
            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/biografia"
+            <ImageView
+                android:id="@+id/biografiaFoto"
+                android:clickable="true"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp" />
+                
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords"
-                android:background="#F5DA81"
-                android:padding="15dp"
-                android:layout_margin="5dp"
-                android:textColorHint="#382508" />
+                android:layout_height="match_parent" >
             
-            <Button 
-                android:id="@+id/btnEditarPerfil"
-		        android:layout_width="150dp"
-		        android:layout_height="50dp"
-		        android:layout_margin="2dp"
-			 	android:paddingLeft="30dp"
-		        android:background="@drawable/entrar"
-		        android:layout_gravity="center_horizontal"
-				android:layout_marginTop="30dp"
-		        android:text="Editar Perfil" />
-            
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                    
+		            <TextView
+		                android:id="@+id/biografia"
+		                android:layout_width="match_parent"
+		                android:layout_height="wrap_content"
+		                android:inputType="textCapWords"
+		                android:background="#F5DA81"
+		                android:padding="15dp"
+		                android:layout_margin="5dp"
+		                android:textColorHint="#382508" />
+		            
+		            <Button 
+		                android:id="@+id/btnEditarPerfil"
+				        android:layout_width="150dp"
+				        android:layout_height="50dp"
+				        android:layout_margin="2dp"
+					 	android:paddingLeft="30dp"
+				        android:background="@drawable/entrar"
+				        android:layout_gravity="center_horizontal"
+						android:layout_marginTop="30dp"
+				        android:text="Editar Perfil" />
+				
+				</LinearLayout>
+				
+			</ScrollView>  
+	    
 	    </LinearLayout>
         
     </ScrollView>
-
+	
+    <RelativeLayout
+        android:id="@+id/biografiaPhotoContent"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="#CC000000" 
+		android:clickable="true"
+		android:visibility="gone" >
+		    
+	    <ImageView 
+	        android:id="@+id/biografiaFullPhoto"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true" />
+		    
+	</RelativeLayout>
+	
 </RelativeLayout>
