@@ -91,11 +91,42 @@ public class EditarPerfilActivity extends Activity {
 			}
 		
 		});
-		EditText nome = (EditText) findViewById(R.id.etEditName);
-		EditText biografia = (EditText) findViewById(R.id.etEditBio);
-		EditText senha = (EditText) findViewById(R.id.etEditPassword);
-		EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
-		Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
+		final EditText nome = (EditText) findViewById(R.id.etEditName);
+		final EditText biografia = (EditText) findViewById(R.id.etEditBio);
+		final EditText senha = (EditText) findViewById(R.id.etEditPassword);
+		final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
+		final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
+		salvarPerfil.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String sNome = nome.getText().toString();
+				String sBiografia = biografia.getText().toString();
+				String sSenha = senha.getText().toString();
+				String seditarSenha = editarSenha.getText().toString();
+				mController.editUser(sNome, sBiografia, sSenha, seditarSenha, new OnRequestListener(EditarPerfilActivity.this) {
+					
+					@Override
+					public void onSuccess(Object result) {
+						new AlertDialog.Builder(EditarPerfilActivity.this)
+							.setTitle("Sucesso!")
+							.setMessage("Usuário alterado com sucesso.")
+							.setNeutralButton("OK", null)
+							.create().show();
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						new AlertDialog.Builder(EditarPerfilActivity.this)
+							.setTitle("Um erro ocorreu")
+							.setMessage(errorMessage)
+							.setNeutralButton("OK", null)
+							.create().show();	
+					}
+				});
+			
+			}
+		});
 		setPhoto(UsuarioController.usuarioLogado.getFoto());
 		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.editarFotoContent);
 		mFoto.setOnClickListener(new OnClickListener() {

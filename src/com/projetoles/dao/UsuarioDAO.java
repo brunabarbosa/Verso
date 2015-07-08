@@ -57,12 +57,14 @@ public class UsuarioDAO extends DAO {
 		}
 	}
 	
-	public void editBio(Usuario usuario, String biografia, OnRequestListener callback) {
+	public void editUser(Usuario usuario, String biografia, String nome, String senha, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("email", usuario.getEmail())
+			.addParam("nome", nome )
 			.addParam("bio", biografia)
+			.addParam("senha", senha)
 			.setDomain(DOMAIN)
-			.setPath("edit_bio");
+			.setPath("edit_user");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}

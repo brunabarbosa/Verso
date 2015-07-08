@@ -155,5 +155,35 @@ public class UsuarioController extends Controller {
 		mEditor.clear();
 		mEditor.commit();
 	}
+	
+	public void editUser(final String nome, final String biografia, final String senha, final String confirmaSenha, final OnRequestListener callback){
+		if(!senha.equals(confirmaSenha)){
+			callback.onError("Senhas não coincidem.");
+		}else{
+			if(!senha.isEmpty() && senha.length() < 6){
+				callback.onError("Senha deve ter pelo menos 6 caracteres.");	
+			}else{
+				sDao.editUser(usuarioLogado, biografia, nome, senha, new OnRequestListener(callback.getContext()) {
+					
+					@Override
+					public void onSuccess(Object result) {
+						usuarioLogado.setBiografia(biografia);
+						usuarioLogado.setNome(nome);
+						if(!senha.isEmpty()){
+							usuarioLogado.setSenha(senha);
+							salvaUsuario(usuarioLogado);
+						}
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+						
+					}
+				});
+			}
+		}
+	
+	}
 
 }
