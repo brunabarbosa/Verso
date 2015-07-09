@@ -78,7 +78,6 @@
 				      android:layout_height="50dp"
 				      android:layout_gravity="center_horizontal"
 				      android:background="@drawable/entrar"
-				      android:paddingLeft="30dp"
 				      android:text="Criar" />
 				  
 				</LinearLayout>

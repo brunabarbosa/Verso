@@ -46,10 +46,8 @@
 				        android:layout_width="150dp"
 				        android:layout_height="50dp"
 				        android:layout_margin="2dp"
-					 	android:paddingLeft="30dp"
 				        android:background="@drawable/entrar"
 				        android:layout_gravity="center_horizontal"
-						android:layout_marginTop="30dp"
 				        android:text="Editar Perfil" />
 				
 				</LinearLayout>
