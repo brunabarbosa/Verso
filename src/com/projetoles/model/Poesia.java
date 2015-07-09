@@ -5,7 +5,7 @@ import java.util.Calendar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Poesia {
+public class Poesia implements Comparable<Poesia> {
 	
 	private String mTitulo;
 	private String mAutor;
@@ -125,6 +125,11 @@ public class Poesia {
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(tempo);
 		return new Poesia(titulo, autor, poesia, c, tags);
+	}
+
+	@Override
+	public int compareTo(Poesia arg0) {
+		return arg0.mDataDeCriacao.compareTo(this.mDataDeCriacao);
 	}
 
 }

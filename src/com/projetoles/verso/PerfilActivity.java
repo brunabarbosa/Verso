@@ -1,6 +1,7 @@
 package com.projetoles.verso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,9 +21,10 @@ public class PerfilActivity extends Activity {
 	private PoesiaController poemaController;
 	private ExpandableListAdapter listAdapter;
     private ExpandableListView expListView;
-    private List<String> listDataHeader;
+    //private List<String> listDataHeader;
     private int countCarregados;
-    private HashMap<String, List<String>> listDataChild;
+    //private HashMap<String, List<String>> listDataChild;
+    private List<Poesia> listPoesias;
     
     private void setData() {
     	
@@ -42,10 +44,10 @@ public class PerfilActivity extends Activity {
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		
 		//preparing list data
-		listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-        listAdapter = new ExpandableListAdapter(PerfilActivity.this, 
-				listDataHeader, listDataChild);
+		listPoesias = new ArrayList<Poesia>();
+		//listDataHeader = new ArrayList<String>();
+        //listDataChild = new HashMap<String, List<String>>();
+        listAdapter = new ExpandableListAdapter(PerfilActivity.this, listPoesias);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;
@@ -61,16 +63,18 @@ public class PerfilActivity extends Activity {
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
 		
-		for (Poesia p : usuarioController.usuarioLogado.getPoemasCarregados()) {
+		//for (Poesia p : usuarioController.usuarioLogado.getPoemasCarregados()) {
 			// Adding child data
-	        listDataHeader.add(p.getTitulo());
+	        //listDataHeader.add(p.getTitulo());
 	 
 	        // Adding child data
-	        List<String> poesia = new ArrayList<String>();
-	        poesia.add(p.getPoesia());
+	        //List<String> poesia = new ArrayList<String>();
+	        //poesia.add(p.getPoesia());
 
-	        listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
-		}
+	        //listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
+		//}
+		listPoesias.addAll(usuarioController.usuarioLogado.getPoemasCarregados());
+		Collections.sort(listPoesias);
 		listAdapter.notifyDataSetChanged();
 		for (String id : usuarioController.usuarioLogado.getPoemas()) {
 			poemaController.getPoesia(id, new OnRequestListener(this) {
@@ -79,13 +83,15 @@ public class PerfilActivity extends Activity {
 				public void onSuccess(Object result) {
 					Poesia p = (Poesia) result;
 					// Adding child data
-			        listDataHeader.add(p.getTitulo());
+			        //listDataHeader.add(p.getTitulo());
 			 
 			        // Adding child data
-			        List<String> poesia = new ArrayList<String>();
-			        poesia.add(p.getPoesia());
+			        //List<String> poesia = new ArrayList<String>();
+			        //poesia.add(p.getPoesia());
 
-			        listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
+			        //listDataChild.put(listDataHeader.get(listDataHeader.size() - 1), poesia); // Header, Child data
+					listPoesias.add(p);
+					Collections.sort(listPoesias);
 			        listAdapter.notifyDataSetChanged();
 				}
 				

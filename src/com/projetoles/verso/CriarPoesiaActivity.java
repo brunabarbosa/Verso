@@ -33,6 +33,7 @@ public class CriarPoesiaActivity extends Activity {
 		//verificar se vai precisar
 		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
 		final EditText etTitulo = (EditText) findViewById(R.id.poemaTitulo);
+		final EditText etAutor = (EditText) findViewById(R.id.poemaAutor);
 		final EditText etPoesia = (EditText) findViewById(R.id.poema);
 		final EditText etTags = (EditText) findViewById(R.id.poemaTags);
 		final ImageView criar = (ImageView) MainActivity.sInstance.findViewById(R.id.btnCriarPoema);
@@ -41,13 +42,14 @@ public class CriarPoesiaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String titulo = etTitulo.getText().toString(); 
+				String autor = etAutor.getText().toString();
 				String poesia = etPoesia.getText().toString(); 
 				String tags = etTags.getText().toString();
 				Calendar dataDeCriacao = Calendar.getInstance();
 				
 				//verificar se vai precisar
 				loading.setVisibility(View.VISIBLE);
-				mPoemaController.criarPoesia(titulo, mUsuarioController.usuarioLogado.getEmail(), 
+				mPoemaController.criarPoesia(titulo, autor, mUsuarioController.usuarioLogado.getEmail(), 
 						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoesiaActivity.this) {
 					
 					@Override

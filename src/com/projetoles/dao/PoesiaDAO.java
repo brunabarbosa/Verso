@@ -16,9 +16,10 @@ public class PoesiaDAO extends DAO{
 		return sInstance;
 	}
 	
-	public void criarPoesia(Poesia poema, OnRequestListener callback) {
+	public void criarPoesia(Poesia poema, String postador, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("autor", poema.getAutor())
+			.addParam("postador", postador)
 			.addParam("poesia", poema.getPoesia())
 			.addParam("titulo", poema.getTitulo())
 			.addParam("dataCriacao", poema.getStringDataCriacao())

@@ -46,14 +46,13 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void criarPoesia(final String titulo, final String autor,
+	public void criarPoesia(final String titulo, final String autor, final String postador,
 			final String poesia, final Calendar dataDeCriacao,
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
-				final Poesia poema = new Poesia(titulo, autor, poesia,
-						dataDeCriacao, tags);
-				pDao.criarPoesia(poema, new OnRequestListener(callback.getContext()) {
+				final Poesia poema = new Poesia(titulo, autor, poesia, dataDeCriacao, tags);
+				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {
