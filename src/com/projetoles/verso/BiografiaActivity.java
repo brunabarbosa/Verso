@@ -22,6 +22,7 @@ public class BiografiaActivity extends Activity {
 	
 	private ImageView mFoto;
 	private ImageView mFotoFull;
+	private Class mCallback;
 	
 	private void setPhoto(byte[] photo) {
 		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
@@ -49,6 +50,7 @@ public class BiografiaActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		Bundle b = getIntent().getExtras();
+		mCallback = (Class) b.get("callback");
 		mUsuario = (Usuario) b.getParcelable("usuario");
 		TextView editBio = (TextView) findViewById(R.id.biografia);
 		if (mUsuario.getBiografia() == null || mUsuario.getBiografia().trim().equals("")) {
@@ -84,12 +86,15 @@ public class BiografiaActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
 				startActivity(i);
+				finish();
 			}
 		});
 	}
 	
 	@Override
 	public void onBackPressed() {
+		Intent i = new Intent(BiografiaActivity.this, mCallback);
+		startActivity(i);
 		finish();
 	}
 	

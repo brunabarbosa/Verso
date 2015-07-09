@@ -24,21 +24,23 @@ import android.widget.RelativeLayout;
 
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Usuario;
 
 public class EditarPerfilActivity extends Activity {
 	
 	private UsuarioController mController;
 	private RelativeLayout mProfilePhotoContent;
+	private RelativeLayout mLoading;
 	private ImageView mFoto;
 	private ImageView mFotoFull;
+	private Usuario mUsuario;
 
 	private static final int MAX_PHOTO_SIZE = 600;
 	private static final int SELECT_PHOTO = 100;
 	private static final int CAMERA_REQUEST = 1888; 
 	
-	
 	private void setPhoto(byte[] photo) {
-		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
+		if (mUsuario.getFoto().length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 			mFoto.setImageBitmap(bmp);
 			DisplayMetrics dm = new DisplayMetrics();
@@ -61,94 +63,115 @@ public class EditarPerfilActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mController = new UsuarioController(this);
-		mFoto = (ImageView) findViewById(R.id.showPhoto);
-		mFotoFull = (ImageView) findViewById(R.id.editarFotoFull);
-		Button editarFoto = (Button) findViewById(R.id.btnEditPhoto);
-		editarFoto.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				new AlertDialog.Builder(EditarPerfilActivity.this)
-					.setTitle("Editar foto")
-					.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-							photoPickerIntent.setType("image/*");
-							startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
-						}
-					})
-					.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-			                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
-						}
-					})
-					.create().show();
-			}
-		
-		});
-		final EditText nome = (EditText) findViewById(R.id.etEditName);
-		final EditText biografia = (EditText) findViewById(R.id.etEditBio);
-		final EditText senha = (EditText) findViewById(R.id.etEditPassword);
-		final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
-		final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
-		salvarPerfil.setOnClickListener(new OnClickListener() {
+		mController.getLoggedUser(new OnRequestListener(this) {
 			
 			@Override
-			public void onClick(View v) {
-				String sNome = nome.getText().toString();
-				String sBiografia = biografia.getText().toString();
-				String sSenha = senha.getText().toString();
-				String seditarSenha = editarSenha.getText().toString();
-				mController.editUser(sNome, sBiografia, sSenha, seditarSenha, new OnRequestListener(EditarPerfilActivity.this) {
-					
+			public void onSuccess(Object result) {
+				mUsuario = (Usuario) result;
+				mFoto = (ImageView) findViewById(R.id.showPhoto);
+				mFotoFull = (ImageView) findViewById(R.id.editarFotoFull);
+				Button editarFoto = (Button) findViewById(R.id.btnEditPhoto);
+				editarFoto.setOnClickListener(new OnClickListener() {
+
 					@Override
-					public void onSuccess(Object result) {
+					public void onClick(View v) {
 						new AlertDialog.Builder(EditarPerfilActivity.this)
-							.setTitle("Sucesso!")
-							.setMessage("Usuário alterado com sucesso.")
-							.setNeutralButton("OK", null)
+							.setTitle("Editar foto")
+							.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+									photoPickerIntent.setType("image/*");
+									startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
+								}
+							})
+							.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+					                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
+								}
+							})
 							.create().show();
 					}
+				
+				});
+				final EditText nome = (EditText) findViewById(R.id.etEditName);
+				final EditText biografia = (EditText) findViewById(R.id.etEditBio);
+				final EditText senha = (EditText) findViewById(R.id.etEditPassword);
+				final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
+				final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
+				salvarPerfil.setOnClickListener(new OnClickListener() {
 					
 					@Override
-					public void onError(String errorMessage) {
-						new AlertDialog.Builder(EditarPerfilActivity.this)
-							.setTitle("Um erro ocorreu")
-							.setMessage(errorMessage)
-							.setNeutralButton("OK", null)
-							.create().show();	
+					public void onClick(View v) {
+						mLoading.setVisibility(View.VISIBLE);
+						String sNome = nome.getText().toString();
+						String sBiografia = biografia.getText().toString();
+						String sSenha = senha.getText().toString();
+						String seditarSenha = editarSenha.getText().toString();
+						mController.editUser(sNome, sBiografia, sSenha, seditarSenha, new OnRequestListener(EditarPerfilActivity.this) {
+							
+							@Override
+							public void onSuccess(Object result) {
+								mLoading.setVisibility(View.GONE);
+								new AlertDialog.Builder(EditarPerfilActivity.this)
+									.setTitle("Sucesso!")
+									.setMessage("Usuário alterado com sucesso.")
+									.setNeutralButton("OK", null)
+									.create().show();
+							}
+							
+							@Override
+							public void onError(String errorMessage) {
+								mLoading.setVisibility(View.GONE);
+								new AlertDialog.Builder(EditarPerfilActivity.this)
+									.setTitle("Um erro ocorreu")
+									.setMessage(errorMessage)
+									.setNeutralButton("OK", null)
+									.create().show();	
+							}
+						});
+					
 					}
 				});
-			
+				setPhoto(mUsuario.getFoto());
+				mProfilePhotoContent = (RelativeLayout) findViewById(R.id.editarFotoContent);
+				mFoto.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						mProfilePhotoContent.setVisibility(View.VISIBLE);
+					}
+				});
+				mProfilePhotoContent.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						mProfilePhotoContent.setVisibility(View.GONE);;
+					}
+				});
+				nome.setText(mUsuario.getNome());
+				biografia.setText(mUsuario.getBiografia());
+				mLoading = (RelativeLayout) findViewById(R.id.editarPerfilLoading);
+				mLoading.setVisibility(View.GONE);
 			}
-		});
-		setPhoto(UsuarioController.usuarioLogado.getFoto());
-		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.editarFotoContent);
-		mFoto.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
-				mProfilePhotoContent.setVisibility(View.VISIBLE);
+			public void onError(String errorMessage) {
+				finish();
 			}
 		});
-		mProfilePhotoContent.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				mProfilePhotoContent.setVisibility(View.GONE);;
-			}
-		});
-		nome.setText(UsuarioController.usuarioLogado.getNome());
-		biografia.setText(UsuarioController.usuarioLogado.getBiografia());
 	}
 	
 	@Override
 	public void onBackPressed() {
+		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);
+		i.putExtra("usuario", mUsuario);
+		i.putExtra("callback", MainActivity.class);
+		startActivity(i);
 		finish();
 	}
 	
@@ -206,16 +229,19 @@ public class EditarPerfilActivity extends Activity {
         	ByteArrayOutputStream stream = new ByteArrayOutputStream();
         	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         	byte[] b = stream.toByteArray();
+        	//mLoading.setVisibility(View.VISIBLE);
         	mController.addFoto(UsuarioController.usuarioLogado, b, new OnRequestListener(this) {
 				
 				@Override
 				public void onSuccess(Object result) {
-					setPhoto(UsuarioController.usuarioLogado.getFoto());
+					mLoading.setVisibility(View.GONE);
+					setPhoto(mUsuario.getFoto());
 					mProfilePhotoContent.setVisibility(View.GONE);
 				}
 				
 				@Override
 				public void onError(String errorMessage) {
+					mLoading.setVisibility(View.GONE);
 					new AlertDialog.Builder(EditarPerfilActivity.this)
 						.setTitle("Um erro ocorreu")
 						.setMessage(errorMessage)

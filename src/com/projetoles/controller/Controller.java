@@ -15,7 +15,7 @@ public abstract class Controller {
 
 	public Controller(Activity context) {
 		this.mContext = context;
-		this.mSession = context.getSharedPreferences("User", 0); 
+		this.mSession = context.getSharedPreferences("com.projetoles.verso", Context.MODE_PRIVATE); 
 		this.mEditor = mSession.edit();
 	}
 
