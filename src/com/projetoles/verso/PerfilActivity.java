@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 
-import com.projetoles.controller.PoemaController;
+import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poema;
@@ -17,7 +17,7 @@ import com.projetoles.model.Poema;
 public class PerfilActivity extends Activity {
 
 	private UsuarioController usuarioController;
-	private PoemaController poemaController;
+	private PoesiaController poemaController;
 	private ExpandableListAdapter listAdapter;
     private ExpandableListView expListView;
     private List<String> listDataHeader;
@@ -36,7 +36,7 @@ public class PerfilActivity extends Activity {
 		//change fonts
 		
 		usuarioController = new UsuarioController(this);
-		poemaController = new PoemaController(this);
+		poemaController = new PoesiaController(this);
 
 		// get the listview 
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
@@ -73,7 +73,7 @@ public class PerfilActivity extends Activity {
 		}
 		listAdapter.notifyDataSetChanged();
 		for (String id : usuarioController.usuarioLogado.getPoemas()) {
-			poemaController.getPoema(id, new OnRequestListener(this) {
+			poemaController.getPoesia(id, new OnRequestListener(this) {
 				
 				@Override
 				public void onSuccess(Object result) {

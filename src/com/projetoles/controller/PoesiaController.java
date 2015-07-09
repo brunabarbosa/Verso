@@ -6,21 +6,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.dao.PoemaDAO;
+import com.projetoles.dao.PoesiaDAO;
 import com.projetoles.model.Poema;
 
 import android.app.Activity;
 
-public class PoemaController extends Controller {
+public class PoesiaController extends Controller {
 	
-	private static PoemaDAO pDao = PoemaDAO.getInstance();
+	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
 
-	public PoemaController(Activity context) {
+	public PoesiaController(Activity context) {
 		super(context);
 	}
 
-	public void getPoema(final String id, final OnRequestListener callback) {
-		pDao.getPoema(id, new OnRequestListener(callback.getContext()) {
+	public void getPoesia(final String id, final OnRequestListener callback) {
+		pDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -46,14 +46,14 @@ public class PoemaController extends Controller {
 		});
 	}
 	
-	public void criarPoema(final String titulo, final String autor,
+	public void criarPoesia(final String titulo, final String autor,
 			final String poesia, final Calendar dataDeCriacao,
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Poema poema = new Poema(titulo, autor, poesia,
 						dataDeCriacao, tags);
-				pDao.criarPoema(poema, new OnRequestListener(callback.getContext()) {
+				pDao.criarPoesia(poema, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {

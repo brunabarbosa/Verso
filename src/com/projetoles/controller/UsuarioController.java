@@ -146,10 +146,13 @@ public class UsuarioController extends Controller {
 	}
 
 	private void salvaUsuario(Usuario usuario) {
-		usuarioLogado = usuario;
-		mEditor.putString("email", usuario.getEmail()).apply();
-		if (!usuario.getSenha().trim().equals(""))
-			mEditor.putString("senha", usuario.getSenha()).apply();
+		if (usuario != null)
+		{
+			usuarioLogado = usuario;
+			mEditor.putString("email", usuario.getEmail()).apply();
+			if (!usuario.getSenha().trim().equals(""))
+				mEditor.putString("senha", usuario.getSenha()).apply();
+		}
 	}
 	 
 	public void logout() {

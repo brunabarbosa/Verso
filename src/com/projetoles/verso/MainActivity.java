@@ -95,15 +95,15 @@ public class MainActivity extends TabActivity {
 				homeSpec.setContent(homeIntent);
 				 
 				comporSpec.setIndicator("", getResources().getDrawable(R.drawable.compor));
-				Intent comporIntent = new Intent(MainActivity.this, CriarPoemaActivity.class);
+				Intent comporIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
 				comporSpec.setContent(comporIntent);
 
 				sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
-				Intent sobreIntent = new Intent(MainActivity.this, CriarPoemaActivity.class);
+				Intent sobreIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
 				sobreSpec.setContent(sobreIntent);
 
 				buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
-				Intent buscaIntent = new Intent(MainActivity.this, CriarPoemaActivity.class);
+				Intent buscaIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
 				buscaSpec.setContent(buscaIntent);
 				
 				mTabHost.addTab(homeSpec);
