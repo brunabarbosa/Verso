@@ -7,6 +7,7 @@ import android.app.Activity;
 
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.UsuarioDAO;
+import com.projetoles.model.PasswordEncrypter;
 import com.projetoles.model.Usuario;
 
 public class UsuarioController extends Controller {
@@ -59,7 +60,7 @@ public class UsuarioController extends Controller {
 	public void login(final String email, final String senha, 
 			final OnRequestListener callback) {
 		try {
-			Usuario usuario = new Usuario(email, null, senha);
+			final Usuario usuario = new Usuario(email, null, senha);
 			sDao.auth(usuario, new OnRequestListener(callback.getContext()) {
 				
 				@Override
@@ -69,6 +70,7 @@ public class UsuarioController extends Controller {
 						boolean success = json.getBoolean("success");
 						if (success) {
 							Usuario encontrado = Usuario.converteJSON(json);
+							encontrado.setSenha(senha);
 							salvaUsuario(encontrado);
 							callback.onSuccess(encontrado);
 						} else {
@@ -144,16 +146,18 @@ public class UsuarioController extends Controller {
 	}
 
 	private void salvaUsuario(Usuario usuario) {
-		usuarioLogado = usuario;
-		mEditor.putString("email", usuario.getEmail());
-		mEditor.putString("senha", usuario.getSenha());
-		mEditor.commit();
+		if (usuario != null)
+		{
+			usuarioLogado = usuario;
+			mEditor.putString("email", usuario.getEmail()).apply();
+			if (!usuario.getSenha().trim().equals(""))
+				mEditor.putString("senha", usuario.getSenha()).apply();
+		}
 	}
-	
+	 
 	public void logout() {
 		usuarioLogado = null;
-		mEditor.clear();
-		mEditor.commit();
+		mEditor.clear().apply();
 	}
 	
 	public void editUser(final String nome, final String biografia, final String senha, final String confirmaSenha, final OnRequestListener callback){
@@ -163,15 +167,27 @@ public class UsuarioController extends Controller {
 			if(!senha.isEmpty() && senha.length() < 6){
 				callback.onError("Senha deve ter pelo menos 6 caracteres.");	
 			}else{
-				sDao.editUser(usuarioLogado, biografia, nome, senha, new OnRequestListener(callback.getContext()) {
+				sDao.editUser(usuarioLogado, biografia, nome, PasswordEncrypter.getEncryptedPassword(senha), new OnRequestListener(callback.getContext()) {
 					
 					@Override
 					public void onSuccess(Object result) {
-						usuarioLogado.setBiografia(biografia);
-						usuarioLogado.setNome(nome);
-						if(!senha.isEmpty()){
-							usuarioLogado.setSenha(senha);
-							salvaUsuario(usuarioLogado);
+						try {
+							JSONObject json = new JSONObject(result.toString());
+							boolean success = json.getBoolean("success");
+							if (success) {
+								usuarioLogado.setBiografia(biografia);
+								usuarioLogado.setNome(nome);
+								if(!senha.isEmpty()){
+									usuarioLogado.setSenha(senha);
+									salvaUsuario(usuarioLogado);
+								}
+								callback.onSuccess(result);
+							} else {
+								callback.onError(json.getString("message"));
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							callback.onError(e.getMessage());
 						}
 					}
 					

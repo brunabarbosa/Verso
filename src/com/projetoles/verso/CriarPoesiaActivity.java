@@ -13,26 +13,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.projetoles.controller.PoemaController;
+import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poema;
+import com.projetoles.model.Poesia;
 
-public class CriarPoemaActivity extends Activity {
+public class CriarPoesiaActivity extends Activity {
 	
-	private PoemaController mPoemaController;
+	private PoesiaController mPoemaController;
 	private UsuarioController mUsuarioController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cria_poema);
+		setContentView(R.layout.activity_cria_poesia);
 		
-		mPoemaController = new PoemaController(this);
+		mPoemaController = new PoesiaController(this);
 		mUsuarioController = new UsuarioController(this);
 		//verificar se vai precisar
 		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
 		final EditText etTitulo = (EditText) findViewById(R.id.poemaTitulo);
+		final EditText etAutor = (EditText) findViewById(R.id.poemaAutor);
 		final EditText etPoesia = (EditText) findViewById(R.id.poema);
 		final EditText etTags = (EditText) findViewById(R.id.poemaTags);
 		final ImageView criar = (ImageView) MainActivity.sInstance.findViewById(R.id.btnCriarPoema);
@@ -41,23 +42,24 @@ public class CriarPoemaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String titulo = etTitulo.getText().toString(); 
+				String autor = etAutor.getText().toString();
 				String poesia = etPoesia.getText().toString(); 
 				String tags = etTags.getText().toString();
 				Calendar dataDeCriacao = Calendar.getInstance();
 				
 				//verificar se vai precisar
 				loading.setVisibility(View.VISIBLE);
-				mPoemaController.criarPoema(titulo, mUsuarioController.usuarioLogado.getEmail(), 
-						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoemaActivity.this) {
+				mPoemaController.criarPoesia(titulo, autor, mUsuarioController.usuarioLogado.getEmail(), 
+						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoesiaActivity.this) {
 					
 					@Override
 					public void onSuccess(Object result) {
-						mUsuarioController.usuarioLogado.addPoemaCarregado((Poema)result);
+						mUsuarioController.usuarioLogado.addPoemaCarregado((Poesia)result);
 						runOnUiThread(new Runnable() {
 							
 							@Override
 							public void run() {
-								Intent i = new Intent(CriarPoemaActivity.this, MainActivity.class);
+								Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
 								startActivity(i);
 								finish();
 							}
@@ -70,7 +72,7 @@ public class CriarPoemaActivity extends Activity {
 							
 							@Override
 							public void run() {
-								new AlertDialog.Builder(CriarPoemaActivity.this)
+								new AlertDialog.Builder(CriarPoesiaActivity.this)
 									.setTitle("Um erro ocorreu")
 									.setMessage(errorMessage)
 									.setNeutralButton("OK", new DialogInterface.OnClickListener() {

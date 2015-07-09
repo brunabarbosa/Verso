@@ -29,7 +29,7 @@ public class Usuario implements Parcelable {
 	private byte[] mFoto;
 	private String mBiografia;
 	private Set<String> mPoemas;
-	private Set<Poema> mPoemasCarregados;
+	private Set<Poesia> mPoemasCarregados;
 	
 	public Usuario(Parcel in) {
 		setEmail(in.readString()); 
@@ -40,7 +40,7 @@ public class Usuario implements Parcelable {
 		in.readByteArray(foto);
 		setBiografia(in.readString());
 		this.mPoemas = new HashSet<String>();
-		this.mPoemasCarregados = new HashSet<Poema>();
+		this.mPoemasCarregados = new HashSet<Poesia>();
 	}
 	
 	public Usuario(String email, String nome, String senha) 
@@ -51,7 +51,7 @@ public class Usuario implements Parcelable {
 		setFoto(new byte[]{});
 		setBiografia("");
 		this.mPoemas = new HashSet<String>();
-		this.mPoemasCarregados = new HashSet<Poema>();
+		this.mPoemasCarregados = new HashSet<Poesia>();
 	}
 
 	public String getEmail() {
@@ -131,7 +131,7 @@ public class Usuario implements Parcelable {
 		this.mPoemas.add(poemaId);
 	}
 	
-	public void addPoemaCarregado(Poema poema) {
+	public void addPoemaCarregado(Poesia poema) {
 		this.mPoemasCarregados.add(poema);
 	}
 	
@@ -156,7 +156,7 @@ public class Usuario implements Parcelable {
 		return u;
 	}
 	
-	public Set<Poema> getPoemasCarregados() {
+	public Set<Poesia> getPoemasCarregados() {
 		return Collections.unmodifiableSet(mPoemasCarregados);
 	}
 	
