@@ -18,8 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_row="0"
             android:background="@drawable/barra_poesia"
-            android:gravity="left|center"
+            android:gravity="left|top"
             android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+            android:paddingTop="10sp"
             android:textColor="#927e58"
             android:textSize="17dp" />
 
@@ -74,6 +75,40 @@
             android:textColor="#a1967c"
             android:textSize="22sp" />
 
+        <LinearLayout
+            android:layout_width="224dp"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_gravity="left|bottom"
+            android:layout_row="0"
+            android:orientation="vertical" >
+            
+            <TextView
+                android:id="@+id/tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="left|bottom"
+                android:layout_row="0"
+                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+                android:text="#tags"
+                android:textColor="#927e58"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="left|center_vertical"
+                android:layout_row="0"
+                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+                android:text="#date"
+                android:textColor="#927e58"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+       
     </GridLayout>
  
 </LinearLayout>
