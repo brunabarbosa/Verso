@@ -12,7 +12,7 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poema;
+import com.projetoles.model.Poesia;
 
 public class PerfilActivity extends Activity {
 
@@ -61,7 +61,7 @@ public class PerfilActivity extends Activity {
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
 		
-		for (Poema p : usuarioController.usuarioLogado.getPoemasCarregados()) {
+		for (Poesia p : usuarioController.usuarioLogado.getPoemasCarregados()) {
 			// Adding child data
 	        listDataHeader.add(p.getTitulo());
 	 
@@ -77,7 +77,7 @@ public class PerfilActivity extends Activity {
 				
 				@Override
 				public void onSuccess(Object result) {
-					Poema p = (Poema) result;
+					Poesia p = (Poesia) result;
 					// Adding child data
 			        listDataHeader.add(p.getTitulo());
 			 

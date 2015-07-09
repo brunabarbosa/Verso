@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
-import com.projetoles.model.Poema;
+import com.projetoles.model.Poesia;
 
 import android.app.Activity;
 
@@ -28,7 +28,7 @@ public class PoesiaController extends Controller {
 					JSONObject json = new JSONObject(result.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
-						Poema poema = Poema.converteJson(json);
+						Poesia poema = Poesia.converteJson(json);
 						callback.onSuccess(poema);
 					} else {
 						callback.onError(json.getString("message"));
@@ -51,7 +51,7 @@ public class PoesiaController extends Controller {
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
-				final Poema poema = new Poema(titulo, autor, poesia,
+				final Poesia poema = new Poesia(titulo, autor, poesia,
 						dataDeCriacao, tags);
 				pDao.criarPoesia(poema, new OnRequestListener(callback.getContext()) {
 

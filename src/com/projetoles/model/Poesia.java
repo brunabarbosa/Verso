@@ -5,7 +5,7 @@ import java.util.Calendar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Poema {
+public class Poesia {
 	
 	private String mTitulo;
 	private String mAutor;
@@ -13,7 +13,7 @@ public class Poema {
 	private Calendar mDataDeCriacao;
 	private String mTags;
 	
-	public Poema(String titulo, String autor, String poesia, Calendar dataDeCriacao, String tags) 
+	public Poesia(String titulo, String autor, String poesia, Calendar dataDeCriacao, String tags) 
 			throws IllegalArgumentException  {
 		setTitulo(titulo);
 		setAutor(autor);
@@ -22,7 +22,7 @@ public class Poema {
 		setTags(tags);
 	}
 
-	public Poema() {
+	public Poesia() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -93,7 +93,7 @@ public class Poema {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Poema other = (Poema) obj;
+		Poesia other = (Poesia) obj;
 		if (mAutor == null) {
 			if (other.mAutor != null)
 				return false;
@@ -116,7 +116,7 @@ public class Poema {
 		return String.valueOf(mDataDeCriacao.getTimeInMillis());
 	}
 
-	public static Poema converteJson(JSONObject json) throws JSONException {
+	public static Poesia converteJson(JSONObject json) throws JSONException {
 		String titulo = json.getString("titulo");
 		String poesia = json.getString("poesia");
 		String tags = json.getString("tags");
@@ -124,7 +124,7 @@ public class Poema {
 		Long tempo = Long.valueOf(json.getString("dataCriacao"));
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(tempo);
-		return new Poema(titulo, autor, poesia, c, tags);
+		return new Poesia(titulo, autor, poesia, c, tags);
 	}
 
 }

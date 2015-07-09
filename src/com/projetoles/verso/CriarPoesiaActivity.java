@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poema;
+import com.projetoles.model.Poesia;
 
 public class CriarPoesiaActivity extends Activity {
 	
@@ -52,7 +52,7 @@ public class CriarPoesiaActivity extends Activity {
 					
 					@Override
 					public void onSuccess(Object result) {
-						mUsuarioController.usuarioLogado.addPoemaCarregado((Poema)result);
+						mUsuarioController.usuarioLogado.addPoemaCarregado((Poesia)result);
 						runOnUiThread(new Runnable() {
 							
 							@Override

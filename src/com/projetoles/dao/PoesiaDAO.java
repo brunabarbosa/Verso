@@ -1,7 +1,7 @@
 package com.projetoles.dao;
 
 import com.projetoles.dao.GET.Builder;
-import com.projetoles.model.Poema;
+import com.projetoles.model.Poesia;
 
 /**
  * Implementação do DAO usando um Webservice e requisições POST e GET
@@ -16,7 +16,7 @@ public class PoesiaDAO extends DAO{
 		return sInstance;
 	}
 	
-	public void criarPoesia(Poema poema, OnRequestListener callback) {
+	public void criarPoesia(Poesia poema, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("autor", poema.getAutor())
 			.addParam("poesia", poema.getPoesia())
