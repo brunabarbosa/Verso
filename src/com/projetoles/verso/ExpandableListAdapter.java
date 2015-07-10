@@ -93,6 +93,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
+        TextView tags = (TextView) convertView.findViewById(R.id.tags);
+        String poesiasTagss = "";
+        String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
+        for (String tag : poesiasTags) { 
+        	poesiasTagss += "#" + tag;
+        }
+        tags.setText(poesiasTagss);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
  
