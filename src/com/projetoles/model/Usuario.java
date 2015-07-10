@@ -30,6 +30,7 @@ public class Usuario implements Parcelable {
 	private String mBiografia;
 	private Set<String> mPoemas;
 	private Set<Poesia> mPoemasCarregados;
+	private Set<Notificacao> mNoticacoes;
 	
 	public Usuario(Parcel in) {
 		setEmail(in.readString()); 
@@ -41,6 +42,7 @@ public class Usuario implements Parcelable {
 		setBiografia(in.readString());
 		this.mPoemas = new HashSet<String>();
 		this.mPoemasCarregados = new HashSet<Poesia>();
+		this.mNoticacoes = new HashSet<Notificacao>();
 	}
 	
 	public Usuario(String email, String nome, String senha) 
@@ -52,6 +54,7 @@ public class Usuario implements Parcelable {
 		setBiografia("");
 		this.mPoemas = new HashSet<String>();
 		this.mPoemasCarregados = new HashSet<Poesia>();
+		this.mNoticacoes = new HashSet<Notificacao>();
 	}
 
 	public String getEmail() {
@@ -135,6 +138,12 @@ public class Usuario implements Parcelable {
 		this.mPoemasCarregados.add(poema);
 	}
 	
+
+	public void addNotifiacao(Notificacao notificacao) {
+		this.mNoticacoes.add(notificacao);
+		
+	}
+	
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");
@@ -163,6 +172,10 @@ public class Usuario implements Parcelable {
 	public Set<String> getPoemas() {
 		return Collections.unmodifiableSet(mPoemas);
 	}
+	
+	public Set<Notificacao> getNotificacaoes() {
+		return Collections.unmodifiableSet(mNoticacoes);
+	}
 
 	@Override
 	public int describeContents() {
@@ -188,5 +201,6 @@ public class Usuario implements Parcelable {
             return new Usuario[size];
         }
     };
+
     
 }

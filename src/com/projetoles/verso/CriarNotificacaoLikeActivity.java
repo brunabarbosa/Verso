@@ -5,7 +5,7 @@ import java.util.Calendar;
 import com.projetoles.controller.NotificacaoController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poesia;
+import com.projetoles.model.Notificacao;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,28 +17,29 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-public class NotificacaoLikeActivity extends Activity {
-	
+public class CriarNotificacaoLikeActivity extends Activity {
 
 	private UsuarioController mUsuarioController;
 	private NotificacaoController mNotificacaoController;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_group);
-		
+
 		mUsuarioController = new UsuarioController(this);
 		mNotificacaoController = new NotificacaoController(this);
-		
-		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
+
+		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance
+				.findViewById(R.id.mainLoading);
 		Button buttonLike = (Button) findViewById(R.id.facebookIcon);
 
 		buttonLike.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				String titulo = UsuarioController.usuarioLogado.getNome(); 
+				String titulo = mUsuarioController.usuarioLogado.getNome();
 				String mensagem = titulo + "curtiu sua poesia.";
 				Calendar dataDeCriacao = Calendar.getInstance();
 
@@ -47,18 +48,18 @@ public class NotificacaoLikeActivity extends Activity {
 				mNotificacaoController.criaNotificacao(titulo, mensagem,
 						mUsuarioController.usuarioLogado.getEmail(),
 						dataDeCriacao, new OnRequestListener(
-								NotificacaoLikeActivity.this) {
+								CriarNotificacaoLikeActivity.this) {
 
 							@Override
 							public void onSuccess(Object result) {
 								mUsuarioController.usuarioLogado
-										.addPoemaCarregado((Poesia) result);
+										.addNotifiacao((Notificacao) result);
 								runOnUiThread(new Runnable() {
 
 									@Override
 									public void run() {
 										Intent i = new Intent(
-												NotificacaoLikeActivity.this,
+												CriarNotificacaoLikeActivity.this,
 												MainActivity.class);
 										startActivity(i);
 										finish();
@@ -73,7 +74,7 @@ public class NotificacaoLikeActivity extends Activity {
 									@Override
 									public void run() {
 										new AlertDialog.Builder(
-												NotificacaoLikeActivity.this)
+												CriarNotificacaoLikeActivity.this)
 												.setTitle("Um erro ocorreu")
 												.setMessage(errorMessage)
 												.setNeutralButton(

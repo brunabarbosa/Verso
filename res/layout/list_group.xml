@@ -46,7 +46,8 @@
             android:layout_marginRight="60dp"
             android:layout_marginTop="10dp"
             android:layout_row="0"
-            android:src="@drawable/like_icon" />
+            android:src="@drawable/like_icon" 
+            android:onClick="gerarNotificacao"/>
 
         <TextView
             android:id="@+id/num_likes"
