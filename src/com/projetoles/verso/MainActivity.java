@@ -9,8 +9,14 @@ import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -41,15 +47,39 @@ public class MainActivity extends TabActivity {
 	private UsuarioController mController;
 	private TabHost mTabHost;
 	private ImageView mBtnCriarPoema;
+	private ImageView mBtnPesquisar;
 	private ImageView mUserPicturePreview;
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario;
 	
+	public Bitmap getCroppedBitmap(Bitmap bitmap) {
+	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+	            bitmap.getHeight(), Config.ARGB_8888);
+	    Canvas canvas = new Canvas(output);
+
+	    final int color = 0xff424242;
+	    final Paint paint = new Paint();
+	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+	    paint.setAntiAlias(true);
+	    canvas.drawARGB(0, 0, 0, 0);
+	    paint.setColor(color);
+	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+	            bitmap.getWidth() / 2, paint);
+	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+	    canvas.drawBitmap(bitmap, rect, rect, paint);
+	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+	    //return _bmp;
+	    return output;
+	}
+	
 	private void setPhoto(byte[] photo) {
 		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
 		if (mUsuario.getFoto().length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+			bmp = getCroppedBitmap(bmp);
 			userPicture.setImageBitmap(bmp);
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -62,6 +92,125 @@ public class MainActivity extends TabActivity {
 		} else {
 			mUserPicturePreview.setImageResource(R.drawable.icone_foto);
 		}
+	}
+	
+	private void setUp() {
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup();
+		
+		TabSpec homeSpec = mTabHost.newTabSpec("Home");
+		TabSpec comporSpec = mTabHost.newTabSpec("Compor");
+		TabSpec sobreSpec = mTabHost.newTabSpec("Sobre");
+		TabSpec buscaSpec = mTabHost.newTabSpec("Home");
+		
+		homeSpec.setIndicator("", getResources().getDrawable(R.drawable.home));
+		Intent homeIntent = new Intent(MainActivity.this, PerfilActivity.class);
+		homeSpec.setContent(homeIntent);
+		 
+		comporSpec.setIndicator("", getResources().getDrawable(R.drawable.compor));
+		Intent comporIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
+		comporSpec.setContent(comporIntent);
+
+		sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
+		Intent sobreIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
+		sobreSpec.setContent(sobreIntent);
+
+		buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
+		Intent buscaIntent = new Intent(MainActivity.this, PesquisarActivity.class);
+		buscaSpec.setContent(buscaIntent);
+		
+		mTabHost.addTab(homeSpec);
+		mTabHost.addTab(comporSpec);
+		mTabHost.addTab(sobreSpec);
+		mTabHost.addTab(buscaSpec);
+
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+
+			@Override
+			public void onTabChanged(String arg0) {
+				if (mTabHost.getCurrentTab() == 1) {
+					mBtnCriarPoema.setVisibility(View.VISIBLE);
+				} else {
+					mBtnCriarPoema.setVisibility(View.GONE);
+				}
+				if (mTabHost.getCurrentTab() == 3) {
+					mBtnPesquisar.setVisibility(View.VISIBLE);
+				} else {
+					mBtnPesquisar.setVisibility(View.GONE);
+				}
+				setTabColor(mTabHost);
+			}
+		});
+		setTabColor(mTabHost);
+		
+		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
+		mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
+		
+		//set userName
+		Usuario usuario = mUsuario;
+		TextView usuarioName = (TextView) findViewById(R.id.userName);
+		usuarioName.setText(usuario.getNome());
+		
+		// submenu
+		TextView biografia = (TextView) findViewById(R.id.textBiografia);
+		biografia.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
+				intent.putExtra("usuario", mUsuario);
+				intent.putExtra("callback", MainActivity.class);
+				startActivity(intent);
+				finish();
+			}
+		});
+		
+		//set userPicture
+		mUserPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
+		mUserPicture = (ImageView) findViewById(R.id.userPicture);
+		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.profilePhotoContent);
+		setPhoto(usuario.getFoto());
+		mUserPicture.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mProfilePhotoContent.setVisibility(View.VISIBLE);
+			}
+		});
+		mProfilePhotoContent.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mProfilePhotoContent.setVisibility(View.GONE);
+			}
+		});
+		final Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
+		btnEditPhoto.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new AlertDialog.Builder(MainActivity.this)
+					.setTitle("Editar foto")
+					.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+							photoPickerIntent.setType("image/*");
+							startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
+						}
+					})
+					.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+			                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
+						}
+					})
+					.create().show();
+			}
+		});
 	}
 	
 	@Override
@@ -79,120 +228,8 @@ public class MainActivity extends TabActivity {
 			
 			@Override
 			public void onSuccess(Object result) {
-				
 				mUsuario = (Usuario) result;
-
-				mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-				mTabHost.setup();
-				
-				TabSpec homeSpec = mTabHost.newTabSpec("Home");
-				TabSpec comporSpec = mTabHost.newTabSpec("Compor");
-				TabSpec sobreSpec = mTabHost.newTabSpec("Sobre");
-				TabSpec buscaSpec = mTabHost.newTabSpec("Home");
-				
-				homeSpec.setIndicator("", getResources().getDrawable(R.drawable.home));
-				Intent homeIntent = new Intent(MainActivity.this, PerfilActivity.class);
-				homeSpec.setContent(homeIntent);
-				 
-				comporSpec.setIndicator("", getResources().getDrawable(R.drawable.compor));
-				Intent comporIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
-				comporSpec.setContent(comporIntent);
-
-				sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
-				Intent sobreIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
-				sobreSpec.setContent(sobreIntent);
-
-				buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
-				Intent buscaIntent = new Intent(MainActivity.this, CriarPoesiaActivity.class);
-				buscaSpec.setContent(buscaIntent);
-				
-				mTabHost.addTab(homeSpec);
-				mTabHost.addTab(comporSpec);
-				mTabHost.addTab(sobreSpec);
-				mTabHost.addTab(buscaSpec);
-
-				mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
-
-					@Override
-					public void onTabChanged(String arg0) {
-						if (mTabHost.getCurrentTab() == 1) {
-							mBtnCriarPoema.setVisibility(View.VISIBLE);
-						} else {
-							mBtnCriarPoema.setVisibility(View.GONE);
-						}
-						setTabColor(mTabHost);
-					}
-				});
-				setTabColor(mTabHost);
-				
-				mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
-				
-				//set userName
-				Usuario usuario = mUsuario;
-				TextView usuarioName = (TextView) findViewById(R.id.userName);
-				usuarioName.setText(usuario.getNome());
-				
-				// submenu
-				TextView biografia = (TextView) findViewById(R.id.textBiografia);
-				biografia.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View arg0) {
-						Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
-						intent.putExtra("usuario", mUsuario);
-						intent.putExtra("callback", MainActivity.class);
-						startActivity(intent);
-						finish();
-					}
-				});
-				
-				//set userPicture
-				mUserPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
-				mUserPicture = (ImageView) findViewById(R.id.userPicture);
-				mProfilePhotoContent = (RelativeLayout) findViewById(R.id.profilePhotoContent);
-				setPhoto(usuario.getFoto());
-				mUserPicture.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						mProfilePhotoContent.setVisibility(View.VISIBLE);
-					}
-				});
-				mProfilePhotoContent.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						mProfilePhotoContent.setVisibility(View.GONE);
-					}
-				});
-				final Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
-				btnEditPhoto.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						new AlertDialog.Builder(MainActivity.this)
-							.setTitle("Editar foto")
-							.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-									photoPickerIntent.setType("image/*");
-									startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
-								}
-							})
-							.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-					                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
-								}
-							})
-							.create().show();
-					}
-				});
-				
+				setUp();
 			}
 			
 			@Override

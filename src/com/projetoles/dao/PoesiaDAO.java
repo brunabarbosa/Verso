@@ -39,4 +39,17 @@ public class PoesiaDAO extends DAO{
 		get.execute(callback);
 	}
 	
+	public void pesquisar(String titulo, String autor, String tag, String trecho,
+			OnRequestListener callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("titulo", titulo)
+			.addParam("autor", autor)
+			.addParam("tag", tag)
+			.addParam("trecho", trecho)
+			.setDomain(DOMAIN)
+			.setPath("search");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	
 }

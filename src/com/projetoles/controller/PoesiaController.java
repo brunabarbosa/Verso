@@ -1,15 +1,18 @@
 package com.projetoles.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.Activity;
 
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
 import com.projetoles.model.Poesia;
-
-import android.app.Activity;
 
 public class PoesiaController extends Controller {
 	
@@ -30,6 +33,38 @@ public class PoesiaController extends Controller {
 					if (success) {
 						Poesia poema = Poesia.converteJson(json);
 						callback.onSuccess(poema);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	}
+
+	public void pesquisar(final String titulo, final String autor, final String tag,
+			final String trecho, final OnRequestListener callback) {
+		pDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						List<String> ids = new ArrayList<String>();
+						JSONArray array = json.getJSONArray("poesias");
+						for (int i = 0; i < array.length(); i++) {
+							ids.add(array.get(i).toString());
+						}
+						callback.onSuccess(ids);
 					} else {
 						callback.onError(json.getString("message"));
 					}
