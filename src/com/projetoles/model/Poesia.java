@@ -8,14 +8,16 @@ import org.json.JSONObject;
 public class Poesia implements Comparable<Poesia> {
 	
 	private String mTitulo;
+	private String mPostador;
 	private String mAutor;
 	private String mPoesia;
 	private Calendar mDataDeCriacao;
 	private String mTags;
 	
-	public Poesia(String titulo, String autor, String poesia, Calendar dataDeCriacao, String tags) 
+	public Poesia(String titulo, String postador, String autor, String poesia, Calendar dataDeCriacao, String tags) 
 			throws IllegalArgumentException  {
 		setTitulo(titulo);
+		setPostador(postador);
 		setAutor(autor);
 		setPoesia(poesia);
 		setDataDeCriacao(dataDeCriacao);
@@ -75,6 +77,17 @@ public class Poesia implements Comparable<Poesia> {
 		this.mTags = tags;
 	}
 	
+	public String getPostador() {
+		return mPostador;
+	}
+	
+	public void setPostador(String postador) throws IllegalArgumentException {
+		if (postador == null || postador.trim().equals("")) {
+			throw new IllegalArgumentException("Postador não deve ser vazio.");
+		}
+		this.mPostador = postador;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -121,10 +134,11 @@ public class Poesia implements Comparable<Poesia> {
 		String poesia = json.getString("poesia");
 		String tags = json.getString("tags");
 		String autor = json.getString("autor");
+		String postador = json.getString("postador");
 		Long tempo = Long.valueOf(json.getString("dataCriacao"));
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(tempo);
-		return new Poesia(titulo, autor, poesia, c, tags);
+		return new Poesia(titulo, postador, autor, poesia, c, tags);
 	}
 
 	@Override

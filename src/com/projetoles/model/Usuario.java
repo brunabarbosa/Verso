@@ -141,7 +141,6 @@ public class Usuario implements Parcelable {
 
 	public void addNotifiacao(Notificacao notificacao) {
 		this.mNoticacoes.add(notificacao);
-		
 	}
 	
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {

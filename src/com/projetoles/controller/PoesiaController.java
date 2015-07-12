@@ -86,7 +86,7 @@ public class PoesiaController extends Controller {
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
-				final Poesia poema = new Poesia(titulo, autor, poesia, dataDeCriacao, tags);
+				final Poesia poema = new Poesia(titulo, postador, autor, poesia, dataDeCriacao, tags);
 				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
