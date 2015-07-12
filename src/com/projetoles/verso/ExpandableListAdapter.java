@@ -1,6 +1,9 @@
 package com.projetoles.verso;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,6 +56,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
+        
+        Calendar gc = new GregorianCalendar();
+        gc = _listPoesias.get(groupPosition).getDataDeCriacao();
+        TextView tags = (TextView) convertView.findViewById(R.id.tags);
+        TextView date = (TextView) convertView.findViewById(R.id.date);
+        String poesiasTagss = "";
+        String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
+        for (String tag : poesiasTags) { 
+        	poesiasTagss += "#" + tag;
+        }
+        tags.setText(poesiasTagss);
+        date.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(gc.getTime()));
+        
+       
  
         txtListChild.setText(childText);
         return convertView;
@@ -93,13 +110,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        TextView tags = (TextView) convertView.findViewById(R.id.tags);
+        /*TextView tags = (TextView) convertView.findViewById(R.id.tags);
         String poesiasTagss = "";
         String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
         for (String tag : poesiasTags) { 
         	poesiasTagss += "#" + tag;
         }
-        tags.setText(poesiasTagss);
+        tags.setText(poesiasTagss);*/
+        
+        TextView autor = (TextView) convertView.findViewById(R.id.author);
+        autor.setText(_listPoesias.get(groupPosition).getAutor());
+        
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
  

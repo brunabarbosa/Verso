@@ -12,17 +12,22 @@
         android:columnCount="1"
         android:rowCount="6" >
 
-        <TextView
+        <LinearLayout 
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+            
+            <TextView
             android:id="@+id/lblListHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_row="0"
             android:background="@drawable/barra_poesia"
-            android:gravity="left|top"
+            android:gravity="start|center"
             android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-            android:paddingTop="10sp"
             android:textColor="#927e58"
             android:textSize="17dp" />
+            
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/commentIcon"
@@ -85,28 +90,22 @@
             android:orientation="vertical" >
             
             <TextView
-                android:id="@+id/tags"
-                android:layout_width="wrap_content"
+                android:id="@+id/author"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:layout_gravity="left|bottom"
                 android:layout_row="0"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLines="1"
                 android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-                android:text="#tags"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="author"
                 android:textColor="#927e58"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="left|center_vertical"
-                android:layout_row="0"
-                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-                android:text="#date"
-                android:textColor="#927e58"
-                android:textSize="18sp" />
+                android:textSize="16sp"
+                android:paddingBottom="10dp" />
 
         </LinearLayout>
        
