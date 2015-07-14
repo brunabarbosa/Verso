@@ -30,5 +30,25 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
         android:paddingTop="5dp" />"
+        
+    
+        
+     <TextView
+                android:id="@+id/num_likes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="left|bottom"
+                android:layout_row="0"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLines="1"
+                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="likes"
+                android:textColor="#927e58"
+                android:textSize="16sp"
+                android:paddingBottom="10dp" />
     
     </LinearLayout>

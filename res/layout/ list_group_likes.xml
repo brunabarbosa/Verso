@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#dbbf9d"
+        android:columnCount="1"
+        android:rowCount="6" >
+
+        <LinearLayout 
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+            
+            <TextView
+            android:id="@+id/lblListHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/barra_poesia"
+            android:gravity="start|center"
+            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+            android:textColor="#927e58"
+            android:textSize="17dp" />
+            
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/userPicture"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_column="0"
+            android:layout_gravity="leftt|bottom"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginRight="60dp"
+            android:layout_row="0"
+            android:src="@drawable/icone_foto" />
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_gravity="center|bottom"
+            android:layout_row="0"
+            android:orientation="vertical" >
+            
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_column="0"
+                android:layout_gravity="left|bottom"
+                android:layout_row="0"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLines="1"
+                android:paddingBottom="10dp"
+                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="User Name"
+                android:textColor="#927e58"
+                android:textSize="25sp" />
+            
+            
+        </LinearLayout>
+       
+    </GridLayout>
+ 
+</LinearLayout>
