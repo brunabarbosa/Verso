@@ -32,11 +32,17 @@ public class PerfilActivity extends Activity {
     private ExpandableListView expListView;
     private List<Poesia> listPoesias;
     
+    public void onClick(View v) {
+        Intent mainIntent = new Intent(this, ComentarioActivity.class);
+        startActivity(mainIntent);
+    }
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_perfil);
-
+		
+		
 		//change fonts
 		usuarioController = new UsuarioController(this);
 		poemaController = new PoesiaController(this);
@@ -82,6 +88,7 @@ public class PerfilActivity extends Activity {
 			});
 		}
 	}
+	
 	
 public void gerarNotificacao(View view){
 		

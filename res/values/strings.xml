@@ -7,6 +7,7 @@
     <string name="categoria_prompt">Categoria</string>
     <string name="title_activity_user_profile">Ver(só)</string>
     <string name="user_biography">Sua biografia</string>
-    <string name="facebook_app_id">1596984717234454</string> 
+    <string name="facebook_app_id">1596984717234454</string>
+    <string name="title_activity_comentario">ComentarioActivity</string>
 
 </resources>

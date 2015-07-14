@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    
+	<RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:background="@drawable/background" >
+	    
+	    <!-- to show what the parent is -->
+		<GridLayout
+		    android:id="@+id/profileBar"
+		    android:layout_width="match_parent"
+		    android:layout_height="60dp"
+		    android:layout_alignParentTop="true"
+		    android:background="@drawable/barra_user"
+		    android:padding="5dp"
+		    android:columnCount="3" >
+		
+		    <ImageView
+		        android:id="@+id/userPicture"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"
+		        android:layout_column="0"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="left|top"
+		        android:layout_row="0"
+		        android:clickable="true"
+		        android:src="@drawable/icone_foto" />
+		
+		    <TextView
+		        android:id="@+id/userName"
+		        android:layout_column="1"
+		        android:layout_row="0"
+		        android:layout_gravity="left|center_vertical"
+		        android:text="UserName"
+		        android:textColor="#866a3f"
+		        android:textSize="23sp" />
+	
+		    <ImageView
+		        android:visibility="gone"
+		        android:id="@+id/btnCriarPoema"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_column="2"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="right|center_vertical"
+		        android:layout_row="0"
+		        android:alpha="0.6"
+		        android:clickable="true"
+		        android:src="@drawable/ic_send_black_24dp" />
+		    
+		    <ImageView
+		        android:visibility="gone"
+		        android:id="@+id/btnPesquisar"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_column="2"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="right|center_vertical"
+		        android:layout_row="0"
+		        android:clickable="true"
+		        android:src="@drawable/busca" />
+		    
+		</GridLayout>
+	       
+		<TabHost
+		    android:id="@android:id/tabhost"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_below="@+id/profileBar" >
+		
+		    <LinearLayout
+		        android:orientation="vertical"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent">
+		        
+		        <FrameLayout
+		            android:id="@android:id/tabcontent"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1" >
+		            
+		           <EditText 
+		               android:id="@+id/novoComentario"
+		               android:layout_height="wrap_content"
+		               android:layout_width="match_parent"
+		               android:layout_gravity="bottom"/>
+		            
+		        </FrameLayout>
+		
+		        <TabWidget
+		            android:id="@android:id/tabs"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="-4dp"
+		            android:layout_weight="0"
+		            android:background="@drawable/menu_barra" >
+		        </TabWidget>
+		
+		    </LinearLayout>
+		    
+		</TabHost>
+	
+	</RelativeLayout>
+	
+   
+    
+</FrameLayout>
