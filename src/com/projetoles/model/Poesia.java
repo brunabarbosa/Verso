@@ -1,5 +1,6 @@
 package com.projetoles.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,7 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Poesia implements Comparable<Poesia> {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Poesia implements Comparable<Poesia>, Parcelable {
 	
 	private String mId;
 	private String mTitulo;
@@ -22,6 +26,38 @@ public class Poesia implements Comparable<Poesia> {
 	private Set<Comentario> mComentariosCarregados;
 	private Set<String> mCurtidas;
 	private Set<Curtida> mCurtidasCarregadas;
+	
+	public Poesia(Parcel in) {
+		setId(in.readString());
+		setTitulo(in.readString());
+		setPostador(in.readString());
+		setAutor(in.readString());
+		setPoesia(in.readString());
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(in.readLong());
+		setDataDeCriacao(c);
+		setTags(in.readString());
+		ArrayList<String> comentarios = new ArrayList<String>();
+		in.readStringList(comentarios);
+		this.mComentarios = new HashSet<String>(comentarios);
+		ArrayList<String> curtidas = new ArrayList<String>();
+		in.readStringList(curtidas);
+		this.mCurtidas = new HashSet<String>(curtidas);
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.mId);
+		dest.writeString(this.mTitulo);
+		dest.writeString(this.mPostador);
+		dest.writeString(this.mAutor);
+		dest.writeString(this.mPoesia);
+		dest.writeLong(this.mDataDeCriacao.getTimeInMillis());
+		dest.writeString(this.mTags);
+		dest.writeStringList(new ArrayList<String>(this.mComentarios));
+		dest.writeStringList(new ArrayList<String>(this.mCurtidas));
+		
+	}
 	
 	public Poesia(String id, String titulo, String postador, String autor, String poesia, Calendar dataDeCriacao, String tags) 
 			throws IllegalArgumentException  {
@@ -210,4 +246,21 @@ public class Poesia implements Comparable<Poesia> {
 		return arg0.mDataDeCriacao.compareTo(this.mDataDeCriacao);
 	}
 
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public static final Parcelable.Creator<Poesia> CREATOR = 
+			new Parcelable.Creator<Poesia>() {
+        public Poesia createFromParcel(Parcel in) {
+            return new Poesia(in); 
+        }
+
+        public Poesia[] newArray(int size) {
+            return new Poesia[size];
+        }
+    };
+    
 }

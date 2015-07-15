@@ -20,16 +20,14 @@ import com.projetoles.model.Poesia;
 
 public class CriarPoesiaActivity extends Activity {
 	
-	private PoesiaController mPoemaController;
-	private UsuarioController mUsuarioController;
+	private PoesiaController mController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cria_poesia);
 		
-		mPoemaController = new PoesiaController(this);
-		mUsuarioController = new UsuarioController(this);
+		mController = new PoesiaController(this);
 		//verificar se vai precisar
 		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
 		final EditText etTitulo = (EditText) findViewById(R.id.poemaTitulo);
@@ -43,18 +41,21 @@ public class CriarPoesiaActivity extends Activity {
 			public void onClick(View v) {
 				String titulo = etTitulo.getText().toString(); 
 				String autor = etAutor.getText().toString();
+				if (autor.trim().isEmpty()) {
+					autor = UsuarioController.usuarioLogado.getNome();
+				}
 				String poesia = etPoesia.getText().toString(); 
 				String tags = etTags.getText().toString();
 				Calendar dataDeCriacao = Calendar.getInstance();
 				
 				//verificar se vai precisar
 				loading.setVisibility(View.VISIBLE);
-				mPoemaController.criarPoesia(titulo, autor, mUsuarioController.usuarioLogado.getEmail(), 
+				mController.criarPoesia(titulo, autor, UsuarioController.usuarioLogado.getEmail(), 
 						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoesiaActivity.this) {
 					
 					@Override
 					public void onSuccess(Object result) {
-						mUsuarioController.usuarioLogado.addPoesiaCarregada((Poesia)result);
+						UsuarioController.usuarioLogado.addPoesiaCarregada((Poesia)result);
 						runOnUiThread(new Runnable() {
 							
 							@Override

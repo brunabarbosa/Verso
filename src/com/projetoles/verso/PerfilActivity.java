@@ -32,11 +32,6 @@ public class PerfilActivity extends Activity {
     private ExpandableListView expListView;
     private List<Poesia> listPoesias;
     
-    public void onClick(View v) {
-        Intent mainIntent = new Intent(this, ComentarioActivity.class);
-        startActivity(mainIntent);
-    }
-    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -90,8 +85,7 @@ public class PerfilActivity extends Activity {
 	}
 	
 	
-public void gerarNotificacao(View view){
-		
+	public void gerarNotificacao(View view){
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, PerfilActivity.class), 0);
 		
@@ -114,6 +108,6 @@ public void gerarNotificacao(View view){
 			toque.play();
 		}
 		catch(Exception e){}
-	
 	}
+	
 }

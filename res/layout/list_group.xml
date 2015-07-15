@@ -8,62 +8,69 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#dbbf9d"
-        android:columnCount="1"
-        android:rowCount="6" >
+        android:background="@drawable/barra_poesia"
+        android:columnCount="3"
+        android:rowCount="2"
+        android:padding="10dp" >
 
-        <LinearLayout 
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical">
-            
-            <TextView
-            android:id="@+id/lblListHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/barra_poesia"
-            android:gravity="start|center"
-            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-            android:textColor="#927e58"
-            android:textSize="17dp" />
-            
-        </LinearLayout>
-
+        <TextView
+           android:id="@+id/lblListHeader"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_row="0"
+           android:layout_column="0"
+           android:layout_gravity="fill_horizontal"
+           android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+           android:textColor="#927e58"
+           android:textSize="17dp" />
+        
+        <TextView
+           android:id="@+id/author"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_row="1"
+           android:layout_column="0" 
+           android:layout_gravity="fill_horizontal"
+           android:ellipsize="end"
+           android:lines="1"
+           android:maxLines="1"
+           android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+           android:scrollHorizontally="true"
+           android:singleLine="true"
+           android:text="author"
+           android:textColor="#927e58"
+           android:textSize="16sp"
+           android:paddingBottom="10dp"/>
+        
         <ImageView
             android:id="@+id/commentIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_column="0"
-            android:layout_gravity="right|bottom"
-            android:layout_margin="5dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginRight="60dp"
             android:layout_row="0"
-            android:onClick="onClick"
+            android:layout_column="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:clickable="true"
             android:src="@drawable/comment" />
 
         <ImageView
             android:id="@+id/facebookIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_column="0"
-            android:layout_gravity="right|top"
-            android:layout_margin="5dp"
-            android:layout_marginRight="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_row="0"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/like_icon" 
             android:onClick="gerarNotificacao"/>
 
         <TextView
             android:id="@+id/num_likes"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="left|top"
-            android:layout_margin="20dp"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="16dp"
             android:layout_row="0"
+            android:layout_column="2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="0"
             android:textColor="#a1967c"
             android:textSize="22sp" />
@@ -72,44 +79,14 @@
             android:id="@+id/num_comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="left|bottom"
-            android:layout_margin="20dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="300dp"
-            android:layout_row="0"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="0"
             android:textColor="#a1967c"
             android:textSize="22sp" />
 
-        <LinearLayout
-            android:layout_width="224dp"
-            android:layout_height="match_parent"
-            android:layout_column="0"
-            android:layout_gravity="left|bottom"
-            android:layout_row="0"
-            android:orientation="vertical" >
-            
-            <TextView
-                android:id="@+id/author"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="left|bottom"
-                android:layout_row="0"
-                android:ellipsize="end"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text="author"
-                android:textColor="#927e58"
-                android:textSize="16sp"
-                android:paddingBottom="10dp" />
-
-        </LinearLayout>
-       
     </GridLayout>
  
 </LinearLayout>

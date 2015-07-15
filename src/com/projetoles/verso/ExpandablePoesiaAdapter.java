@@ -6,11 +6,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projetoles.model.Poesia;
@@ -60,10 +63,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         	poesiasTagss += "#" + tag;
         }
         tags.setText(poesiasTagss);
-        date.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(gc.getTime()));
-        
-       
- 
+        date.setText("Postado em " + DateFormat.getDateInstance(DateFormat.SHORT).format(gc.getTime()));
         txtListChild.setText(childText);
         return convertView;
     }
@@ -100,16 +100,25 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
  
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        /*TextView tags = (TextView) convertView.findViewById(R.id.tags);
-        String poesiasTagss = "";
-        String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
-        for (String tag : poesiasTags) { 
-        	poesiasTagss += "#" + tag;
-        }
-        tags.setText(poesiasTagss);*/
-        
+
         TextView autor = (TextView) convertView.findViewById(R.id.author);
         autor.setText(_listPoesias.get(groupPosition).getAutor());
+        TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
+        numLikes.setText("" + _listPoesias.get(groupPosition).getCurtidas().size());
+        TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
+        numComments.setText("" + _listPoesias.get(groupPosition).getComentarios().size());
+        
+        ImageView btnComment = (ImageView) convertView.findViewById(R.id.commentIcon);
+        btnComment.setTag(this._listPoesias.get(groupPosition));
+        btnComment.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(ExpandablePoesiaAdapter.this._context, ComentarioActivity.class);
+				i.putExtra("poesia", (Poesia)v.getTag());
+				ExpandablePoesiaAdapter.this._context.startActivity(i);
+			}
+		});
         
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);

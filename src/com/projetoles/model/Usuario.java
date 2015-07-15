@@ -44,6 +44,15 @@ public class Usuario implements Parcelable {
 		this.mPoesiasCarregadas = new HashSet<Poesia>();
 		this.mNoticacoes = new HashSet<Notificacao>();
 	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.mEmail);
+		dest.writeString(this.mNome);
+		dest.writeInt(this.mFoto.length);
+		dest.writeByteArray(this.mFoto);
+		dest.writeString(this.mBiografia);
+	}
 	
 	public Usuario(String email, String nome, String senha) 
 			throws IllegalArgumentException {
@@ -182,15 +191,6 @@ public class Usuario implements Parcelable {
 		return 0;
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(this.mEmail);
-		dest.writeString(this.mNome);
-		dest.writeInt(this.mFoto.length);
-		dest.writeByteArray(this.mFoto);
-		dest.writeString(this.mBiografia);
-	}
-	
 	public static final Parcelable.Creator<Usuario> CREATOR = 
 			new Parcelable.Creator<Usuario>() {
         public Usuario createFromParcel(Parcel in) {
@@ -202,5 +202,4 @@ public class Usuario implements Parcelable {
         }
     };
 
-    
 }

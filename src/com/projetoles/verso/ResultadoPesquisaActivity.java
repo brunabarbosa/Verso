@@ -84,7 +84,6 @@ public class ResultadoPesquisaActivity extends Activity {
 		}
 	}
 
-
 	@Override
 	public void onBackPressed() {
 		finish();
@@ -110,8 +109,7 @@ public class ResultadoPesquisaActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-public void gerarNotificacao(View view){
-		
+	public void gerarNotificacao(View view) {
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, PerfilActivity.class), 0);
 		
@@ -134,6 +132,6 @@ public void gerarNotificacao(View view){
 			toque.play();
 		}
 		catch(Exception e){}
-	
 	}
+	
 }

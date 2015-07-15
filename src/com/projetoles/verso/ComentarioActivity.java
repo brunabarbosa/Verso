@@ -5,18 +5,32 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.projetoles.model.Poesia;
+
 public class ComentarioActivity extends Activity {
 
+	private Poesia mPoesia;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comentario);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		Bundle b = getIntent().getExtras();
+		mPoesia = (Poesia) b.getParcelable("poesia");
+		getActionBar().setTitle(mPoesia.getTitulo());
 	}
 
 	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.comentario, menu);
+		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -26,9 +40,11 @@ public class ComentarioActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == android.R.id.home) {
+			onBackPressed();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }

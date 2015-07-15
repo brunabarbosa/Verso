@@ -1,45 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:weightSum="1"
-    android:background="@drawable/background" 
-     >
-
-    <ScrollView
-        android:id="@+id/scrollView1"
+    android:background="@drawable/background" >
+    
+	<ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_above="@+id/campoComment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-        
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <ExpandableListView
-                android:id="@+id/lvExp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </ExpandableListView>
-        </RelativeLayout>
-	
-	
-    </ScrollView>
+        android:layout_height="match_parent" >
+    </ExpandableListView>
     
-    <EditText 
-	    android:id="@+id/novoComentario"
-	    android:layout_height="wrap_content"
+	<LinearLayout
+	    android:id="@+id/campoComment"
 	    android:layout_width="match_parent"
-	    android:hint="Comentário"
-	    />
-	
-	<Button 
-	    android:id="@+id/sendComentario"
 	    android:layout_height="wrap_content"
-	    android:layout_width="match_parent"
-	    android:text="Enviar"
-	    />
+	    android:layout_alignParentBottom="true"
+	    android:orientation="vertical" >
+		    
+	    <EditText 
+		    android:id="@+id/novoComentario"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:hint="Comentário" />
+		
+		<Button 
+		    android:id="@+id/sendComentario"
+		    android:layout_width="match_parent"
+		    android:layout_height="50dp"
+		    android:text="Enviar"
+		    android:background="@drawable/entrar" />
+	    
+	</LinearLayout>
     
-</LinearLayout>
+</RelativeLayout>

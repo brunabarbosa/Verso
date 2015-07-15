@@ -223,7 +223,6 @@ public class MainActivity extends TabActivity {
 		getActionBar().hide(); 
 
 		mController = new UsuarioController(this);
-		
 		mController.getLoggedUser(new OnRequestListener(this) {
 			
 			@Override
