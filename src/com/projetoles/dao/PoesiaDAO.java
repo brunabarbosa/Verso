@@ -1,12 +1,12 @@
 package com.projetoles.dao;
 
-import com.projetoles.dao.GET.Builder;
 import com.projetoles.model.Poesia;
 
 /**
  * Implementação do DAO usando um Webservice e requisições POST e GET
  */
 public class PoesiaDAO extends DAO{
+	
 	private static PoesiaDAO sInstance;
 	
 	public static PoesiaDAO getInstance() {
@@ -16,14 +16,14 @@ public class PoesiaDAO extends DAO{
 		return sInstance;
 	}
 	
-	public void criarPoesia(Poesia poema, String postador, OnRequestListener callback) {
+	public void criarPoesia(Poesia poesia, String postador, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("autor", poema.getAutor())
+			.addParam("autor", poesia.getAutor())
 			.addParam("postador", postador)
-			.addParam("poesia", poema.getPoesia())
-			.addParam("titulo", poema.getTitulo())
-			.addParam("dataCriacao", poema.getStringDataCriacao())
-			.addParam("tags", poema.getTags())
+			.addParam("poesia", poesia.getPoesia())
+			.addParam("titulo", poesia.getTitulo())
+			.addParam("dataCriacao", poesia.getStringDataCriacao())
+			.addParam("tags", poesia.getTags())
 			.setDomain(DOMAIN)
 			.setPath("poetry");
 		POST post = (POST) postRequest.create();

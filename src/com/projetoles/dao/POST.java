@@ -1,7 +1,6 @@
 package com.projetoles.dao;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -17,9 +16,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 
-import com.projetoles.model.ImageEncoder;
-
 import android.net.Uri;
+
+import com.projetoles.model.ImageEncoder;
 
 /**
  * Classe responsável por realizar uma requisição HTTP do tipo POST

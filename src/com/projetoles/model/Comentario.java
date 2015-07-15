@@ -8,12 +8,12 @@ import org.json.JSONObject;
 public class Comentario implements Comparable<Comentario> {
 
 	private String mComentario;
-	private String mAutor;
+	private String mPostador;
 	private Calendar mDataCriacao;
 	
-	public Comentario(String comentario, String autor, Calendar data) {
+	public Comentario(String comentario, String postador, Calendar data) {
 		setComentario(comentario);
-		setAutor(autor);
+		setPostador(postador);
 		setDataCriacao(data);
 	}
 	
@@ -28,15 +28,15 @@ public class Comentario implements Comparable<Comentario> {
 		return this.mComentario;
 	}
 	
-	public void setAutor(String autor) {
-		if (autor == null || autor.trim().isEmpty()) {
+	public void setPostador(String postador) {
+		if (postador == null || postador.trim().isEmpty()) {
 			throw new IllegalArgumentException("Autor é obrigatório.");
 		}
-		this.mAutor = autor;
+		this.mPostador = postador;
 	}
 	
-	public String getAutor() {
-		return this.mAutor;
+	public String getPostador() {
+		return this.mPostador;
 	}
 	
 	public void setDataCriacao(Calendar data) {
@@ -45,6 +45,10 @@ public class Comentario implements Comparable<Comentario> {
 	
 	public Calendar getDataCriacao() {
 		return this.mDataCriacao;
+	}
+
+	public String getStringDataCriacao(){
+		return String.valueOf(mDataCriacao.getTimeInMillis());
 	}
 
 	public static Comentario converteJson(JSONObject json) throws JSONException {
@@ -60,7 +64,7 @@ public class Comentario implements Comparable<Comentario> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((mAutor == null) ? 0 : mAutor.hashCode());
+		result = prime * result + ((mPostador == null) ? 0 : mPostador.hashCode());
 		result = prime * result
 				+ ((mComentario == null) ? 0 : mComentario.hashCode());
 		result = prime * result + ((mDataCriacao == null) ? 0 : mDataCriacao.hashCode());
@@ -76,10 +80,10 @@ public class Comentario implements Comparable<Comentario> {
 		if (getClass() != obj.getClass())
 			return false;
 		Comentario other = (Comentario) obj;
-		if (mAutor == null) {
-			if (other.mAutor != null)
+		if (mPostador == null) {
+			if (other.mPostador != null)
 				return false;
-		} else if (!mAutor.equals(other.mAutor))
+		} else if (!mPostador.equals(other.mPostador))
 			return false;
 		if (mComentario == null) {
 			if (other.mComentario != null)

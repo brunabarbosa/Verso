@@ -1,6 +1,5 @@
 package com.projetoles.dao;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.projetoles.dao.POST.Builder;
