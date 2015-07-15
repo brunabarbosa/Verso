@@ -86,7 +86,7 @@ public class PoesiaController extends Controller {
 			final String tags, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
-				final Poesia poema = new Poesia(titulo, postador, autor, poesia, dataDeCriacao, tags);
+				final Poesia poema = new Poesia(null, titulo, postador, autor, poesia, dataDeCriacao, tags);
 				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
@@ -95,6 +95,7 @@ public class PoesiaController extends Controller {
 							JSONObject json = new JSONObject(result.toString());
 							boolean success = json.getBoolean("success");
 							if (success) {
+								poema.setId(json.getString("id"));
 								callback.onSuccess(poema);
 							} else {
 								callback.onError(json.getString("message"));
