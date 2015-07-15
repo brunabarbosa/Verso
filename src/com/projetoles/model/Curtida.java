@@ -2,6 +2,9 @@ package com.projetoles.model;
 
 import java.util.Calendar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Curtida implements Comparable<Curtida> {
 
 	private String mPostador;
@@ -33,6 +36,14 @@ public class Curtida implements Comparable<Curtida> {
 
 	public String getStringDataCriacao(){
 		return String.valueOf(mDataCriacao.getTimeInMillis());
+	}
+
+	public static Curtida converteJson(JSONObject json) throws JSONException {
+		Long tempo = Long.valueOf(json.getString("dataCriacao"));
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(tempo);
+		String postador = json.getString("postador");
+		return new Curtida(postador, c);
 	}
 
 	@Override
