@@ -13,21 +13,21 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.projetoles.model.Poesia;
+import com.projetoles.model.Comentario;
  
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableComentarioAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
-    private List<Poesia> _listPoesias;
+    private List<Comentario> _listComentarios;
  
-    public ExpandableListAdapter(Context context, List<Poesia> _listPoesias) {
+    public ExpandableComentarioAdapter(Context context, List<Comentario> _listPoesias) {
         this._context = context;
-        this._listPoesias = _listPoesias;
+        this._listComentarios = _listPoesias;
     }
  
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listPoesias.get(groupPosition).getPoesia();
+        return this._listComentarios.get(groupPosition).getComentario();
     }
  
     @Override
@@ -47,24 +47,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
  
-        TextView txtListChild = (TextView) convertView
+       /* TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
         
         Calendar gc = new GregorianCalendar();
-        gc = _listPoesias.get(groupPosition).getDataDeCriacao();
+        gc = _listComentarios.get(groupPosition).getDataDeCriacao();
         TextView tags = (TextView) convertView.findViewById(R.id.tags);
         TextView date = (TextView) convertView.findViewById(R.id.date);
         String poesiasTagss = "";
-        String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
+        String[] poesiasTags = _listComentarios.get(groupPosition).getTags().split(",");
         for (String tag : poesiasTags) { 
         	poesiasTagss += "#" + tag;
         }
         tags.setText(poesiasTagss);
         date.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(gc.getTime()));
         
-       
- 
-        txtListChild.setText(childText);
+        txtListChild.setText(childText);*/
         return convertView;
     }
  
@@ -75,12 +73,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     @Override
     public Object getGroup(int groupPosition) {
-    	return this._listPoesias.get(groupPosition).getTitulo();
+    	return this._listComentarios.get(groupPosition).getPostador();
     }
  
     @Override
     public int getGroupCount() {
-        return this._listPoesias.size();
+        return this._listComentarios.size();
     }
  
     @Override
@@ -98,21 +96,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
  
-        TextView lblListHeader = (TextView) convertView
+        /*TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        /*TextView tags = (TextView) convertView.findViewById(R.id.tags);
+        TextView tags = (TextView) convertView.findViewById(R.id.tags);
         String poesiasTagss = "";
         String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
         for (String tag : poesiasTags) { 
         	poesiasTagss += "#" + tag;
         }
-        tags.setText(poesiasTagss);*/
+        tags.setText(poesiasTagss);
         
         TextView autor = (TextView) convertView.findViewById(R.id.author);
-        autor.setText(_listPoesias.get(groupPosition).getAutor());
+        autor.setText(_listComentarios.get(groupPosition).getAutor());
         
         lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setText(headerTitle);
+        lblListHeader.setText(headerTitle);*/
  
         return convertView;
     }

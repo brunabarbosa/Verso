@@ -54,7 +54,7 @@ public class CriarPoesiaActivity extends Activity {
 					
 					@Override
 					public void onSuccess(Object result) {
-						mUsuarioController.usuarioLogado.addPoemaCarregado((Poesia)result);
+						mUsuarioController.usuarioLogado.addPoesiaCarregada((Poesia)result);
 						runOnUiThread(new Runnable() {
 							
 							@Override

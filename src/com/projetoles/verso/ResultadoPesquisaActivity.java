@@ -28,7 +28,7 @@ import com.projetoles.model.Poesia;
 public class ResultadoPesquisaActivity extends Activity {
 
 	private PoesiaController poemaController;
-	private ExpandableListAdapter listAdapter;
+	private ExpandablePoesiaAdapter listAdapter;
     private ExpandableListView expListView;
     private List<Poesia> listPoesias;
 
@@ -46,7 +46,7 @@ public class ResultadoPesquisaActivity extends Activity {
 		
 		//preparing list data
 		listPoesias = new ArrayList<Poesia>();
-        listAdapter = new ExpandableListAdapter(ResultadoPesquisaActivity.this, listPoesias);
+        listAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, listPoesias);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;

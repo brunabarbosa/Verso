@@ -28,7 +28,7 @@ public class PerfilActivity extends Activity {
 
 	private UsuarioController usuarioController;
 	private PoesiaController poemaController;
-	private ExpandableListAdapter listAdapter;
+	private ExpandablePoesiaAdapter listAdapter;
     private ExpandableListView expListView;
     private List<Poesia> listPoesias;
     
@@ -52,7 +52,7 @@ public class PerfilActivity extends Activity {
 		
 		//preparing list data
 		listPoesias = new ArrayList<Poesia>();
-        listAdapter = new ExpandableListAdapter(PerfilActivity.this, listPoesias);
+        listAdapter = new ExpandablePoesiaAdapter(PerfilActivity.this, listPoesias);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;
@@ -67,10 +67,10 @@ public class PerfilActivity extends Activity {
 		
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
-		listPoesias.addAll(usuarioController.usuarioLogado.getPoemasCarregados());
+		listPoesias.addAll(usuarioController.usuarioLogado.getPoesiasCarregadas());
 		Collections.sort(listPoesias);
 		listAdapter.notifyDataSetChanged();
-		for (String id : usuarioController.usuarioLogado.getPoemas()) {
+		for (String id : usuarioController.usuarioLogado.getPoesias()) {
 			poemaController.getPoesia(id, new OnRequestListener(this) {
 				
 				@Override

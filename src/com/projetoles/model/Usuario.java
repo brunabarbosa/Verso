@@ -28,8 +28,8 @@ public class Usuario implements Parcelable {
 	private String mSenha;
 	private byte[] mFoto;
 	private String mBiografia;
-	private Set<String> mPoemas;
-	private Set<Poesia> mPoemasCarregados;
+	private Set<String> mPoesias;
+	private Set<Poesia> mPoesiasCarregadas;
 	private Set<Notificacao> mNoticacoes;
 	
 	public Usuario(Parcel in) {
@@ -40,8 +40,8 @@ public class Usuario implements Parcelable {
 		setFoto(foto);
 		in.readByteArray(foto);
 		setBiografia(in.readString());
-		this.mPoemas = new HashSet<String>();
-		this.mPoemasCarregados = new HashSet<Poesia>();
+		this.mPoesias = new HashSet<String>();
+		this.mPoesiasCarregadas = new HashSet<Poesia>();
 		this.mNoticacoes = new HashSet<Notificacao>();
 	}
 	
@@ -52,8 +52,8 @@ public class Usuario implements Parcelable {
 		setSenha(senha);
 		setFoto(new byte[]{});
 		setBiografia("");
-		this.mPoemas = new HashSet<String>();
-		this.mPoemasCarregados = new HashSet<Poesia>();
+		this.mPoesias = new HashSet<String>();
+		this.mPoesiasCarregadas = new HashSet<Poesia>();
 		this.mNoticacoes = new HashSet<Notificacao>();
 	}
 
@@ -130,12 +130,12 @@ public class Usuario implements Parcelable {
 		return mEmail;
 	}
 	
-	public void addPoema(String poemaId) {
-		this.mPoemas.add(poemaId);
+	public void addPoesia(String poesia) {
+		this.mPoesias.add(poesia);
 	}
 	
-	public void addPoemaCarregado(Poesia poema) {
-		this.mPoemasCarregados.add(poema);
+	public void addPoesiaCarregada(Poesia poesia) {
+		this.mPoesiasCarregadas.add(poesia);
 	}
 	
 
@@ -157,20 +157,20 @@ public class Usuario implements Parcelable {
 			u.setBiografia(bio);
 		if (foto.length > 0)
 			u.setFoto(foto);
-		JSONArray poemas = obj.getJSONArray("poemas");
+		JSONArray poemas = obj.getJSONArray("poesias");
 		for (int i = 0; i < poemas.length(); i++) {
 			String id = poemas.get(i).toString();
-			u.addPoema(id);
+			u.addPoesia(id);
 		}
 		return u;
 	}
 	
-	public Set<Poesia> getPoemasCarregados() {
-		return Collections.unmodifiableSet(mPoemasCarregados);
+	public Set<Poesia> getPoesiasCarregadas() {
+		return Collections.unmodifiableSet(mPoesiasCarregadas);
 	}
 	
-	public Set<String> getPoemas() {
-		return Collections.unmodifiableSet(mPoemas);
+	public Set<String> getPoesias() {
+		return Collections.unmodifiableSet(mPoesias);
 	}
 	
 	public Set<Notificacao> getNotificacaoes() {
