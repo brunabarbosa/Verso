@@ -20,6 +20,8 @@ public class Poesia implements Comparable<Poesia> {
 	private String mTags;
 	private Set<String> mComentarios;
 	private Set<Comentario> mComentariosCarregados;
+	private Set<String> mCurtidas;
+	private Set<Curtida> mCurtidasCarregadas;
 	
 	public Poesia(String id, String titulo, String postador, String autor, String poesia, Calendar dataDeCriacao, String tags) 
 			throws IllegalArgumentException  {
@@ -32,6 +34,8 @@ public class Poesia implements Comparable<Poesia> {
 		setTags(tags);
 		this.mComentarios = new HashSet<String>();
 		this.mComentariosCarregados = new HashSet<Comentario>();
+		this.mCurtidas = new HashSet<String>();
+		this.mCurtidasCarregadas = new HashSet<Curtida>();
 	}
 
 	public Poesia() {
@@ -122,6 +126,22 @@ public class Poesia implements Comparable<Poesia> {
 		this.mComentariosCarregados.add(comentario);
 	}
 	
+	public Set<String> getCurtidas() { 
+		return Collections.unmodifiableSet(this.mCurtidas);
+	}
+	
+	public Set<Curtida> getCurtidasCarregas() {
+		return Collections.unmodifiableSet(this.mCurtidasCarregadas);
+	}
+	
+	public void addCurtida(String curtida) {
+		this.mCurtidas.add(curtida);
+	}
+	
+	public void addCurtidaCarregada(Curtida curtida) {
+		this.mCurtidasCarregadas.add(curtida);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -177,6 +197,10 @@ public class Poesia implements Comparable<Poesia> {
 		JSONArray comentarios = json.getJSONArray("comentarios");
 		for (int i = 0; i < comentarios.length(); i++) {
 			p.addComentario(comentarios.getString(i));
+		}
+		JSONArray curtidas = json.getJSONArray("curtidas");
+		for (int i = 0; i < curtidas.length(); i++) {
+			p.addCurtida(curtidas.getString(i));
 		}
 		return p;
 	}

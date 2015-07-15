@@ -1,10 +1,8 @@
 package com.projetoles.verso;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -20,21 +18,16 @@ import com.projetoles.model.Poesia;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
-    //private List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
-    //private HashMap<String, List<String>> _listDataChild;
     private List<Poesia> _listPoesias;
  
     public ExpandableListAdapter(Context context, List<Poesia> _listPoesias) {
         this._context = context;
         this._listPoesias = _listPoesias;
-        //this._listDataHeader = listDataHeader;
-        //this._listDataChild = listChildData;
     }
  
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listPoesias.get(groupPosition).getPoesia();// this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
+        return this._listPoesias.get(groupPosition).getPoesia();
     }
  
     @Override
@@ -77,20 +70,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 1;//this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
+        return 1;
     }
  
     @Override
     public Object getGroup(int groupPosition) {
     	return this._listPoesias.get(groupPosition).getTitulo();
-    	//List<String> poesia = new ArrayList<String>();
-    	//poesia.add(this._listPoesias.get(groupPosition).getTitulo());
-       // return poesia;//this._listDataHeader.get(groupPosition);
     }
  
     @Override
     public int getGroupCount() {
-        return this._listPoesias.size();//this._listDataHeader.size();
+        return this._listPoesias.size();
     }
  
     @Override
