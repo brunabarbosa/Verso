@@ -74,6 +74,9 @@ public class PerfilActivity extends Activity {
 					listPoesias.add(p);
 					Collections.sort(listPoesias);
 			        listAdapter.notifyDataSetChanged();
+			        
+			        Intent i = new Intent(PerfilActivity.this, CriaNotificacoesActivity.class);
+			        startActivity(i);
 				}
 				
 				@Override
@@ -85,7 +88,7 @@ public class PerfilActivity extends Activity {
 	}
 	
 	
-	public void gerarNotificacao(View view){
+	public void gerarNotificacao(){
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, PerfilActivity.class), 0);
 		

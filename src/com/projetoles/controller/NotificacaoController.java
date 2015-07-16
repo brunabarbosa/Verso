@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.projetoles.dao.NotificacaoDAO;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Comentario;
 import com.projetoles.model.Notificacao;
 
 public class NotificacaoController extends Controller{
@@ -54,6 +55,33 @@ public class NotificacaoController extends Controller{
 			callback.onError("Usuário não encontrado.");
 		}
 		
+	}
+	
+	public void getNotificacao(final String id, final OnRequestListener callback) {
+		nDao.getNotificacao(id, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						Notificacao notificacao = Notificacao.converteJson(json);
+						callback.onSuccess(notificacao);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
 	}
 
 }

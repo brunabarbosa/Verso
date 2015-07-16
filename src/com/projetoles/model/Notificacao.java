@@ -19,6 +19,10 @@ public class Notificacao {
 		setEnderecado(enderecado);
 	}
 
+	public Notificacao() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private void setEnderecado(String enderecado) {
 		if (enderecado == null || enderecado.trim().isEmpty()) {
 			throw new IllegalArgumentException("Enderecado é obrigatório.");

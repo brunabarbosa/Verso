@@ -41,6 +41,8 @@
         </activity>
         <activity android:name=".MainActivity" >
         </activity>
+        <activity android:name=".CriaNotificacoesActivity" >
+        </activity>
         <activity android:name=".PerfilActivity" >
         </activity>
         <activity android:name=".PesquisarActivity" >

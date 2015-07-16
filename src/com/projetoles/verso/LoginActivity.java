@@ -103,7 +103,10 @@ public class LoginActivity extends Activity {
 										public void onSuccess(Object result) {
 											Intent i = new Intent(LoginActivity.this, MainActivity.class);
 											startActivity(i);
-											finish();	
+											
+											 Intent notificacoes = new Intent(LoginActivity.this, CriaNotificacoesActivity.class);
+											 startActivity(notificacoes);
+											 finish();	
 										}
 										
 										@Override

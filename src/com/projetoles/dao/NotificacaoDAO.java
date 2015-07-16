@@ -15,10 +15,10 @@ public class NotificacaoDAO extends DAO{
 	
 	public void criarNotificacao(Notificacao notificacao, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("titulo", notificacao.getEnderecado())
+			.addParam("enderecado", notificacao.getEnderecado())
 			.addParam("titulo", notificacao.getTitulo())
-			.addParam("dataCriacao", notificacao.getStringDataCriacao())
 			.addParam("mensagem", notificacao.getMensagem())
+			.addParam("dataCriacao", notificacao.getStringDataCriacao())
 			.setDomain(DOMAIN)
 			.setPath("notif");
 		POST post = (POST) postRequest.create();
