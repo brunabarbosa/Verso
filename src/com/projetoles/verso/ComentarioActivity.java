@@ -23,82 +23,83 @@ public class ComentarioActivity extends Activity {
 	private PoesiaController mPoesiaController;
 	private Poesia mPoesia;
 	private ExpandableComentarioAdapter listAdapter;
-    private ExpandableListView expListView;
-    private List<Comentario> listComentarios;
-	
+	private ExpandableListView expListView;
+	private List<Comentario> listComentarios;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comentario);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-				
+
 		Bundle b = getIntent().getExtras();
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		getActionBar().setTitle(mPoesia.getTitulo());
-		
+
 		mPoesiaController = new PoesiaController(this);
 
 		// get the listview 
 		expListView = (ExpandableListView) findViewById(R.id.lvExpComentario);
-		
+
 		//preparing list data
 		listComentarios = new ArrayList<Comentario>();
-        listAdapter = new ExpandableComentarioAdapter(ComentarioActivity.this, listComentarios);
-		
-        
-		
+		listAdapter = new ExpandableComentarioAdapter(ComentarioActivity.this, listComentarios);
+
 		//setting the list adapter
 		expListView.setAdapter(listAdapter);
-		
+
 		for (String comentario : mPoesia.getComentarios()) {
-			listComentarios.add(new Comentario(comentario, mPoesia.getAutor(), mPoesia.getDataDeCriacao()));
-		}
-		
-		Collections.sort(listComentarios);
-		listAdapter.notifyDataSetChanged();
-		
-		
-		final Button button = (Button) findViewById(R.id.sendComentario);
-		
-		final EditText editText = (EditText) findViewById(R.id.novoComentario);
-		final String comentarioString = editText.getText().toString();
-		final Comentario comentario = new Comentario(comentarioString, mPoesia.getAutor(), mPoesia.getDataDeCriacao());
-		
-		
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-               mPoesiaController.criarComentarioPoesia(mPoesia, comentario, new OnRequestListener(ComentarioActivity.this) {
-				
+			mPoesiaController.getComentario(comentario, new OnRequestListener(this) {
+
 				@Override
 				public void onSuccess(Object result) {
-					mPoesia.addComentario(comentario.getComentario());
+					Comentario comentario = (Comentario) result;
 					listComentarios.add(comentario);
-					
 					Collections.sort(listComentarios);
 					listAdapter.notifyDataSetChanged();
-					
 				}
-				
+
 				@Override
 				public void onError(String errorMessage) {
+					// TODO Auto-generated method stub
 					System.out.println(errorMessage);
-					
 				}
 			});
-            }
-        });
-		
+		}
+
+		final Button button = (Button) findViewById(R.id.sendComentario);
+		final EditText editText = (EditText) findViewById(R.id.novoComentario);
+
+		button.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				final String comentarioString = editText.getText().toString();
+				mPoesiaController.comentar(mPoesia, comentarioString, new OnRequestListener(ComentarioActivity.this) {
+
+					@Override
+					public void onSuccess(Object result) {
+						Comentario comentario = (Comentario) result;
+						listComentarios.add(comentario);
+						Collections.sort(listComentarios);
+						listAdapter.notifyDataSetChanged();
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println(errorMessage);
+					}
+				});
+			}
+		});
+
 	}
-		
-		
-	
 
 	@Override
 	public void onBackPressed() {
 		finish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -118,5 +119,5 @@ public class ComentarioActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 }
