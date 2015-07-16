@@ -10,14 +10,17 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 
+import com.projetoles.dao.CurtidaDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
+import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 
 public class PoesiaController extends Controller {
 	
 	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
-
+	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
+	
 	public PoesiaController(Activity context) {
 		super(context);
 	}
@@ -115,9 +118,72 @@ public class PoesiaController extends Controller {
 				e.printStackTrace();
 				callback.onError(e.getMessage());
 			}
-		}else {
+		} else {
 			callback.onError("Usuário não encontrado.");
 		}
+	}
+	
+	public void curtir(final Poesia poesia, final OnRequestListener callback) {
+		if (UsuarioController.usuarioLogado != null) {
+			try {
+				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
+				cDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
+					
+					@Override
+					public void onSuccess(Object result) {
+						try {
+							JSONObject json = new JSONObject(result.toString());
+							boolean success = json.getBoolean("success");
+							if (success) {
+								callback.onSuccess(curtida);
+							} else {
+								callback.onError(json.getString("message"));
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							callback.onError(e.getMessage());
+						}
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				callback.onError(e.getMessage());
+			}
+		} else {
+			callback.onError("Usuário não encontrado.");
+		}
+	}
+	
+	public void getCurtida(final String id, final OnRequestListener callback) {
+		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						Curtida curtida = Curtida.converteJson(json);
+						callback.onSuccess(curtida);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
 	}
 	
 }

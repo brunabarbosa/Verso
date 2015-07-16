@@ -1,5 +1,8 @@
 package com.projetoles.dao;
 
+import com.projetoles.model.Curtida;
+import com.projetoles.model.Poesia;
+
 
 public class CurtidaDAO extends DAO {
 
@@ -12,4 +15,24 @@ public class CurtidaDAO extends DAO {
 		return sInstance;
 	}
 
+	public void curtir(Poesia poesia, Curtida curtida, OnRequestListener callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("poesia", poesia.getId())
+			.addParam("dataCriacao", curtida.getStringDataCriacao())
+			.addParam("postador", curtida.getPostador())
+			.setDomain(DOMAIN)
+			.setPath("like");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
+	public void getCurtida(String id, OnRequestListener callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("id", id)
+			.setDomain(DOMAIN)
+			.setPath("like");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	} 
+	
 }
