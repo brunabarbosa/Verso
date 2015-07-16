@@ -144,6 +144,8 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
         if (this._listPoesias.get(groupPosition) != null && this._listPoesias.get(groupPosition).getId() != null && !this._listPoesias.get(groupPosition).getId().isEmpty() && UsuarioController.usuarioLogado.getCurtidas().contains(this._listPoesias.get(groupPosition).getId())) {
         	btnLike.setImageResource(R.drawable.like_icon_ativo);
+        } else {
+        	btnLike.setImageResource(R.drawable.like_icon);
         }
         btnLike.setTag(this._listPoesias.get(groupPosition));
         this._loading.put(btnLike, false);

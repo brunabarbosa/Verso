@@ -232,17 +232,52 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void criarComentarioPoesia(final Poesia poesia,
-			final Comentario comentario, final OnRequestListener callback) {
-			comentarioDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
+	public void comentar(final Poesia poesia, final String stringComentario, final OnRequestListener callback) {
+		if (UsuarioController.usuarioLogado != null) {
+			try {
+				final Comentario comentario = new Comentario(stringComentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
+				comentarioDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
+					@Override
+					public void onSuccess(Object result) {
+						try {
+							JSONObject json = new JSONObject(result.toString());
+							boolean success = json.getBoolean("success");
+							if (success) {
+								callback.onSuccess(comentario);
+							} else {
+								callback.onError(json.getString("message"));
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							callback.onError(e.getMessage());
+						}
+					}
+		
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				callback.onError(e.getMessage());
+			}
+		} else {
+			callback.onError("Usuário não encontrado.");
+		}
+	}
+
+	public void getComentario(final String id, final OnRequestListener callback) {
+		comentarioDao.getComentario(id, new OnRequestListener(callback.getContext()) {
+			
 			@Override
 			public void onSuccess(Object result) {
 				try {
 					JSONObject json = new JSONObject(result.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
-						poesia.addComentario(comentario.toString());
-						callback.onSuccess(poesia);
+						Comentario comentario = Comentario.converteJson(json);
+						callback.onSuccess(comentario);
 					} else {
 						callback.onError(json.getString("message"));
 					}
@@ -251,12 +286,12 @@ public class PoesiaController extends Controller {
 					callback.onError(e.getMessage());
 				}
 			}
-
+			
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
 		});
 	}
-
+	
 }
