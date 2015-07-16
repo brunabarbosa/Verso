@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"  >
  
-    <ExpandableListView
+    <ListView
         android:id="@+id/lvExpPesquisa"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-    </ExpandableListView>
+    </ListView>
     
 </RelativeLayout>

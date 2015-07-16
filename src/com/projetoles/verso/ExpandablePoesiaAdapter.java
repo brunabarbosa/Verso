@@ -113,6 +113,16 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
         numComments.setText("" + _listPoesias.get(groupPosition).getComentarios().size());
         
+        numLikes.setTag(this._listPoesias.get(groupPosition));
+        numLikes.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(ExpandablePoesiaAdapter.this._context, CurtidaActivity.class);
+				i.putExtra("poesia", (Poesia)v.getTag());
+				ExpandablePoesiaAdapter.this._context.startActivity(i);
+			}
+		});
         ImageView btnComment = (ImageView) convertView.findViewById(R.id.commentIcon);
         btnComment.setTag(this._listPoesias.get(groupPosition));
         btnComment.setOnClickListener(new OnClickListener() {

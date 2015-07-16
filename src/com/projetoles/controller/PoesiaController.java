@@ -23,6 +23,7 @@ public class PoesiaController extends Controller {
 	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
 	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
 	private static ComentarioDAO commentDao = ComentarioDAO.getInstance();
+
 	public PoesiaController(Activity context) {
 		super(context);
 	}
@@ -188,33 +189,40 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void criarComentarioPoesia(final Poesia poesia,
-			final Comentario comentario, final OnRequestListener callback) {
-
-			commentDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
-
-			@Override
-			public void onSuccess(Object result) {
-				try {
-					JSONObject json = new JSONObject(result.toString());
-					boolean success = json.getBoolean("success");
-					if (success) {
-						poesia.addComentario(comentario.toString());
-						callback.onSuccess(poesia);
-					} else {
-						callback.onError(json.getString("message"));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					callback.onError(e.getMessage());
-				}
+	public void criarComentarioPoesia(final String comentario, final Poesia poesia, final OnRequestListener callback) {
+		if (UsuarioController.usuarioLogado != null) {
+			try {
+				final Comentario comment = new Comentario(comentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
+				commentDao.comentar(poesia, comment, new OnRequestListener(callback.getContext()) {
+		            @Override
+		            public void onSuccess(Object result) {
+		                try {
+		                    JSONObject json = new JSONObject(result.toString());
+		                    boolean success = json.getBoolean("success");
+		                    if (success) {
+		                            poesia.addComentario(comentario.toString());
+		                            callback.onSuccess(poesia);
+		                    } else {
+		                            callback.onError(json.getString("message"));
+		                    }
+		                } catch (JSONException e) {
+		                        e.printStackTrace();
+		                        callback.onError(e.getMessage());
+		                }
+		            }
+		
+		            @Override
+		            public void onError(String errorMessage) {
+		                    callback.onError(errorMessage);
+		            }
+		        });
+			} catch (Exception e) {
+				e.printStackTrace();
+				callback.onError(e.getMessage());
 			}
-
-			@Override
-			public void onError(String errorMessage) {
-				callback.onError(errorMessage);
-			}
-		});
+		} else {
+			callback.onError("Usuário não encontrado.");
+		}
 	}
 	
 }

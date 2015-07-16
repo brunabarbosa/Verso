@@ -45,6 +45,8 @@
         </activity>
         <activity android:name=".PesquisarActivity" >
         </activity>
+        <activity android:name=".CurtidaActivity" >
+        </activity>
         <activity 
             android:name=".ResultadoPesquisaActivity"
             android:label="Verso - Resultados da pesquisa" >
