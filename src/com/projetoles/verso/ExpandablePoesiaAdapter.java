@@ -30,7 +30,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
     public ExpandablePoesiaAdapter(Activity context, List<Poesia> _listPoesias) {
         this._context = context;
         this._listPoesias = _listPoesias;
-        this._controller = _controller;
+        this._controller = new PoesiaController(context);
     }
  
     @Override
