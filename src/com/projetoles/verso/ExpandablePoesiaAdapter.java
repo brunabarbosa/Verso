@@ -3,7 +3,9 @@ package com.projetoles.verso;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;
  
@@ -26,11 +29,13 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
     private Activity _context;
     private List<Poesia> _listPoesias;
     private PoesiaController _controller;
+    private Map<View, Boolean> _loading;
     
     public ExpandablePoesiaAdapter(Activity context, List<Poesia> _listPoesias) {
         this._context = context;
         this._listPoesias = _listPoesias;
         this._controller = new PoesiaController(context);
+        this._loading = new HashMap<View, Boolean>();
     }
  
     @Override
@@ -108,8 +113,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
         TextView autor = (TextView) convertView.findViewById(R.id.author);
         autor.setText(_listPoesias.get(groupPosition).getAutor());
-        TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
-        numLikes.setText("" + _listPoesias.get(groupPosition).getCurtidas().size());
+        final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
+        final int numCurtidas = _listPoesias.get(groupPosition).getCurtidas().size();
+        numLikes.setText("" + numCurtidas);
         TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
         numComments.setText("" + _listPoesias.get(groupPosition).getComentarios().size());
         
@@ -136,24 +142,53 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		});
         
         ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
+        if (this._listPoesias.get(groupPosition) != null && this._listPoesias.get(groupPosition).getId() != null && !this._listPoesias.get(groupPosition).getId().isEmpty() && UsuarioController.usuarioLogado.getCurtidas().contains(this._listPoesias.get(groupPosition).getId())) {
+        	btnLike.setImageResource(R.drawable.like_icon_ativo);
+        }
         btnLike.setTag(this._listPoesias.get(groupPosition));
+        this._loading.put(btnLike, false);
         btnLike.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(final View v) {
-				ExpandablePoesiaAdapter.this._controller.curtir((Poesia)v.getTag(),
-					new OnRequestListener(ExpandablePoesiaAdapter.this._context) {
-						
-						@Override
-						public void onSuccess(Object result) {
-							((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
-						}
-						
-						@Override
-						public void onError(String errorMessage) {
-							System.out.println(errorMessage);
-						}
-					});
+				if (!ExpandablePoesiaAdapter.this._loading.get(v)) {
+					ExpandablePoesiaAdapter.this._loading.put(v, true);
+					final Poesia poesia = (Poesia) v.getTag();
+					if (poesia != null && poesia.getId() != null && !poesia.getId().isEmpty() && UsuarioController.usuarioLogado.getCurtidas().contains(poesia.getId())) {
+						ExpandablePoesiaAdapter.this._controller.descurtir(poesia, new OnRequestListener(ExpandablePoesiaAdapter.this._context) {
+								
+								@Override
+								public void onSuccess(Object result) {
+									UsuarioController.usuarioLogado.removeCurtida(poesia.getId());
+									((ImageView)v).setImageResource(R.drawable.like_icon);
+									//numLikes.setText(String.valueOf(Integer.valueOf(numLikes.getText().toString())-1));
+									ExpandablePoesiaAdapter.this._loading.put(v, false);
+								}
+								 
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println("ERROR descurtir: " + errorMessage);
+								}
+							});
+					} else {
+						ExpandablePoesiaAdapter.this._controller.curtir(poesia,
+							new OnRequestListener(ExpandablePoesiaAdapter.this._context) {
+								
+								@Override
+								public void onSuccess(Object result) {
+									UsuarioController.usuarioLogado.addCurtida(poesia.getId());
+									((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
+									//numLikes.setText(String.valueOf(Integer.valueOf(numLikes.getText().toString())+1));
+									ExpandablePoesiaAdapter.this._loading.put(v, false);
+								}
+								
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println("ERROR curtir: " + errorMessage);
+								}
+							});
+					}
+				}
 			}
 		});
         

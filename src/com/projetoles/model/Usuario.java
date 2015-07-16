@@ -32,6 +32,7 @@ public class Usuario implements Parcelable {
 	private Set<Poesia> mPoesiasCarregadas;
 	private Set<String> mNoticacoes;
 	private Set<Notificacao> mNoticacoesCarregadas;
+	private Set<String> mCurtidas;
 	
 	public Usuario(Parcel in) {
 		setEmail(in.readString()); 
@@ -45,6 +46,7 @@ public class Usuario implements Parcelable {
 		this.mPoesiasCarregadas = new HashSet<Poesia>();
 		this.mNoticacoes = new HashSet<String>();
 		this.mNoticacoesCarregadas = new HashSet<Notificacao>();
+		this.mCurtidas = new HashSet<String>();
 	}
 
 	@Override
@@ -67,6 +69,7 @@ public class Usuario implements Parcelable {
 		this.mPoesiasCarregadas = new HashSet<Poesia>();
 		this.mNoticacoes = new HashSet<String>();
 		this.mNoticacoesCarregadas = new HashSet<Notificacao>();
+		this.mCurtidas = new HashSet<String>();
 	}
 
 	public String getEmail() {
@@ -150,10 +153,20 @@ public class Usuario implements Parcelable {
 		this.mPoesiasCarregadas.add(poesia);
 	}
 	
-
 	public void addNotifiacaoCarregada(Notificacao notificacao) {
 		this.mNoticacoesCarregadas.add(notificacao);
-		
+	}
+	
+	public void addCurtida(String id) {
+		this.mCurtidas.add(id);
+	}
+	
+	public void removeCurtida(String id) {
+		this.mCurtidas.add(id);
+	}
+	
+	public Set<String> getCurtidas() {
+		return Collections.unmodifiableSet(this.mCurtidas);
 	}
 	
 	public static Usuario converteJSON(JSONObject obj) throws JSONException {
@@ -171,12 +184,17 @@ public class Usuario implements Parcelable {
 			u.setFoto(foto);
 		JSONArray poemas = obj.getJSONArray("poesias");
 		for (int i = 0; i < poemas.length(); i++) {
-			String id = poemas.get(i).toString();
+			String id = poemas.getString(i);
 			u.addPoesia(id);
 		}
 		JSONArray notificacoes = obj.getJSONArray("notificacoes");
 		for (int i = 0; i < notificacoes.length(); i++) {
 			u.addNotifiacao(notificacoes.getString(i));
+		}
+		JSONArray curtidas = obj.getJSONArray("curtidas");
+		for (int i = 0; i < curtidas.length(); i++) {
+			String id = curtidas.getString(i);
+			u.addCurtida(id);
 		}
 		return u;
 	}

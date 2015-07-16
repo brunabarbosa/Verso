@@ -23,9 +23,7 @@ public class Poesia implements Comparable<Poesia>, Parcelable {
 	private Calendar mDataDeCriacao;
 	private String mTags;
 	private Set<String> mComentarios;
-	private Set<Comentario> mComentariosCarregados;
 	private Set<String> mCurtidas;
-	private Set<Curtida> mCurtidasCarregadas;
 	
 	public Poesia(Parcel in) {
 		setId(in.readString());
@@ -69,9 +67,7 @@ public class Poesia implements Comparable<Poesia>, Parcelable {
 		setDataDeCriacao(dataDeCriacao);
 		setTags(tags);
 		this.mComentarios = new HashSet<String>();
-		this.mComentariosCarregados = new HashSet<Comentario>();
 		this.mCurtidas = new HashSet<String>();
-		this.mCurtidasCarregadas = new HashSet<Curtida>();
 	}
 
 	public Poesia() {
@@ -150,32 +146,20 @@ public class Poesia implements Comparable<Poesia>, Parcelable {
 		return Collections.unmodifiableSet(this.mComentarios);
 	}
 	
-	public Set<Comentario> getComentariosCarregados() {
-		return Collections.unmodifiableSet(this.mComentariosCarregados);
-	}
-	
 	public void addComentario(String comentario) {
 		this.mComentarios.add(comentario);
-	}
-	
-	public void addComentarioCarregado(Comentario comentario) {
-		this.mComentariosCarregados.add(comentario);
 	}
 	
 	public Set<String> getCurtidas() { 
 		return Collections.unmodifiableSet(this.mCurtidas);
 	}
 	
-	public Set<Curtida> getCurtidasCarregas() {
-		return Collections.unmodifiableSet(this.mCurtidasCarregadas);
-	}
-	
 	public void addCurtida(String curtida) {
 		this.mCurtidas.add(curtida);
 	}
 	
-	public void addCurtidaCarregada(Curtida curtida) {
-		this.mCurtidasCarregadas.add(curtida);
+	public void removeCurtida(String curtida) {
+		this.mCurtidas.remove(curtida);
 	}
 	
 	@Override
