@@ -42,11 +42,12 @@ public class CriarNotificacaoLikeActivity extends Activity {
 				String titulo = mUsuarioController.usuarioLogado.getNome();
 				String mensagem = titulo + "curtiu sua poesia.";
 				Calendar dataDeCriacao = Calendar.getInstance();
-
+				//mudar
+				String enderecado = "";
+				
 				// verificar se vai precisar
 				loading.setVisibility(View.VISIBLE);
-				mNotificacaoController.criaNotificacao(titulo, mensagem,
-						mUsuarioController.usuarioLogado.getEmail(),
+				mNotificacaoController.criaNotificacao(enderecado, titulo, mensagem,
 						dataDeCriacao, new OnRequestListener(
 								CriarNotificacaoLikeActivity.this) {
 

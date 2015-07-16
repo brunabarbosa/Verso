@@ -188,7 +188,7 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void criarComentario(final Poesia poesia,
+	public void criarComentarioPoesia(final Poesia poesia,
 			final Comentario comentario, final OnRequestListener callback) {
 
 			commentDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {

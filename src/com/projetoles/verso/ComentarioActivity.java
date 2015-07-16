@@ -68,7 +68,7 @@ public class ComentarioActivity extends Activity {
 		
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               mPoesiaController.criarComentario(mPoesia, comentario, new OnRequestListener(ComentarioActivity.this) {
+               mPoesiaController.criarComentarioPoesia(mPoesia, comentario, new OnRequestListener(ComentarioActivity.this) {
 				
 				@Override
 				public void onSuccess(Object result) {

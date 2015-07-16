@@ -4,15 +4,21 @@ import java.util.Calendar;
 
 public class Notificacao {
 	
-	
+	private String mEnderecado;
 	private String mTitulo;
 	private String mMensagem;
 	private Calendar mDataDeCriacao;
 	
-	public Notificacao(String titulo, String mensagem, Calendar dataDeCriacao) {
+	public Notificacao(String enderecado, String titulo, String mensagem, Calendar dataDeCriacao) {
 		setTitulo(titulo);
 		setMensagem(mensagem);
 		setDataDeCriacao(dataDeCriacao);
+		setEnderecado(enderecado);
+	}
+
+	private void setEnderecado(String enderecado) {
+		this.mEnderecado = enderecado;
+		
 	}
 
 	public String getTitulo() {
