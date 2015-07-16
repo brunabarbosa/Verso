@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -16,16 +17,20 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.projetoles.controller.PoesiaController;
+import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;
  
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
  
-    private Context _context;
+    private Activity _context;
     private List<Poesia> _listPoesias;
- 
-    public ExpandablePoesiaAdapter(Context context, List<Poesia> _listPoesias) {
+    private PoesiaController _controller;
+    
+    public ExpandablePoesiaAdapter(Activity context, List<Poesia> _listPoesias) {
         this._context = context;
         this._listPoesias = _listPoesias;
+        this._controller = _controller;
     }
  
     @Override
@@ -117,6 +122,28 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				Intent i = new Intent(ExpandablePoesiaAdapter.this._context, ComentarioActivity.class);
 				i.putExtra("poesia", (Poesia)v.getTag());
 				ExpandablePoesiaAdapter.this._context.startActivity(i);
+			}
+		});
+        
+        ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
+        btnLike.setTag(this._listPoesias.get(groupPosition));
+        btnLike.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(final View v) {
+				ExpandablePoesiaAdapter.this._controller.curtir((Poesia)v.getTag(),
+					new OnRequestListener(ExpandablePoesiaAdapter.this._context) {
+						
+						@Override
+						public void onSuccess(Object result) {
+							((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
+						}
+						
+						@Override
+						public void onError(String errorMessage) {
+							System.out.println(errorMessage);
+						}
+					});
 			}
 		});
         
