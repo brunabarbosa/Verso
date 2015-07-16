@@ -189,7 +189,7 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void criarComentarioPoesia(final String comentario, final Poesia poesia, final OnRequestListener callback) {
+	public void comentar(final String comentario, final Poesia poesia, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Comentario comment = new Comentario(comentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
@@ -223,6 +223,33 @@ public class PoesiaController extends Controller {
 		} else {
 			callback.onError("Usuário não encontrado.");
 		}
+	}
+	
+	public void getCommentario(final String id, final OnRequestListener callback) {
+		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						Comentario comentario = Comentario.converteJson(json);
+						callback.onSuccess(comentario);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
 	}
 	
 }
