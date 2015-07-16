@@ -20,16 +20,16 @@ import com.projetoles.model.Poesia;
 
 public class PoesiaController extends Controller {
 	
-	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
-	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
-	private static ComentarioDAO commentDao = ComentarioDAO.getInstance();
+	private static PoesiaDAO poesiaDao = PoesiaDAO.getInstance();
+	private static CurtidaDAO curtidaDao = CurtidaDAO.getInstance();
+	private static ComentarioDAO comentarioDao = ComentarioDAO.getInstance();
 
 	public PoesiaController(Activity context) {
 		super(context);
 	}
 
 	public void getPoesia(final String id, final OnRequestListener callback) {
-		pDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
+		poesiaDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -57,7 +57,7 @@ public class PoesiaController extends Controller {
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
 			final String trecho, final OnRequestListener callback) {
-		pDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
+		poesiaDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -93,7 +93,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Poesia poema = new Poesia(null, titulo, postador, autor, poesia, dataDeCriacao, tags);
-				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
+				poesiaDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {
@@ -130,7 +130,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				cDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
+				curtidaDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
 					
 					@Override
 					public void onSuccess(Object result) {
@@ -163,7 +163,7 @@ public class PoesiaController extends Controller {
 	}
 	
 	public void getCurtida(final String id, final OnRequestListener callback) {
-		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -193,7 +193,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Comentario comment = new Comentario(comentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				commentDao.comentar(poesia, comment, new OnRequestListener(callback.getContext()) {
+				comentarioDao.comentar(poesia, comment, new OnRequestListener(callback.getContext()) {
 		            @Override
 		            public void onSuccess(Object result) {
 		                try {
@@ -226,7 +226,7 @@ public class PoesiaController extends Controller {
 	}
 	
 	public void getCommentario(final String id, final OnRequestListener callback) {
-		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
