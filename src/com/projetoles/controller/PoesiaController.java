@@ -10,9 +10,11 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 
+import com.projetoles.dao.ComentarioDAO;
 import com.projetoles.dao.CurtidaDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
+import com.projetoles.model.Comentario;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 
@@ -20,7 +22,7 @@ public class PoesiaController extends Controller {
 	
 	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
 	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
-	
+	private static ComentarioDAO commentDao = ComentarioDAO.getInstance();
 	public PoesiaController(Activity context) {
 		super(context);
 	}
@@ -179,6 +181,35 @@ public class PoesiaController extends Controller {
 				}
 			}
 			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	}
+	
+	public void criarComentarioPoesia(final Poesia poesia,
+			final Comentario comentario, final OnRequestListener callback) {
+
+			commentDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
+
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						poesia.addComentario(comentario.toString());
+						callback.onSuccess(poesia);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
