@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,12 +31,14 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
     private List<Poesia> _listPoesias;
     private PoesiaController _controller;
     private Map<View, Boolean> _loading;
+    private Bundle _bundle;
     
-    public ExpandablePoesiaAdapter(Activity context, List<Poesia> _listPoesias) {
+    public ExpandablePoesiaAdapter(Activity context, List<Poesia> _listPoesias, Bundle _bundle) {
         this._context = context;
         this._listPoesias = _listPoesias;
         this._controller = new PoesiaController(context);
         this._loading = new HashMap<View, Boolean>();
+        this._bundle = _bundle;
     }
  
     @Override
@@ -117,7 +120,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         final int numCurtidas = _listPoesias.get(groupPosition).getCurtidas().size();
         numLikes.setText("" + numCurtidas);
         TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
-        numComments.setText("" + _listPoesias.get(groupPosition).getComentarios().size());
+        numComments.setText("" + (_listPoesias.get(groupPosition).getComentarios().size()));
         
         numLikes.setTag(this._listPoesias.get(groupPosition));
         numLikes.setOnClickListener(new OnClickListener() {
@@ -137,7 +140,10 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			public void onClick(View v) {
 				Intent i = new Intent(ExpandablePoesiaAdapter.this._context, ComentarioActivity.class);
 				i.putExtra("poesia", (Poesia)v.getTag());
+				i.putExtra("callback", ExpandablePoesiaAdapter.this._context.getClass());
+				i.putExtra("bundle", ExpandablePoesiaAdapter.this._bundle);
 				ExpandablePoesiaAdapter.this._context.startActivity(i);
+				ExpandablePoesiaAdapter.this._context.finish();
 			}
 		});
         

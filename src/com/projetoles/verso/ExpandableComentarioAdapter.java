@@ -20,9 +20,9 @@ public class ExpandableComentarioAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<Comentario> _listComentarios;
  
-    public ExpandableComentarioAdapter(Context context, List<Comentario> _listPoesias) {
+    public ExpandableComentarioAdapter(Context context, List<Comentario> _listComentarios) {
         this._context = context;
-        this._listComentarios = _listPoesias;
+        this._listComentarios = _listComentarios;
     }
  
     @Override
@@ -47,22 +47,9 @@ public class ExpandableComentarioAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
  
-       /* TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
+        TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
+        txtListChild.setText(this._listComentarios.get(groupPosition).getComentario());
         
-        Calendar gc = new GregorianCalendar();
-        gc = _listComentarios.get(groupPosition).getDataDeCriacao();
-        TextView tags = (TextView) convertView.findViewById(R.id.tags);
-        TextView date = (TextView) convertView.findViewById(R.id.date);
-        String poesiasTagss = "";
-        String[] poesiasTags = _listComentarios.get(groupPosition).getTags().split(",");
-        for (String tag : poesiasTags) { 
-        	poesiasTagss += "#" + tag;
-        }
-        tags.setText(poesiasTagss);
-        date.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(gc.getTime()));
-        
-        txtListChild.setText(childText);*/
         return convertView;
     }
  
@@ -93,25 +80,18 @@ public class ExpandableComentarioAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = infalInflater.inflate(R.layout.list_group_comentario, null);
         }
  
-        /*TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.lblListHeader);
-        TextView tags = (TextView) convertView.findViewById(R.id.tags);
-        String poesiasTagss = "";
-        String[] poesiasTags = _listPoesias.get(groupPosition).getTags().split(",");
-        for (String tag : poesiasTags) { 
-        	poesiasTagss += "#" + tag;
-        }
-        tags.setText(poesiasTagss);
-        
-        TextView autor = (TextView) convertView.findViewById(R.id.author);
-        autor.setText(_listComentarios.get(groupPosition).getAutor());
-        
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeaderComentario);
+        lblListHeader.setText(this._listComentarios.get(groupPosition).getPostador());
+
         lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setText(headerTitle);*/
+        lblListHeader.setText(headerTitle);
  
+        TextView lblListData = (TextView) convertView.findViewById(R.id.lblListHeaderData);
+        lblListData.setText("Postado em " + DateFormat.getDateInstance(DateFormat.SHORT).format(this._listComentarios.get(groupPosition).getDataCriacao().getTime()));
+        
         return convertView;
     }
  

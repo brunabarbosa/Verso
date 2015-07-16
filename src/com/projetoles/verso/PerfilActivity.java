@@ -47,7 +47,7 @@ public class PerfilActivity extends Activity {
 		
 		//preparing list data
 		listPoesias = new ArrayList<Poesia>();
-        listAdapter = new ExpandablePoesiaAdapter(PerfilActivity.this, listPoesias);
+        listAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, listPoesias, null);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;

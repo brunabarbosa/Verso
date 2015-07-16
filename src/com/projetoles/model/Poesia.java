@@ -3,7 +3,9 @@ package com.projetoles.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -54,7 +56,6 @@ public class Poesia implements Comparable<Poesia>, Parcelable {
 		dest.writeString(this.mTags);
 		dest.writeStringList(new ArrayList<String>(this.mComentarios));
 		dest.writeStringList(new ArrayList<String>(this.mCurtidas));
-		
 	}
 	
 	public Poesia(String id, String titulo, String postador, String autor, String poesia, Calendar dataDeCriacao, String tags) 

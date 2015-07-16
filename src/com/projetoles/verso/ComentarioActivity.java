@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.dao.OnRequestListener;
@@ -25,7 +29,9 @@ public class ComentarioActivity extends Activity {
 	private ExpandableComentarioAdapter listAdapter;
 	private ExpandableListView expListView;
 	private List<Comentario> listComentarios;
-
+	private Class mCallback;
+	private Bundle mBundle;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,6 +40,8 @@ public class ComentarioActivity extends Activity {
 
 		Bundle b = getIntent().getExtras();
 		mPoesia = (Poesia) b.getParcelable("poesia");
+		mCallback = (Class) b.get("callback");
+		mBundle = b.getBundle("bundle");
 		getActionBar().setTitle(mPoesia.getTitulo());
 
 		mPoesiaController = new PoesiaController(this);
@@ -69,12 +77,14 @@ public class ComentarioActivity extends Activity {
 
 		final Button button = (Button) findViewById(R.id.sendComentario);
 		final EditText editText = (EditText) findViewById(R.id.novoComentario);
-
+		final RelativeLayout loading = (RelativeLayout) findViewById(R.id.loadComentario);
+		
 		button.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				final String comentarioString = editText.getText().toString();
+				loading.setVisibility(View.VISIBLE);
 				mPoesiaController.comentar(mPoesia, comentarioString, new OnRequestListener(ComentarioActivity.this) {
 
 					@Override
@@ -83,11 +93,26 @@ public class ComentarioActivity extends Activity {
 						listComentarios.add(comentario);
 						Collections.sort(listComentarios);
 						listAdapter.notifyDataSetChanged();
+						loading.setVisibility(View.GONE);
+						editText.setText("");
 					}
 
 					@Override
 					public void onError(String errorMessage) {
 						System.out.println(errorMessage);
+						loading.setVisibility(View.GONE);
+						new AlertDialog.Builder(ComentarioActivity.this)
+							.setTitle("Um erro ocorreu")
+							.setMessage(errorMessage)
+							.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									loading.setVisibility(View.GONE);
+								}
+							})
+							.create().show();
+
 					}
 				});
 			}
@@ -97,6 +122,9 @@ public class ComentarioActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		Intent i = new Intent(ComentarioActivity.this, mCallback);
+		i.putExtra("bundle", mBundle);
+		startActivity(i);
 		finish();
 	}
 
