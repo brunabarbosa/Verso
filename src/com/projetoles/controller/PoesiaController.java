@@ -226,6 +226,14 @@ public class PoesiaController extends Controller {
 		                    callback.onError(errorMessage);
 		            }
 		        });
+				
+				String titulo = UsuarioController.usuarioLogado.getEmail();
+				String mensagem = titulo + "comentou sua poesia.";
+				
+				
+
+				mNotificacaoController.criaNotificacao(poesia.getPostador(), UsuarioController.usuarioLogado.getEmail(), mensagem,  
+						Calendar.getInstance(), callback);
 			} catch (Exception e) {
 				e.printStackTrace();
 				callback.onError(e.getMessage());
