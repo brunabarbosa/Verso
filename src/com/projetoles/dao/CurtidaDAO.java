@@ -2,6 +2,7 @@ package com.projetoles.dao;
 
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.Usuario;
 
 
 public class CurtidaDAO extends DAO {
@@ -22,6 +23,16 @@ public class CurtidaDAO extends DAO {
 			.addParam("postador", curtida.getPostador())
 			.setDomain(DOMAIN)
 			.setPath("like");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
+	public void descurtir(Usuario usuario, Poesia poesia, OnRequestListener callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("poesia", poesia.getId())
+			.addParam("postador", usuario.getEmail())
+			.setDomain(DOMAIN)
+			.setPath("unlike");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
