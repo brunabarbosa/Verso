@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.view.View;
 
 import com.projetoles.dao.ComentarioDAO;
 import com.projetoles.dao.CurtidaDAO;
@@ -21,18 +20,15 @@ import com.projetoles.model.Poesia;
 
 public class PoesiaController extends Controller {
 	
-	private static PoesiaDAO poesiaDao = PoesiaDAO.getInstance();
-	private static CurtidaDAO curtidaDao = CurtidaDAO.getInstance();
-	private static ComentarioDAO comentarioDao = ComentarioDAO.getInstance();
-	private NotificacaoController mNotificacaoController;
+	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
+	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
+	private static ComentarioDAO commentDao = ComentarioDAO.getInstance();
 	public PoesiaController(Activity context) {
 		super(context);
-
-		mNotificacaoController = new NotificacaoController(context);
 	}
 
 	public void getPoesia(final String id, final OnRequestListener callback) {
-		poesiaDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
+		pDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -60,7 +56,7 @@ public class PoesiaController extends Controller {
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
 			final String trecho, final OnRequestListener callback) {
-		poesiaDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
+		pDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -96,7 +92,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Poesia poema = new Poesia(null, titulo, postador, autor, poesia, dataDeCriacao, tags);
-				poesiaDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
+				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {
@@ -133,7 +129,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				curtidaDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
+				cDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
 					
 					@Override
 					public void onSuccess(Object result) {
@@ -156,13 +152,6 @@ public class PoesiaController extends Controller {
 						callback.onError(errorMessage);
 					}
 				});
-				String titulo = UsuarioController.usuarioLogado.getEmail();
-				String mensagem = titulo + "curtiu sua poesia.";
-				
-				
-
-				mNotificacaoController.criaNotificacao(poesia.getPostador(), UsuarioController.usuarioLogado.getEmail(), mensagem,  
-						Calendar.getInstance(), callback);
 			} catch (Exception e) {
 				e.printStackTrace();
 				callback.onError(e.getMessage());
@@ -173,7 +162,7 @@ public class PoesiaController extends Controller {
 	}
 	
 	public void getCurtida(final String id, final OnRequestListener callback) {
-		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -199,61 +188,19 @@ public class PoesiaController extends Controller {
 		});
 	}
 	
-	public void comentar(final String comentario, final Poesia poesia, final OnRequestListener callback) {
-		if (UsuarioController.usuarioLogado != null) {
-			try {
-				final Comentario comment = new Comentario(comentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				comentarioDao.comentar(poesia, comment, new OnRequestListener(callback.getContext()) {
-		            @Override
-		            public void onSuccess(Object result) {
-		                try {
-		                    JSONObject json = new JSONObject(result.toString());
-		                    boolean success = json.getBoolean("success");
-		                    if (success) {
-		                            poesia.addComentario(comentario.toString());
-		                            callback.onSuccess(poesia);
-		                    } else {
-		                            callback.onError(json.getString("message"));
-		                    }
-		                } catch (JSONException e) {
-		                        e.printStackTrace();
-		                        callback.onError(e.getMessage());
-		                }
-		            }
-		
-		            @Override
-		            public void onError(String errorMessage) {
-		                    callback.onError(errorMessage);
-		            }
-		        });
-				
-				String titulo = UsuarioController.usuarioLogado.getEmail();
-				String mensagem = titulo + "comentou sua poesia.";
-				
-				
+	public void criarComentarioPoesia(final Poesia poesia,
+			final Comentario comentario, final OnRequestListener callback) {
 
-				mNotificacaoController.criaNotificacao(poesia.getPostador(), UsuarioController.usuarioLogado.getEmail(), mensagem,  
-						Calendar.getInstance(), callback);
-			} catch (Exception e) {
-				e.printStackTrace();
-				callback.onError(e.getMessage());
-			}
-		} else {
-			callback.onError("Usuário não encontrado.");
-		}
-	}
-	
-	public void getCommentario(final String id, final OnRequestListener callback) {
-		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
-			
+			commentDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
+
 			@Override
 			public void onSuccess(Object result) {
 				try {
 					JSONObject json = new JSONObject(result.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
-						Comentario comentario = Comentario.converteJson(json);
-						callback.onSuccess(comentario);
+						poesia.addComentario(comentario.toString());
+						callback.onSuccess(poesia);
 					} else {
 						callback.onError(json.getString("message"));
 					}
@@ -262,12 +209,12 @@ public class PoesiaController extends Controller {
 					callback.onError(e.getMessage());
 				}
 			}
-			
+
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
 		});
-	} 
+	}
 	
 }
