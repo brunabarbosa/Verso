@@ -15,6 +15,7 @@ public class NotificacaoDAO extends DAO{
 	
 	public void criarNotificacao(Notificacao notificacao, OnRequestListener callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("titulo", notificacao.getEnderecado())
 			.addParam("titulo", notificacao.getTitulo())
 			.addParam("dataCriacao", notificacao.getStringDataCriacao())
 			.addParam("mensagem", notificacao.getMensagem())

@@ -30,7 +30,8 @@ public class Usuario implements Parcelable {
 	private String mBiografia;
 	private Set<String> mPoesias;
 	private Set<Poesia> mPoesiasCarregadas;
-	private Set<Notificacao> mNoticacoes;
+	private Set<String> mNoticacoes;
+	private Set<Notificacao> mNoticacoesCarregadas;
 	
 	public Usuario(Parcel in) {
 		setEmail(in.readString()); 
@@ -42,7 +43,8 @@ public class Usuario implements Parcelable {
 		setBiografia(in.readString());
 		this.mPoesias = new HashSet<String>();
 		this.mPoesiasCarregadas = new HashSet<Poesia>();
-		this.mNoticacoes = new HashSet<Notificacao>();
+		this.mNoticacoes = new HashSet<String>();
+		this.mNoticacoesCarregadas = new HashSet<Notificacao>();
 	}
 
 	@Override
@@ -63,7 +65,8 @@ public class Usuario implements Parcelable {
 		setBiografia("");
 		this.mPoesias = new HashSet<String>();
 		this.mPoesiasCarregadas = new HashSet<Poesia>();
-		this.mNoticacoes = new HashSet<Notificacao>();
+		this.mNoticacoes = new HashSet<String>();
+		this.mNoticacoesCarregadas = new HashSet<Notificacao>();
 	}
 
 	public String getEmail() {
@@ -148,8 +151,8 @@ public class Usuario implements Parcelable {
 	}
 	
 
-	public void addNotifiacao(Notificacao notificacao) {
-		this.mNoticacoes.add(notificacao);
+	public void addNotifiacaoCarregada(Notificacao notificacao) {
+		this.mNoticacoesCarregadas.add(notificacao);
 		
 	}
 	
@@ -171,9 +174,18 @@ public class Usuario implements Parcelable {
 			String id = poemas.get(i).toString();
 			u.addPoesia(id);
 		}
+		JSONArray notificacoes = obj.getJSONArray("notificacoes");
+		for (int i = 0; i < notificacoes.length(); i++) {
+			u.addNotifiacao(notificacoes.getString(i));
+		}
 		return u;
 	}
 	
+	private void addNotifiacao(String string) {
+		this.mNoticacoes.add(string);
+		
+	}
+
 	public Set<Poesia> getPoesiasCarregadas() {
 		return Collections.unmodifiableSet(mPoesiasCarregadas);
 	}
@@ -182,8 +194,12 @@ public class Usuario implements Parcelable {
 		return Collections.unmodifiableSet(mPoesias);
 	}
 	
-	public Set<Notificacao> getNotificacaoes() {
+	public Set<String> getNotificacaoes() {
 		return Collections.unmodifiableSet(mNoticacoes);
+	}
+	
+	public Set<Notificacao> getNotificacaoesCarregadas() {
+		return Collections.unmodifiableSet(mNoticacoesCarregadas);
 	}
 
 	@Override
