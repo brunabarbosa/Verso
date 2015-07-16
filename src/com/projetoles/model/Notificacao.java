@@ -64,6 +64,10 @@ public class Notificacao {
 	public String getStringDataCriacao(){
 		return String.valueOf(mDataDeCriacao.getTimeInMillis());
 	}
+
+	public String getEnderecado() {
+		return mEnderecado;
+	}
 	
 
 }
