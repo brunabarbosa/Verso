@@ -31,6 +31,7 @@ public class ResultadoPesquisaActivity extends Activity {
 	private ExpandablePoesiaAdapter listAdapter;
     private ExpandableListView expListView;
     private List<Poesia> listPoesias;
+    private Bundle mBundle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,12 @@ public class ResultadoPesquisaActivity extends Activity {
 		setContentView(R.layout.activity_resultado_pesquisa);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
+		Bundle b = getIntent().getExtras();
+		if (b.getBundle("bundle") != null) {
+			b = b.getBundle("bundle");
+		}
+		mBundle = b;
+		
 		//change fonts
 		poemaController = new PoesiaController(this);
 
@@ -46,7 +53,7 @@ public class ResultadoPesquisaActivity extends Activity {
 		
 		//preparing list data
 		listPoesias = new ArrayList<Poesia>();
-        listAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, listPoesias);
+        listAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, listPoesias, mBundle);
 		
 		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 	        int previousGroup = -1;
@@ -63,7 +70,6 @@ public class ResultadoPesquisaActivity extends Activity {
 		expListView.setAdapter(listAdapter);
 		listAdapter.notifyDataSetChanged();
 		
-		Bundle b = getIntent().getExtras();
 		List<String> resultados = b.getStringArrayList("resultados");
 		for (String id : resultados) {
 			poemaController.getPoesia(id, new OnRequestListener(this) {
