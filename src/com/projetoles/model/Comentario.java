@@ -102,5 +102,10 @@ public class Comentario implements Comparable<Comentario> {
 	public int compareTo(Comentario arg0) {
 		return arg0.mDataCriacao.compareTo(this.mDataCriacao);
 	}
+	
+	public String toString(){
+		return mComentario;
+		
+	}
 
 }
