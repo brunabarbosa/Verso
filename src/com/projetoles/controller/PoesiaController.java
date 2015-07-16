@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.view.View;
 
 import com.projetoles.dao.CurtidaDAO;
 import com.projetoles.dao.OnRequestListener;
@@ -20,9 +21,13 @@ public class PoesiaController extends Controller {
 	
 	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
 	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
+
+	private NotificacaoController mNotificacaoController;
 	
 	public PoesiaController(Activity context) {
 		super(context);
+
+		mNotificacaoController = new NotificacaoController(context);
 	}
 
 	public void getPoesia(final String id, final OnRequestListener callback) {
@@ -150,6 +155,13 @@ public class PoesiaController extends Controller {
 						callback.onError(errorMessage);
 					}
 				});
+				String titulo = UsuarioController.usuarioLogado.getEmail();
+				String mensagem = titulo + "curtiu sua poesia.";
+				
+				
+
+				mNotificacaoController.criaNotificacao(poesia.getPostador(), UsuarioController.usuarioLogado.getEmail(), mensagem,  
+						Calendar.getInstance(), callback);
 			} catch (Exception e) {
 				e.printStackTrace();
 				callback.onError(e.getMessage());

@@ -18,11 +18,11 @@ public class NotificacaoController extends Controller{
 		super(context);
 	}
 
-	public void criaNotificacao(final String titulo, final String mensagem, final String email,
+	public void criaNotificacao(final String enderecado, final String titulo, final String mensagem,
 			final Calendar dataDeCriacao, final OnRequestListener callback) {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
-				final Notificacao notificacao = new Notificacao(titulo, mensagem, dataDeCriacao);
+				final Notificacao notificacao = new Notificacao(enderecado, titulo, mensagem, dataDeCriacao);
 				nDao.criarNotificacao(notificacao, new OnRequestListener(callback.getContext()) {
 
 					@Override
