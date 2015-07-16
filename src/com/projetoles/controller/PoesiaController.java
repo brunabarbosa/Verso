@@ -250,6 +250,6 @@ public class PoesiaController extends Controller {
 				callback.onError(errorMessage);
 			}
 		});
-	}
+	} 
 	
 }
