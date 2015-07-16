@@ -11,19 +11,20 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.view.View;
 
+import com.projetoles.dao.ComentarioDAO;
 import com.projetoles.dao.CurtidaDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
+import com.projetoles.model.Comentario;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 
 public class PoesiaController extends Controller {
 	
-	private static PoesiaDAO pDao = PoesiaDAO.getInstance();
-	private static CurtidaDAO cDao = CurtidaDAO.getInstance();
-
+	private static PoesiaDAO poesiaDao = PoesiaDAO.getInstance();
+	private static CurtidaDAO curtidaDao = CurtidaDAO.getInstance();
+	private static ComentarioDAO comentarioDao = ComentarioDAO.getInstance();
 	private NotificacaoController mNotificacaoController;
-	
 	public PoesiaController(Activity context) {
 		super(context);
 
@@ -31,7 +32,7 @@ public class PoesiaController extends Controller {
 	}
 
 	public void getPoesia(final String id, final OnRequestListener callback) {
-		pDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
+		poesiaDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -59,7 +60,7 @@ public class PoesiaController extends Controller {
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
 			final String trecho, final OnRequestListener callback) {
-		pDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
+		poesiaDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -95,7 +96,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Poesia poema = new Poesia(null, titulo, postador, autor, poesia, dataDeCriacao, tags);
-				pDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
+				poesiaDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {
@@ -132,7 +133,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				cDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
+				curtidaDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
 					
 					@Override
 					public void onSuccess(Object result) {
@@ -172,7 +173,7 @@ public class PoesiaController extends Controller {
 	}
 	
 	public void getCurtida(final String id, final OnRequestListener callback) {
-		cDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -197,5 +198,68 @@ public class PoesiaController extends Controller {
 			}
 		});
 	}
+	
+	public void comentar(final String comentario, final Poesia poesia, final OnRequestListener callback) {
+		if (UsuarioController.usuarioLogado != null) {
+			try {
+				final Comentario comment = new Comentario(comentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
+				comentarioDao.comentar(poesia, comment, new OnRequestListener(callback.getContext()) {
+		            @Override
+		            public void onSuccess(Object result) {
+		                try {
+		                    JSONObject json = new JSONObject(result.toString());
+		                    boolean success = json.getBoolean("success");
+		                    if (success) {
+		                            poesia.addComentario(comentario.toString());
+		                            callback.onSuccess(poesia);
+		                    } else {
+		                            callback.onError(json.getString("message"));
+		                    }
+		                } catch (JSONException e) {
+		                        e.printStackTrace();
+		                        callback.onError(e.getMessage());
+		                }
+		            }
+		
+		            @Override
+		            public void onError(String errorMessage) {
+		                    callback.onError(errorMessage);
+		            }
+		        });
+			} catch (Exception e) {
+				e.printStackTrace();
+				callback.onError(e.getMessage());
+			}
+		} else {
+			callback.onError("Usuário não encontrado.");
+		}
+	}
+	
+	public void getCommentario(final String id, final OnRequestListener callback) {
+		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				try {
+					JSONObject json = new JSONObject(result.toString());
+					boolean success = json.getBoolean("success");
+					if (success) {
+						Comentario comentario = Comentario.converteJson(json);
+						callback.onSuccess(comentario);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	} 
 	
 }
