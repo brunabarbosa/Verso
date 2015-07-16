@@ -15,6 +15,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/robotium-solo-5.2.1.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/facebook"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Tatiana/Documents/UFCG/5_Periodo/LES/facebook-android-sdk-master/libs/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
