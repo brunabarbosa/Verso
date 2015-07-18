@@ -75,8 +75,8 @@ public class PerfilActivity extends Activity {
 					Collections.sort(listPoesias);
 			        listAdapter.notifyDataSetChanged();
 			        
-			        Intent i = new Intent(PerfilActivity.this, CriaNotificacoesActivity.class);
-			        startActivity(i);
+//			        Intent i = new Intent(PerfilActivity.this, CriaNotificacoesActivity.class);
+//			        startActivity(i);
 				}
 				
 				@Override
