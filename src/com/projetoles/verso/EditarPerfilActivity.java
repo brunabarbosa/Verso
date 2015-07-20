@@ -28,6 +28,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Usuario;
@@ -127,11 +130,16 @@ public class EditarPerfilActivity extends Activity {
 					}
 				
 				});
+				
 				final EditText nome = (EditText) findViewById(R.id.etEditName);
 				final EditText biografia = (EditText) findViewById(R.id.etEditBio);
 				final EditText senha = (EditText) findViewById(R.id.etEditPassword);
 				final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
 				final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
+				if(AccessToken.getCurrentAccessToken()!=null){
+					senha.setVisibility(View.INVISIBLE);
+					editarSenha.setVisibility(View.INVISIBLE);
+				}
 				salvarPerfil.setOnClickListener(new OnClickListener() {
 					
 					@Override
