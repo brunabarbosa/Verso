@@ -1,6 +1,5 @@
 package com.projetoles.controller;
 
-import java.security.acl.NotOwnerException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -135,13 +134,14 @@ public class PoesiaController extends Controller {
 				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
 				curtidaDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
 					
-					@Override
+					@Override 
 					public void onSuccess(Object result) {
 						try {
 							JSONObject json = new JSONObject(result.toString());
 							boolean success = json.getBoolean("success");
 							if (success) {
-								callback.onSuccess(json.getString("id"));
+								curtida.setId(json.getString("id"));
+								callback.onSuccess(curtida);
 							} else {
 								callback.onError(json.getString("message"));
 							}
@@ -177,7 +177,7 @@ public class PoesiaController extends Controller {
 		                    JSONObject json = new JSONObject(result.toString());
 		                    boolean success = json.getBoolean("success");
 		                    if (success) {
-		                    	callback.onSuccess(null);
+		                    	callback.onSuccess(json.getString("id"));
 		                    } else {
 		                    	callback.onError(json.getString("message"));
 		                    }

@@ -162,7 +162,7 @@ public class Usuario implements Parcelable {
 	}
 	
 	public void removeCurtida(String id) {
-		this.mCurtidas.add(id);
+		this.mCurtidas.remove(id);
 	}
 	
 	public Set<String> getCurtidas() {

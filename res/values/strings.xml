@@ -9,5 +9,7 @@
     <string name="user_biography">Sua biografia</string>
     <string name="facebook_app_id">1596984717234454</string>
     <string name="title_activity_comentario">ComentarioActivity</string>
+    <string name="send">Send</string>
+    <string name="clear">Clear</string>
 
 </resources>

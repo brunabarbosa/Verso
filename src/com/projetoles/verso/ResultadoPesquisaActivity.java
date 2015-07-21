@@ -29,9 +29,9 @@ public class ResultadoPesquisaActivity extends Activity {
 
 	private PoesiaController poemaController;
 	private ExpandablePoesiaAdapter listAdapter;
-    private ExpandableListView expListView;
-    private List<Poesia> listPoesias;
-    private Bundle mBundle;
+	private ExpandableListView expListView;
+	private List<Poesia> listPoesias;
+	private Bundle mBundle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,44 +44,45 @@ public class ResultadoPesquisaActivity extends Activity {
 			b = b.getBundle("bundle");
 		}
 		mBundle = b;
-		
-		//change fonts
+
+		// change fonts
 		poemaController = new PoesiaController(this);
 
-		// get the listview 
+		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.lvExpPesquisa);
-		
-		//preparing list data
-		listPoesias = new ArrayList<Poesia>();
-        listAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, listPoesias, mBundle);
-		
-		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
-	        int previousGroup = -1;
 
-	        @Override
-	        public void onGroupExpand(int groupPosition) {
-	            if(groupPosition != previousGroup)
-	            	expListView.collapseGroup(previousGroup);
-	            previousGroup = groupPosition;
-	        }
-	    });
-		
-		//setting the list adapter
+		// preparing list data
+		listPoesias = new ArrayList<Poesia>();
+		listAdapter = new ExpandablePoesiaAdapter(
+				ResultadoPesquisaActivity.this, listPoesias, mBundle);
+
+		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			int previousGroup = -1;
+
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				if (groupPosition != previousGroup)
+					expListView.collapseGroup(previousGroup);
+				previousGroup = groupPosition;
+			}
+		});
+
+		// setting the list adapter
 		expListView.setAdapter(listAdapter);
 		listAdapter.notifyDataSetChanged();
-		
+
 		List<String> resultados = b.getStringArrayList("resultados");
 		for (String id : resultados) {
 			poemaController.getPoesia(id, new OnRequestListener(this) {
-				
+
 				@Override
 				public void onSuccess(Object result) {
 					Poesia p = (Poesia) result;
 					listPoesias.add(p);
 					Collections.sort(listPoesias);
-			        listAdapter.notifyDataSetChanged();
+					listAdapter.notifyDataSetChanged();
 				}
-				
+
 				@Override
 				public void onError(String errorMessage) {
 					System.out.println(errorMessage);
@@ -94,11 +95,11 @@ public class ResultadoPesquisaActivity extends Activity {
 	public void onBackPressed() {
 		finish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -114,30 +115,4 @@ public class ResultadoPesquisaActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public void gerarNotificacao(View view) {
-		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, PerfilActivity.class), 0);
-		
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-		builder.setTicker("Ticker Texto");
-		builder.setContentTitle("Título");
-		builder.setContentText("Descrição");
-		builder.setSmallIcon(R.drawable.logo2);
-		builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.like_icon));
-		builder.setContentIntent(p);
-		
-		Notification n = builder.build();
-		n.vibrate = new long[]{150, 300, 150, 600};
-		n.flags = Notification.FLAG_AUTO_CANCEL;
-		nm.notify(R.drawable.like_icon, n);
-		
-		try{
-			Uri som = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-			Ringtone toque = RingtoneManager.getRingtone(this, som);
-			toque.play();
-		}
-		catch(Exception e){}
-	}
-	
 }
