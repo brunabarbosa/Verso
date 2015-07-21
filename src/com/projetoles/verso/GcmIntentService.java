@@ -19,10 +19,14 @@ package com.projetoles.verso;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -108,6 +112,17 @@ public class GcmIntentService extends IntentService {
         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        
+        Notification n = mBuilder.build();
+		n.vibrate = new long[]{150, 300, 150, 600};
+		n.flags = Notification.FLAG_AUTO_CANCEL;
+		mNotificationManager.notify(NOTIFICATION_ID, n);
+		
+		try{
+			Uri som = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+			Ringtone toque = RingtoneManager.getRingtone(this, som);
+			toque.play();
+		}
+		catch(Exception e){}
     }
 }
