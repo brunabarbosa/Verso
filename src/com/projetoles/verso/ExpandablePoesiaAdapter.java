@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
  
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
@@ -147,8 +148,8 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			}
 		});
         
-        ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
-        if (this._listPoesias.get(groupPosition) != null && this._listPoesias.get(groupPosition).getId() != null && !this._listPoesias.get(groupPosition).getId().isEmpty() && UsuarioController.usuarioLogado.getCurtidas().contains(this._listPoesias.get(groupPosition).getId())) {
+        final ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
+        if (UsuarioController.usuarioLogado.getCurtidas().contains(this._listPoesias.get(groupPosition).getId())) {
         	btnLike.setImageResource(R.drawable.like_icon_ativo);
         } else {
         	btnLike.setImageResource(R.drawable.like_icon);
@@ -159,23 +160,28 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			
 			@Override
 			public void onClick(final View v) {
+				btnLike.setClickable(false);
 				if (!ExpandablePoesiaAdapter.this._loading.get(v)) {
 					ExpandablePoesiaAdapter.this._loading.put(v, true);
 					final Poesia poesia = (Poesia) v.getTag();
-					if (poesia != null && poesia.getId() != null && !poesia.getId().isEmpty() && UsuarioController.usuarioLogado.getCurtidas().contains(poesia.getId())) {
+					if (UsuarioController.usuarioLogado.getCurtidas().contains(poesia.getId())) {
 						ExpandablePoesiaAdapter.this._controller.descurtir(poesia, new OnRequestListener(ExpandablePoesiaAdapter.this._context) {
 								
 								@Override
 								public void onSuccess(Object result) {
+									String id = (String) result;
 									UsuarioController.usuarioLogado.removeCurtida(poesia.getId());
+									poesia.removeCurtida(id);
 									((ImageView)v).setImageResource(R.drawable.like_icon);
-									//numLikes.setText(String.valueOf(Integer.valueOf(numLikes.getText().toString())-1));
+									numLikes.setText(String.valueOf(Integer.valueOf(poesia.getCurtidas().size())));
 									ExpandablePoesiaAdapter.this._loading.put(v, false);
+									btnLike.setClickable(true);
 								}
 								 
 								@Override
 								public void onError(String errorMessage) {
 									System.out.println("ERROR descurtir: " + errorMessage);
+									btnLike.setClickable(true);
 								}
 							});
 					} else {
@@ -184,15 +190,19 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								
 								@Override
 								public void onSuccess(Object result) {
+									Curtida curtida = (Curtida) result;
 									UsuarioController.usuarioLogado.addCurtida(poesia.getId());
+									poesia.addCurtida(curtida.getId());
 									((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
-									//numLikes.setText(String.valueOf(Integer.valueOf(numLikes.getText().toString())+1));
+									numLikes.setText(String.valueOf(Integer.valueOf(poesia.getCurtidas().size())));
 									ExpandablePoesiaAdapter.this._loading.put(v, false);
+									btnLike.setClickable(true);
 								}
 								
 								@Override
 								public void onError(String errorMessage) {
 									System.out.println("ERROR curtir: " + errorMessage);
+									btnLike.setClickable(true);
 								}
 							});
 					}

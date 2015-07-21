@@ -35,11 +35,13 @@
 		                android:id="@+id/biografia"
 		                android:layout_width="match_parent"
 		                android:layout_height="wrap_content"
-		                android:inputType="textCapWords"
 		                android:background="#F5DA81"
 		                android:padding="15dp"
 		                android:layout_margin="5dp"
-		                android:textColorHint="#382508" />
+		                android:textColorHint="#382508"
+		                android:ellipsize="none"
+		                android:maxLines="100"
+						android:scrollHorizontally="false" />
 		            
 		            <Button 
 		                android:id="@+id/btnEditarPerfil"

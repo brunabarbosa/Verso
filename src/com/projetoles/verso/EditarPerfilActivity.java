@@ -9,13 +9,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
-import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -29,8 +29,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Usuario;
@@ -136,7 +134,7 @@ public class EditarPerfilActivity extends Activity {
 				final EditText senha = (EditText) findViewById(R.id.etEditPassword);
 				final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
 				final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
-				if(AccessToken.getCurrentAccessToken()!=null){
+				if (AccessToken.getCurrentAccessToken()!=null){
 					senha.setVisibility(View.INVISIBLE);
 					editarSenha.setVisibility(View.INVISIBLE);
 				}
