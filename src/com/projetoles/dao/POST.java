@@ -18,7 +18,7 @@ import org.jsoup.Jsoup;
 
 import android.net.Uri;
 
-import com.projetoles.model.ImageEncoder;
+import com.projetoles.model.ImageUtils;
 
 /**
  * Classe responsável por realizar uma requisição HTTP do tipo POST
@@ -61,7 +61,6 @@ public class POST extends HTTPRequest {
 			output += line;
 		}
 		client.getConnectionManager().shutdown();
-		System.out.println(output);
 		return Jsoup.parse(output).text();
 	}
 	
@@ -88,7 +87,6 @@ public class POST extends HTTPRequest {
 						if (finalErrorMessage != null) {
 							listener.onError(finalErrorMessage);
 						} else {
-							System.out.println(finalMessage);
 							listener.onSuccess(finalMessage);
 						}
 					}
@@ -108,7 +106,7 @@ public class POST extends HTTPRequest {
 		 * @throws IOException 
 		 */
 		public Builder addPhoto(byte[] photo) throws IOException {
-			String encodedPhoto = ImageEncoder.encode(photo);
+			String encodedPhoto = ImageUtils.encode(photo);
 			this.addParam("foto", encodedPhoto);
 			return this;
 		}

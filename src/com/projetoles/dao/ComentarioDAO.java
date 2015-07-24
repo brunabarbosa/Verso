@@ -19,7 +19,7 @@ public class ComentarioDAO extends DAO {
 			.addParam("poesia", poesia.getId())
 			.addParam("comentario", comentario.getComentario())
 			.addParam("dataCriacao", comentario.getStringDataCriacao())
-			.addParam("postador", comentario.getPostador())
+			.addParam("postador", comentario.getPostador().getEmail())
 			.setDomain(DOMAIN)
 			.setPath("comment");
 		POST post = (POST) postRequest.create();

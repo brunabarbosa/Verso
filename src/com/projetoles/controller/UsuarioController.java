@@ -92,6 +92,38 @@ public class UsuarioController extends Controller {
 			callback.onError(e.getMessage());
 		} 
 	}
+	
+	public void getUsuario(final String email, final OnRequestListener callback) {
+		try {
+			sDao.getUsuario(email, new OnRequestListener(callback.getContext()) {
+				
+				@Override
+				public void onSuccess(Object result) {
+					try {
+						JSONObject json = new JSONObject(result.toString());
+						boolean success = json.getBoolean("success");
+						if (success) {
+							Usuario encontrado = Usuario.converteJSON(json);
+							callback.onSuccess(encontrado);
+						} else {
+							callback.onError(json.getString("message"));
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+						callback.onError(e.getMessage());
+					}
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					callback.onError(errorMessage);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			callback.onError(e.getMessage());
+		} 
+	}
 
 	public void addFoto(final Usuario usuario, final byte[] foto, final OnRequestListener callback) {
 		sDao.addFoto(usuario, foto, new OnRequestListener(callback.getContext()) {

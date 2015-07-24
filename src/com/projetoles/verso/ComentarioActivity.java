@@ -14,9 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.projetoles.controller.ComentarioController;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
@@ -24,56 +25,38 @@ import com.projetoles.model.Poesia;
 
 public class ComentarioActivity extends Activity {
 
-	private PoesiaController mPoesiaController;
+	private ComentarioController mComentarioController;
 	private Poesia mPoesia;
-	private ExpandableComentarioAdapter listAdapter;
-	private ExpandableListView expListView;
-	private List<Comentario> listComentarios;
+	private ListComentarioAdapter mListAdapter;
+	private ListView mListView;
+	private List<Comentario> mListComentarios;
 	private Class mCallback;
 	private Bundle mBundle;
+	private int mCountCarregados;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comentario);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+	
 		Bundle b = getIntent().getExtras();
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		mCallback = (Class) b.get("callback");
 		mBundle = b.getBundle("bundle");
 		getActionBar().setTitle(mPoesia.getTitulo());
 
-		mPoesiaController = new PoesiaController(this);
+		mComentarioController = new ComentarioController(this);
 
 		// get the listview 
-		expListView = (ExpandableListView) findViewById(R.id.lvExpComentario);
+		mListView = (ListView) findViewById(R.id.lvExpComentario);
 
 		//preparing list data
-		listComentarios = new ArrayList<Comentario>();
-		listAdapter = new ExpandableComentarioAdapter(ComentarioActivity.this, listComentarios);
+		mListComentarios = new ArrayList<Comentario>();
+		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mListComentarios);
 
 		//setting the list adapter
-		expListView.setAdapter(listAdapter);
-
-		for (String comentario : mPoesia.getComentarios()) {
-			mPoesiaController.getComentario(comentario, new OnRequestListener(this) {
-
-				@Override
-				public void onSuccess(Object result) {
-					Comentario comentario = (Comentario) result;
-					listComentarios.add(comentario);
-					Collections.sort(listComentarios);
-					listAdapter.notifyDataSetChanged();
-				}
-
-				@Override
-				public void onError(String errorMessage) {
-					// TODO Auto-generated method stub
-					System.out.println(errorMessage);
-				}
-			});
-		}
+		mListView.setAdapter(mListAdapter);
 
 		final Button button = (Button) findViewById(R.id.sendComentario);
 		final EditText editText = (EditText) findViewById(R.id.novoComentario);
@@ -85,14 +68,14 @@ public class ComentarioActivity extends Activity {
 			public void onClick(View v) {
 				final String comentarioString = editText.getText().toString();
 				loading.setVisibility(View.VISIBLE);
-				mPoesiaController.comentar(mPoesia, comentarioString, new OnRequestListener(ComentarioActivity.this) {
+				mComentarioController.comentar(mPoesia, comentarioString, new OnRequestListener(ComentarioActivity.this) {
 
 					@Override
 					public void onSuccess(Object result) {
 						Comentario comentario = (Comentario) result;
-						listComentarios.add(comentario);
-						Collections.sort(listComentarios);
-						listAdapter.notifyDataSetChanged();
+						mListComentarios.add(comentario);
+						Collections.sort(mListComentarios);
+						mListAdapter.notifyDataSetChanged();
 						loading.setVisibility(View.GONE);
 						editText.setText("");
 					}
@@ -117,6 +100,37 @@ public class ComentarioActivity extends Activity {
 				});
 			}
 		});
+
+		if (!mPoesia.getComentarios().isEmpty()) {
+			loading.setVisibility(View.VISIBLE);
+		}
+		for (String comentario : mPoesia.getComentarios()) {
+			mComentarioController.getComentario(comentario, new OnRequestListener(this) {
+
+				@Override
+				public void onSuccess(Object result) {
+					Comentario comentario = (Comentario) result;
+					mListComentarios.add(comentario);
+					Collections.sort(mListComentarios);
+					mCountCarregados++;
+					runOnUiThread(new Runnable() {
+						public void run() {
+							if (mCountCarregados == mPoesia.getComentarios().size()) {
+								loading.setVisibility(View.GONE);
+							}
+							mListAdapter.notifyDataSetChanged();
+						}
+					});
+				}
+
+				@Override
+				public void onError(String errorMessage) {
+					// TODO Auto-generated method stub
+					System.out.println(errorMessage);
+					mCountCarregados++;
+				}
+			});
+		}
 
 	}
 

@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
-import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -22,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class BiografiaActivity extends Activity {
@@ -29,33 +24,12 @@ public class BiografiaActivity extends Activity {
 	private ImageView mFoto;
 	private ImageView mFotoFull;
 	private Class mCallback;
-	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
+	private Usuario mUsuario;
 	
 	private void setPhoto(byte[] photo) {
-		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
+		if (photo.length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = getCroppedBitmap(bmp);
+			bmp = ImageUtils.getCroppedBitmap(bmp);
 			mFoto.setImageBitmap(bmp);
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -69,8 +43,6 @@ public class BiografiaActivity extends Activity {
 			mFoto.setImageResource(R.drawable.icone_foto);
 		}
 	}
-	
-	private Usuario mUsuario;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

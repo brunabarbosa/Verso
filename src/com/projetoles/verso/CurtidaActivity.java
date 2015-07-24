@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.CurtidaController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
@@ -19,7 +19,7 @@ import com.projetoles.model.Poesia;
 public class CurtidaActivity extends Activity {
 
 	private Poesia mPoesia;
-	private PoesiaController mController;
+	private CurtidaController mCurtidaController;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +30,14 @@ public class CurtidaActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		getActionBar().setTitle(mPoesia.getTitulo() + " - Curtidas");
-		mController = new PoesiaController(this);
+		mCurtidaController = new CurtidaController(this);
 		
 		final List<String> curtidas = new ArrayList<String>();
 		ListView lv = (ListView) findViewById(R.id.lvExpPesquisa);
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, curtidas);
 		lv.setAdapter(adapter);
 		for (String id : mPoesia.getCurtidas()) {
-			mController.getCurtida(id, new OnRequestListener(this) {
+			mCurtidaController.getCurtida(id, new OnRequestListener(this) {
 				
 				@Override
 				public void onSuccess(Object result) {

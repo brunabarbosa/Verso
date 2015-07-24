@@ -8,22 +8,23 @@ import org.json.JSONObject;
 public class Curtida implements Comparable<Curtida> {
 
 	private String mId;
-	private String mPostador;
+	private Usuario mPostador;
 	private Calendar mDataCriacao;
 	
-	public Curtida(String postador, Calendar dataCriacao) {
+	public Curtida(String id, Usuario postador, Calendar dataCriacao) {
+		setId(id);
 		setPostador(postador);
 		setDataCriacao(dataCriacao);
 	}
 	
-	public void setPostador(String postador) {
-		if (postador == null || postador.trim().isEmpty()) {
+	public void setPostador(Usuario postador) {
+		if (postador == null) {
 			throw new IllegalArgumentException("Autor é obrigatório.");
 		}
 		this.mPostador = postador;
 	}
 	
-	public String getPostador() {
+	public Usuario getPostador() {
 		return mPostador;
 	}
 	
@@ -47,15 +48,12 @@ public class Curtida implements Comparable<Curtida> {
 		return this.mId;
 	}
 	
-	public static Curtida converteJson(JSONObject json) throws JSONException {
+	public static Curtida converteJson(Usuario postador, JSONObject json) throws JSONException {
 		Long tempo = Long.valueOf(json.getString("dataCriacao"));
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(tempo);
-		String postador = json.getString("postador");
-		Curtida curtida = new Curtida(postador, c);
 		String id = json.getString("id");
-		curtida.setId(id);
-		return curtida;
+		return new Curtida(id, postador, c);
 	}
 
 	@Override

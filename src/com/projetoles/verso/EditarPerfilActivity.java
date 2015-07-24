@@ -9,13 +9,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -31,6 +25,7 @@ import android.widget.RelativeLayout;
 import com.facebook.AccessToken;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class EditarPerfilActivity extends Activity {
@@ -46,32 +41,10 @@ public class EditarPerfilActivity extends Activity {
 	private static final int SELECT_PHOTO = 100;
 	private static final int CAMERA_REQUEST = 1888; 
 	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
-	
 	private void setPhoto(byte[] photo) {
 		if (mUsuario.getFoto().length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = getCroppedBitmap(bmp);
+			bmp = ImageUtils.getCroppedBitmap(bmp);
 			mFoto.setImageBitmap(bmp);
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -262,7 +235,7 @@ public class EditarPerfilActivity extends Activity {
         		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         	}
         	ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
         	byte[] b = stream.toByteArray();
         	//mLoading.setVisibility(View.VISIBLE);
         	mController.addFoto(UsuarioController.usuarioLogado, b, new OnRequestListener(this) {

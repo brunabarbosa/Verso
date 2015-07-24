@@ -2,47 +2,67 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:orientation="vertical" >
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#dbbf9d"
-        android:columnCount="1"
-        android:rowCount="2" >
+        android:layout_height="match_parent"
+        android:columnCount="2"
+        android:rowCount="3" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+		<ImageView
+            android:id="@+id/userPicture"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:layout_rowSpan="3"
+            android:layout_gravity="left|top"
+            android:layout_margin="5dp"
+            android:src="@drawable/icone_foto" />
+		
+		<TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/barra_poesia"
-            android:orientation="vertical"
-            android:padding="10dp" >
-            
-            <TextView
-	            android:id="@+id/lblListHeaderComentario"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_row="0"
-	            android:layout_column="0"
-	            android:gravity="start|center"
-	            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-	            android:textColor="#927e58"
-	            android:textSize="17dp" />
-	        
-	        <TextView
-	            android:id="@+id/lblListHeaderData"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_row="1"
-	            android:layout_column="0"
-	            android:gravity="start|center"
-	            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-	            android:textColor="#927e58"
-	            android:textSize="14dp" />
-	            
-        </LinearLayout>
-        
+            android:layout_column="1"
+            android:layout_row="0"
+            android:layout_gravity="fill_horizontal"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="User Name"
+            android:textColor="#927e58"
+            android:textSize="20sp" />
+		
+		<TextView
+            android:id="@+id/comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="1"
+            android:layout_gravity="fill_horizontal"
+            android:ellipsize="none"
+            android:maxLines="100"
+			android:scrollHorizontally="false" 
+            android:text="User Name"
+            android:textColor="#927e58" />
+		
+		<TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="2"
+            android:layout_gravity="fill_horizontal"
+            android:ellipsize="none"
+            android:maxLines="100"
+			android:scrollHorizontally="false" 
+            android:text="User Name"
+            android:textColor="#a28e68"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+		
     </GridLayout>
  
 </LinearLayout>

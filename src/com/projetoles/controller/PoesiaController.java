@@ -17,12 +17,11 @@ import com.projetoles.dao.PoesiaDAO;
 import com.projetoles.model.Comentario;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.Usuario;
 
 public class PoesiaController extends Controller {
 	
-	private static PoesiaDAO poesiaDao = PoesiaDAO.getInstance();
-	private static CurtidaDAO curtidaDao = CurtidaDAO.getInstance();
-	private static ComentarioDAO comentarioDao = ComentarioDAO.getInstance();
+	private static PoesiaDAO sDao = PoesiaDAO.getInstance();
 	private NotificacaoController mNotificacaoController;
 	
 	public PoesiaController(Activity context) {
@@ -31,7 +30,7 @@ public class PoesiaController extends Controller {
 	}
 
 	public void getPoesia(final String id, final OnRequestListener callback) {
-		poesiaDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
+		sDao.getPoesia(id, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -59,7 +58,7 @@ public class PoesiaController extends Controller {
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
 			final String trecho, final OnRequestListener callback) {
-		poesiaDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
+		sDao.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -95,7 +94,7 @@ public class PoesiaController extends Controller {
 		if (UsuarioController.usuarioLogado != null) {
 			try {
 				final Poesia poema = new Poesia(null, titulo, postador, autor, poesia, dataDeCriacao, tags);
-				poesiaDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
+				sDao.criarPoesia(poema, postador, new OnRequestListener(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Object result) {
@@ -126,170 +125,6 @@ public class PoesiaController extends Controller {
 		} else {
 			callback.onError("Usuário não encontrado.");
 		}
-	}
-	
-	public void curtir(final Poesia poesia, final OnRequestListener callback) {
-		if (UsuarioController.usuarioLogado != null) {
-			try {
-				final Curtida curtida = new Curtida(UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				curtidaDao.curtir(poesia, curtida, new OnRequestListener(callback.getContext()) {
-					
-					@Override 
-					public void onSuccess(Object result) {
-						try {
-							JSONObject json = new JSONObject(result.toString());
-							boolean success = json.getBoolean("success");
-							if (success) {
-								curtida.setId(json.getString("id"));
-								callback.onSuccess(curtida);
-							} else {
-								callback.onError(json.getString("message"));
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-							callback.onError(e.getMessage());
-						}
-					}
-					
-					@Override
-					public void onError(String errorMessage) {
-						callback.onError(errorMessage);
-					}
-				});
-				
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-				callback.onError(e.getMessage());
-			}
-		} else {
-			callback.onError("Usuário não encontrado.");
-		}
-	}
-
-	public void descurtir(Poesia poesia, final OnRequestListener callback) {
-		if (UsuarioController.usuarioLogado != null) {
-			try {
-				curtidaDao.descurtir(UsuarioController.usuarioLogado, poesia, new OnRequestListener(callback.getContext()) {
-		            @Override
-		            public void onSuccess(Object result) {
-		                try {
-		                    JSONObject json = new JSONObject(result.toString());
-		                    boolean success = json.getBoolean("success");
-		                    if (success) {
-		                    	callback.onSuccess(json.getString("id"));
-		                    } else {
-		                    	callback.onError(json.getString("message"));
-		                    }
-		                } catch (JSONException e) {
-	                        e.printStackTrace();
-	                        callback.onError(e.getMessage());
-		                }
-		            }
-		
-		            @Override
-		            public void onError(String errorMessage) {
-	                    callback.onError(errorMessage);
-		            }
-		        });
-			} catch (Exception e) {
-				e.printStackTrace();
-				callback.onError(e.getMessage());
-			}
-		} else {
-			callback.onError("Usuário não encontrado.");
-		}
-	} 
-	
-	public void getCurtida(final String id, final OnRequestListener callback) {
-		curtidaDao.getCurtida(id, new OnRequestListener(callback.getContext()) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				try {
-					JSONObject json = new JSONObject(result.toString());
-					boolean success = json.getBoolean("success");
-					if (success) {
-						Curtida curtida = Curtida.converteJson(json);
-						callback.onSuccess(curtida);
-					} else {
-						callback.onError(json.getString("message"));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					callback.onError(e.getMessage());
-				}
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				callback.onError(errorMessage);
-			}
-		});
-	}
-	
-	public void comentar(final Poesia poesia, final String stringComentario, final OnRequestListener callback) {
-		if (UsuarioController.usuarioLogado != null) {
-			try {
-				final Comentario comentario = new Comentario(stringComentario, UsuarioController.usuarioLogado.getEmail(), Calendar.getInstance());
-				comentarioDao.comentar(poesia, comentario, new OnRequestListener(callback.getContext()) {
-					@Override
-					public void onSuccess(Object result) {
-						try {
-							JSONObject json = new JSONObject(result.toString());
-							boolean success = json.getBoolean("success");
-							if (success) {
-								callback.onSuccess(comentario);
-							} else {
-								callback.onError(json.getString("message"));
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-							callback.onError(e.getMessage());
-						}
-					}
-		
-					@Override
-					public void onError(String errorMessage) {
-						callback.onError(errorMessage);
-					}
-				});
-				
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-				callback.onError(e.getMessage());
-			}
-		} else {
-			callback.onError("Usuário não encontrado.");
-		}
-	}
-
-	public void getComentario(final String id, final OnRequestListener callback) {
-		comentarioDao.getComentario(id, new OnRequestListener(callback.getContext()) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				try {
-					JSONObject json = new JSONObject(result.toString());
-					boolean success = json.getBoolean("success");
-					if (success) {
-						Comentario comentario = Comentario.converteJson(json);
-						callback.onSuccess(comentario);
-					} else {
-						callback.onError(json.getString("message"));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					callback.onError(e.getMessage());
-				}
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				callback.onError(errorMessage);
-			}
-		});
 	}
 	
 }

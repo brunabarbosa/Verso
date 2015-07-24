@@ -8,10 +8,10 @@ import org.json.JSONObject;
 public class Comentario implements Comparable<Comentario> {
 
 	private String mComentario;
-	private String mPostador;
+	private Usuario mPostador;
 	private Calendar mDataCriacao;
 	
-	public Comentario(String comentario, String postador, Calendar data) {
+	public Comentario(String comentario, Usuario postador, Calendar data) {
 		setComentario(comentario);
 		setPostador(postador);
 		setDataCriacao(data);
@@ -28,14 +28,14 @@ public class Comentario implements Comparable<Comentario> {
 		return this.mComentario;
 	}
 	
-	public void setPostador(String postador) {
-		if (postador == null || postador.trim().isEmpty()) {
+	public void setPostador(Usuario postador) {
+		if (postador == null) {
 			throw new IllegalArgumentException("Autor é obrigatório.");
 		}
 		this.mPostador = postador;
 	}
 	
-	public String getPostador() {
+	public Usuario getPostador() {
 		return this.mPostador;
 	}
 	
@@ -51,12 +51,11 @@ public class Comentario implements Comparable<Comentario> {
 		return String.valueOf(mDataCriacao.getTimeInMillis());
 	}
 
-	public static Comentario converteJson(JSONObject json) throws JSONException {
+	public static Comentario converteJson(Usuario postador, JSONObject json) throws JSONException {
 		String comentario = json.getString("comentario");
 		Long tempo = Long.valueOf(json.getString("dataCriacao"));
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(tempo);
-		String postador = json.getString("postador");
 		return new Comentario(comentario, postador, c);
 	}
 

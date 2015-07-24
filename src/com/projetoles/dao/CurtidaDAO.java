@@ -20,7 +20,7 @@ public class CurtidaDAO extends DAO {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("poesia", poesia.getId())
 			.addParam("dataCriacao", curtida.getStringDataCriacao())
-			.addParam("postador", curtida.getPostador())
+			.addParam("postador", curtida.getPostador().getEmail())
 			.setDomain(DOMAIN)
 			.setPath("like");
 		POST post = (POST) postRequest.create();

@@ -176,7 +176,7 @@ public class Usuario implements Parcelable {
 		String fotoEncoded = obj.getString("foto");
 		byte[] foto = {};
 		if (!fotoEncoded.equals("undefined"))
-			foto = ImageEncoder.decode(obj.getString("foto"));
+			foto = ImageUtils.decode(obj.getString("foto"));
 		Usuario u = new Usuario(email, nome, null);
 		if (!bio.equals("undefined"))
 			u.setBiografia(bio);

@@ -9,14 +9,8 @@ import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -34,6 +28,7 @@ import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class MainActivity extends TabActivity {
@@ -53,33 +48,11 @@ public class MainActivity extends TabActivity {
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario;
 	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
-	
 	private void setPhoto(byte[] photo) {
 		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
-		if (mUsuario.getFoto().length > 0) {
+		if (photo.length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = getCroppedBitmap(bmp);
+			bmp = ImageUtils.getCroppedBitmap(bmp);
 			userPicture.setImageBitmap(bmp);
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);

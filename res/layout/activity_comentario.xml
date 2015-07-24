@@ -9,12 +9,12 @@
 	    android:weightSum="1"
 	    android:background="@drawable/background" >
 	    
-		<ExpandableListView
+		<ListView
 	        android:id="@+id/lvExpComentario"
 	        android:layout_above="@+id/campoComment"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent" >
-	    </ExpandableListView>
+	    </ListView>
 	    
 		<LinearLayout
 		    android:id="@+id/campoComment"
@@ -45,9 +45,7 @@
 	    android:id="@+id/loadComentario"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:background="#CC000000" 
-	    android:visibility="gone"
-	    android:clickable="true" >
+	    android:visibility="gone">
 	
 	    <ProgressBar
 	        style="?android:attr/progressBarStyleLarge"
