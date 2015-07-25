@@ -300,4 +300,12 @@ public class MainActivity extends TabActivity {
         }
 	}
 	
+	public void onClick(View view) {
+		Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+		intent.putExtra("usuario", mUsuario);
+		intent.putExtra("callback", MainActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	
 }
