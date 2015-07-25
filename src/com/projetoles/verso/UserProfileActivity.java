@@ -18,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
@@ -30,28 +32,54 @@ public class UserProfileActivity extends Activity {
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario; 
-	
+	private PoesiaController mPoesiaController;
+	private Poesia mPoesia;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_profile);
 		
-		getActionBar().hide(); 
-
-		mController = new UsuarioController(this);
-		mController.getLoggedUser(new OnRequestListener(this) {
+		getActionBar().hide();
+		
+		Intent intent = getIntent();
+		
+		String poema = intent.getStringExtra("poema");
+		String titulo = intent.getStringExtra("poemaTitulo");
+		String autor = intent.getStringExtra("poemaAutor");
+		String tag = intent.getStringExtra("poemaTag");
+		
+		mPoesiaController.pesquisar(titulo, autor, tag, poema, new OnRequestListener(this) {
 			
 			@Override
 			public void onSuccess(Object result) {
-				mUsuario = (Usuario) result;
-				setUp();
+				mPoesia = (Poesia) result;
+				
 			}
 			
 			@Override
 			public void onError(String errorMessage) {
 				finish();
+				
 			}
 		});
+
+		mController = new UsuarioController(this);
+		mController.getUsuario(mPoesia.getPostador(), new OnRequestListener(this) {
+			
+			@Override
+			public void onSuccess(Object result) {
+				mUsuario = (Usuario) result;
+				setUp();
+				
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				finish();
+				
+			}
+		});
+						
 	}
 	
 	public Bitmap getCroppedBitmap(Bitmap bitmap) {

@@ -302,7 +302,21 @@ public class MainActivity extends TabActivity {
 	
 	public void onClick(View view) {
 		Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-		intent.putExtra("usuario", mUsuario);
+		
+		TextView tvTitulo = (TextView) findViewById(R.id.poemaTitulo);
+		TextView tvPoema = (TextView) findViewById(R.id.poema);
+		TextView tvAutor = (TextView) findViewById(R.id.poemaAutor);
+		TextView tvTag = (TextView) findViewById(R.id.poemaTags);
+		
+		String titulo = tvTitulo.getText().toString();
+		String poema = tvPoema.getText().toString();
+		String autor = tvAutor.getText().toString();
+		String tag = tvTag.getText().toString();
+		
+		intent.putExtra("poemaTitulo", titulo);
+		intent.putExtra("poema", poema);
+		intent.putExtra("poemaAutor", autor);
+		intent.putExtra("poemaTag", tag);
 		intent.putExtra("callback", MainActivity.class);
 		startActivity(intent);
 		finish();
