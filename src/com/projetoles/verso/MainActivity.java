@@ -302,7 +302,7 @@ public class MainActivity extends TabActivity {
 	
 	public void onClick(View view) {
 		Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-		
+		 
 		TextView tvTitulo = (TextView) findViewById(R.id.poemaTitulo);
 		TextView tvPoema = (TextView) findViewById(R.id.poema);
 		TextView tvAutor = (TextView) findViewById(R.id.poemaAutor);

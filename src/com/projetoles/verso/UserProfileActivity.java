@@ -34,6 +34,8 @@ public class UserProfileActivity extends Activity {
 	private Usuario mUsuario; 
 	private PoesiaController mPoesiaController;
 	private Poesia mPoesia;
+	private Class mCallback;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,14 +43,17 @@ public class UserProfileActivity extends Activity {
 		
 		getActionBar().hide();
 		
-		Intent intent = getIntent();
 		
-		String poema = intent.getStringExtra("poema");
-		String titulo = intent.getStringExtra("poemaTitulo");
-		String autor = intent.getStringExtra("poemaAutor");
-		String tag = intent.getStringExtra("poemaTag");
+		Bundle b = getIntent().getExtras();
+		mCallback = (Class) b.get("callback");
 		
-		mPoesiaController.pesquisar(titulo, autor, tag, poema, new OnRequestListener(this) {
+		
+		String poema = b.getParcelable("poema");
+		String titulo = b.getParcelable("poemaTitulo");
+		String autor = b.getParcelable("poemaAutor");
+		String tag = b.getParcelable("poemaTag");
+				
+ 		mPoesiaController.pesquisar(titulo, autor, tag, poema, new OnRequestListener(this) {
 			
 			@Override
 			public void onSuccess(Object result) {
