@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Usuario;
@@ -64,6 +65,7 @@ public class EditarPerfilActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_editar_perfil);
+		FacebookSdk.sdkInitialize(this);   
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mController = new UsuarioController(this);

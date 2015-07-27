@@ -107,13 +107,14 @@ public class MainActivity extends TabActivity {
 
 		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
 		mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
+		mLoading = findViewById(R.id.mainLoading);
 		
 		View profilePhotoContent = findViewById(R.id.profilePhotoContent);
 		Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
-		ImageView foto = (ImageView) findViewById(R.id.profilePhoto);
-		ImageView fotoFull = (ImageView) findViewById(R.id.userPicture);
+		ImageView fotoFull = (ImageView) findViewById(R.id.profilePhoto);
+		ImageView fotoPreview = (ImageView) findViewById(R.id.userPicture);
 		
-		mCameraBundle = new CameraActivityBundle(this, foto, fotoFull, profilePhotoContent);
+		mCameraBundle = new CameraActivityBundle(this, fotoPreview, fotoFull, profilePhotoContent);
 		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
 		mCameraBundle.editarFoto(btnEditPhoto);
 		

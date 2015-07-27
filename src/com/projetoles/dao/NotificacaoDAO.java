@@ -29,7 +29,7 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 			.addParam("mensagem", notificacao.getMensagem())
 			.addParam("dataCriacao", notificacao.getStringDataCriacao())
 			.setDomain(DOMAIN)
-			.setPath("notif");
+			.setPath("notif/post");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
@@ -39,7 +39,7 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 		GET.Builder getRequest = (GET.Builder) new GET.Builder()
 			.addParam("id", id)
 			.setDomain(DOMAIN)
-			.setPath("notif");
+			.setPath("notif/get");
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	}

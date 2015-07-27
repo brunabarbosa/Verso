@@ -26,11 +26,11 @@ public class CurtidaDAO extends DAO<Curtida> {
 	@Override
 	public void post(Curtida curtida, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("poesia", curtida.getPoesia().getId())
-			.addParam("dataCriacao", curtida.getStringDataCriacao())
-			.addParam("postador", curtida.getPostador().getId())
+			.addParam("poetry", curtida.getPoesia().getId())
+			.addParam("date", curtida.getStringDataCriacao())
+			.addParam("poster", curtida.getPostador().getId())
 			.setDomain(DOMAIN)
-			.setPath("like");
+			.setPath("like/post");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
@@ -40,7 +40,7 @@ public class CurtidaDAO extends DAO<Curtida> {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("id", id)
 			.setDomain(DOMAIN)
-			.setPath("unlike");
+			.setPath("like/delete");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
@@ -50,7 +50,7 @@ public class CurtidaDAO extends DAO<Curtida> {
 		GET.Builder getRequest = (GET.Builder) new GET.Builder()
 			.addParam("id", id)
 			.setDomain(DOMAIN)
-			.setPath("like");
+			.setPath("like/get");
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	} 
@@ -58,7 +58,7 @@ public class CurtidaDAO extends DAO<Curtida> {
 	@Override
 	public Curtida getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
-		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
+		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));
 		return new Curtida(id, dataCriacao, (Usuario)params.get(0), (Poesia)params.get(1));
 	}
 

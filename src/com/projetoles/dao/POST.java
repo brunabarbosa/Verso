@@ -76,7 +76,7 @@ public class POST extends HTTPRequest {
 		 */
 		public Builder addPhoto(byte[] photo) throws IOException {
 			String encodedPhoto = ImageUtils.encode(photo);
-			this.addParam("foto", encodedPhoto);
+			this.addParam("photo", encodedPhoto);
 			return this;
 		}
 

@@ -25,14 +25,25 @@ public class UsuarioDAO extends DAO<Usuario> {
 		return sInstance;
 	}
 
-	public void auth(Usuario usuario, OnRequestListener<String> callback) {
-		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+	public void login(Usuario usuario, OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
 			.addParam("email", usuario.getId())
 			.addParam("password", usuario.getSenha())
 			.setDomain(DOMAIN)
-			.setPath("auth");
-		POST post = (POST) postRequest.create();
-		post.execute(callback);
+			.setPath("user/get");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+
+	@Override
+	public void get(String email, OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("email", email)
+			.addParam("password", "")
+			.setDomain(DOMAIN)
+			.setPath("user/get");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
 	}
 
 	public void setFoto(Usuario usuario, byte[] photo, OnRequestListener<String> callback) {
@@ -41,7 +52,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 				.addParam("email", usuario.getId())))
 				.addPhoto(photo)
 				.setDomain(DOMAIN)
-				.setPath("photo_upload");
+				.setPath("user/photo_upload");
 			POST post = (POST) postRequest.create();
 			post.execute(callback);
 		} catch (IOException e) {
@@ -58,31 +69,20 @@ public class UsuarioDAO extends DAO<Usuario> {
 			.addParam("password", usuario.getSenha())
 			.addParam("name", usuario.getNome())
 			.setDomain(DOMAIN)
-			.setPath("user");
+			.setPath("user/post");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
 	
 	@Override
-	public void get(String email, OnRequestListener<String> callback) {
-		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("email", email)
-			.addParam("password", "-1")
-			.setDomain(DOMAIN)
-			.setPath("auth");
-		POST post = (POST) postRequest.create();
-		post.execute(callback);
-	}
-
-	@Override
 	public void put(Usuario usuario, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("email", usuario.getId())
-			.addParam("nome", usuario.getNome())
+			.addParam("name", usuario.getNome())
 			.addParam("bio", usuario.getBiografia())
-			.addParam("senha", usuario.getSenha() == null ? "" : usuario.getSenha())
+			.addParam("password", usuario.getSenha() == null ? "" : usuario.getSenha())
 			.setDomain(DOMAIN)
-			.setPath("edit_user");
+			.setPath("user/put");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
@@ -91,19 +91,17 @@ public class UsuarioDAO extends DAO<Usuario> {
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");
-		String bio = obj.getString("bio");
-		String fotoEncoded = obj.getString("foto");
 		byte[] foto = {};
-		if (!fotoEncoded.equals("undefined")) {
-			foto = ImageUtils.decode(obj.getString("foto"));
+		if (obj.has("photo")) {
+			foto = ImageUtils.decode(obj.getString("photo"));
 		}
 		String biografia = "";
-		if (!bio.equals("undefined")) {
-			biografia = bio;
+		if (obj.has("bio")) {
+			biografia = obj.getString("bio");
 		}
-		ObjectListID poesias = new ObjectListID(obj.getJSONArray("poesias"));
-		ObjectListID notificacoes = new ObjectListID(obj.getJSONArray("notificacoes"));
-		ObjectListID curtidas = new ObjectListID(obj.getJSONArray("curtidas"));
+		ObjectListID poesias = new ObjectListID(obj.getJSONArray("poetries"));
+		ObjectListID notificacoes = new ObjectListID(obj.getJSONArray("notifications"));
+		ObjectListID curtidas = new ObjectListID(obj.getJSONArray("likes"));
 		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas);
 	}
 

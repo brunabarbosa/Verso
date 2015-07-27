@@ -85,6 +85,9 @@ public class CameraActivityBundle {
 			}
 		} else {
 			mFotoPreview.setImageResource(R.drawable.icone_foto);
+			if (mFotoFull != null) {
+				mFotoFull.setImageResource(R.drawable.icone_foto);
+			}
 		}
 	}
 	

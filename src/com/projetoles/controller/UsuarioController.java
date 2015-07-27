@@ -25,18 +25,7 @@ public class UsuarioController extends Controller<Usuario> {
 
 	private void login(Usuario usuario) {
 		if (usuario != null) {
-			if (usuarioLogado == null) {
-				usuarioLogado = usuario;
-			} else {
-				usuarioLogado.setBiografia(usuario.getBiografia());
-				usuarioLogado.setCurtidas(usuario.getCurtidas());
-				usuarioLogado.setFoto(usuario.getFoto());
-				usuarioLogado.setId(usuario.getId());
-				usuarioLogado.setNotificacoes(usuario.getNotificacoes());
-				usuarioLogado.setPoesias(usuario.getPoesias());
-				if (usuario.getSenha() != null && !usuario.getSenha().isEmpty())
-					usuarioLogado.setSenha(usuario.getSenha());
-			} 
+			usuarioLogado = usuario;
 			mEditor.putString("id", usuario.getId()).apply();
 			mEditor.putString("senha", usuario.getSenha()).apply();
 		}
@@ -70,7 +59,7 @@ public class UsuarioController extends Controller<Usuario> {
 	}
 	
 	private void login(final Usuario usuario, final OnRequestListener<Usuario> callback) {
-		((UsuarioDAO)mDAO).auth(usuario, new OnRequestListener<String>(callback.getContext()) {
+		((UsuarioDAO)mDAO).login(usuario, new OnRequestListener<String>(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(String jsonResult) {
@@ -132,7 +121,7 @@ public class UsuarioController extends Controller<Usuario> {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				Usuario usuario = new Usuario(id, nome, "", new byte[]{}, new ObjectListID(), new ObjectListID(), new ObjectListID());
+				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, new ObjectListID(), new ObjectListID(), new ObjectListID());
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -153,28 +142,24 @@ public class UsuarioController extends Controller<Usuario> {
 		}
 	}
 
-	public void put(final String nome, final String biografia, String senha, String repetirSenha, 
+	public void put(final String nome, final String biografia, final String senha, String repetirSenha, 
 			final OnRequestListener<Usuario> callback) {
 		try {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				if (senha.trim().isEmpty()) {
-					senha = null;
-				} 
-				final String ssenha = senha;
-				Usuario usuario = new Usuario(usuarioLogado.getId(), senha, nome, biografia, usuarioLogado.getFoto(), 
+				Usuario usuario = new Usuario(usuarioLogado.getId(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
 						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
 					public void onSuccess(Usuario usuario) {
-						usuario.setNome(nome); 
-						usuario.setBiografia(biografia);
-						if (ssenha != null) {
-							usuario.setSenha(ssenha);
+						usuarioLogado.setNome(nome);
+						usuarioLogado.setBiografia(biografia);
+						if (senha != null && !senha.trim().isEmpty()) {
+							usuarioLogado.setSenha(senha);
 						}
-						login(usuario);
+						login(usuarioLogado);
 						callback.onSuccess(usuario);
 					}
 

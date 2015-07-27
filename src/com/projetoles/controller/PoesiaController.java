@@ -36,7 +36,7 @@ public class PoesiaController extends Controller<Poesia> {
 					boolean success = json.getBoolean("success");
 					if (success) {
 						ArrayList<String> ids = new ArrayList<String>();
-						JSONArray array = json.getJSONArray("poesias");
+						JSONArray array = json.getJSONArray("poetries");
 						for (int i = 0; i < array.length(); i++) {
 							ids.add(array.get(i).toString());
 						}

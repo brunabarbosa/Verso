@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projetoles.controller.CurtidaController;
-import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
@@ -155,7 +154,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         
         // Botao curtir
         final ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
-        if (mUsuario.getCurtidas().contains(poesia.getId())) {
+        if (mUsuario.getCurtidas().getIntersecction(poesia.getCurtidas()) != null) {
         	btnLike.setImageResource(R.drawable.like_icon_ativo);
         } else {
         	btnLike.setImageResource(R.drawable.like_icon);

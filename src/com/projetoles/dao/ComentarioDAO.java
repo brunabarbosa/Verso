@@ -25,12 +25,12 @@ public class ComentarioDAO extends DAO<Comentario> {
 	@Override
 	public void post(Comentario comentario, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("poesia", comentario.getPoesia().getId())
-			.addParam("comentario", comentario.getComentario())
-			.addParam("dataCriacao", comentario.getStringDataCriacao())
-			.addParam("postador", comentario.getPostador().getId())
+			.addParam("poetry", comentario.getPoesia().getId())
+			.addParam("comment", comentario.getComentario())
+			.addParam("date", comentario.getStringDataCriacao())
+			.addParam("poster", comentario.getPostador().getId())
 			.setDomain(DOMAIN)
-			.setPath("comment");
+			.setPath("comment/post");
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
@@ -40,7 +40,7 @@ public class ComentarioDAO extends DAO<Comentario> {
 		GET.Builder getRequest = (GET.Builder) new GET.Builder()
 			.addParam("id", id)
 			.setDomain(DOMAIN)
-			.setPath("comment");
+			.setPath("comment/get");
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	}
@@ -48,8 +48,8 @@ public class ComentarioDAO extends DAO<Comentario> {
 	@Override
 	public Comentario getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
-		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
-		String comentario = json.getString("comentario");
+		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));
+		String comentario = json.getString("comment");
 		return new Comentario(id, dataCriacao, comentario, (Usuario)params.get(0), (Poesia)params.get(1));
 	}
 
