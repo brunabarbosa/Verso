@@ -2,10 +2,7 @@ package com.projetoles.verso;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,32 +13,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
-import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class BiografiaActivity extends Activity {
-	
-	private ImageView mFoto;
-	private ImageView mFotoFull;
+	 
 	private Class mCallback;
 	private Usuario mUsuario;
+	private Button btnEditarPerfil;
 	
-	private void setPhoto(byte[] photo) {
-		if (photo.length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			mFoto.setImageBitmap(bmp);
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			if (bmp.getHeight() > dm.heightPixels / 2) {
-				int width = (int)((float)bmp.getWidth() / bmp.getHeight() * dm.heightPixels / 2);
-				int height = dm.heightPixels / 2;
-				bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
+	private void editarPerfil() {
+		btnEditarPerfil.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
+				startActivity(i);
+				finish();
 			}
-			mFotoFull.setImageBitmap(bmp);
-		} else {
-			mFoto.setImageResource(R.drawable.icone_foto);
-		}
+		});
 	}
 	
 	@Override
@@ -59,37 +48,19 @@ public class BiografiaActivity extends Activity {
 		} else {
 			editBio.setText(mUsuario.getBiografia());
 		}
-		mFotoFull = (ImageView) findViewById(R.id.biografiaFullPhoto);
- 		mFoto = (ImageView) findViewById(R.id.biografiaFoto);
-		setPhoto(mUsuario.getFoto());
-		final RelativeLayout biografiaPhotoContent = (RelativeLayout) findViewById(R.id.biografiaPhotoContent);
-		mFoto.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				biografiaPhotoContent.setVisibility(View.VISIBLE);
-			}
-		});
-		biografiaPhotoContent.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				biografiaPhotoContent.setVisibility(View.GONE);
-			}
-		});
-		Button editarPerfil = (Button) findViewById(R.id.btnEditarPerfil);
+		ImageView fotoFull = (ImageView) findViewById(R.id.biografiaFullPhoto);
+ 		ImageView fotoPreview = (ImageView) findViewById(R.id.biografiaFoto);
+ 		View loading = (View) findViewById(R.id.biografiaPhotoContent);
+ 		
+ 		CameraActivityBundle cameraBundle = new CameraActivityBundle(this, fotoPreview, fotoFull, loading);
+ 		cameraBundle.setFoto(mUsuario.getFoto());
+ 		
+		btnEditarPerfil = (Button) findViewById(R.id.btnEditarPerfil);
 		if (!mUsuario.equals(UsuarioController.usuarioLogado)) {
-			editarPerfil.setVisibility(View.GONE);
+			btnEditarPerfil.setVisibility(View.GONE);
 		}
-		editarPerfil.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
-				startActivity(i);
-				finish();
-			}
-		});
+		
+		editarPerfil();
 	}
 	
 	@Override

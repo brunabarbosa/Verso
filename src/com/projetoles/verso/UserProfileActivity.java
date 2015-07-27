@@ -25,7 +25,6 @@ import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
-
 	
 	private UsuarioController mController;
 	private ImageView mUserPicturePreview;
@@ -69,7 +68,7 @@ public class UserProfileActivity extends Activity {
 		});
 
 		mController = new UsuarioController(this);
-		mController.getUsuario(mPoesia.getPostador(), new OnRequestListener(this) {
+		/*mController.getUsuario(mPoesia.getPostador(), new OnRequestListener(this) {
 			
 			@Override
 			public void onSuccess(Object result) {
@@ -83,7 +82,7 @@ public class UserProfileActivity extends Activity {
 				finish();
 				
 			}
-		});
+		});*/
 						
 	}
 	

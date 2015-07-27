@@ -1,6 +1,5 @@
 package com.projetoles.verso;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import android.widget.ListView;
 
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 
@@ -20,6 +20,28 @@ public class CurtidaActivity extends Activity {
 
 	private Poesia mPoesia;
 	private CurtidaController mCurtidaController;
+	private List<String> mListCurtidas;
+	private ListView mListView;
+	private ArrayAdapter<String> mAdapter;
+	
+	private void carregaCurtidas() {
+		for (String id : mPoesia.getCurtidas().getList()) {
+			mCurtidaController.get(id, new OnRequestListener<Curtida>(this) {
+				 
+				@Override 
+				public void onSuccess(Curtida curtida) {
+					String data = CalendarUtils.getDataFormada(curtida.getDataCriacao());
+					mListCurtidas.add(curtida.getPostador().getNome() + " curtiu isso em " + data + ".");
+					mAdapter.notifyDataSetChanged();
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					System.out.println(errorMessage);
+				}
+			});
+		}
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,30 +52,15 @@ public class CurtidaActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		getActionBar().setTitle(mPoesia.getTitulo() + " - Curtidas");
+		
 		mCurtidaController = new CurtidaController(this);
 		
-		final List<String> curtidas = new ArrayList<String>();
-		ListView lv = (ListView) findViewById(R.id.lvExpPesquisa);
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, curtidas);
-		lv.setAdapter(adapter);
-		for (String id : mPoesia.getCurtidas()) {
-			mCurtidaController.getCurtida(id, new OnRequestListener(this) {
-				
-				@Override
-				public void onSuccess(Object result) {
-					Curtida c = (Curtida) result;
-					String data = DateFormat.getDateInstance(DateFormat.SHORT).format(c.getDataCriacao().getTime());
-					curtidas.add(c.getPostador() + " curtiu isso em " + data + ".");
-					adapter.notifyDataSetChanged();
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-		}
+		mListCurtidas = new ArrayList<String>();
+		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
+		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListCurtidas);
+		mListView.setAdapter(mAdapter);
+		
+		carregaCurtidas(); 
 	}
 
 	@Override

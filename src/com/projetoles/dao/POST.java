@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -34,7 +33,8 @@ public class POST extends HTTPRequest {
 		this.mParams = params;
 	}
 
-	private String execute() throws ClientProtocolException, IOException {
+	@Override 
+	protected String getContent() throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPost postRequest = new HttpPost(mUrl);
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();        
@@ -62,37 +62,6 @@ public class POST extends HTTPRequest {
 		}
 		client.getConnectionManager().shutdown();
 		return Jsoup.parse(output).text();
-	}
-	
-	public void execute(final OnRequestListener listener) {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				String errorMessage = null;
-				String message = null;
-				try {
-					message = execute();
-				} catch(Exception e) {
-					errorMessage = e.getMessage();
-					e.printStackTrace();
-				}
-				//necessário para acessar dentro da thread
-				final String finalErrorMessage = errorMessage;
-				final String finalMessage = message;
-				listener.getContext().runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (finalErrorMessage != null) {
-							listener.onError(finalErrorMessage);
-						} else {
-							listener.onSuccess(finalMessage);
-						}
-					}
-				});
-			}
-		}).start();
 	}
 	
 	public static class Builder extends HTTPRequest.Builder {

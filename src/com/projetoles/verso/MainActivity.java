@@ -1,73 +1,36 @@
 package com.projetoles.verso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-import android.app.AlertDialog;
 import android.app.TabActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class MainActivity extends TabActivity {
 	
 	public static TabActivity sInstance;
 	
-	private static final int MAX_PHOTO_SIZE = 600;
-	private static final int SELECT_PHOTO = 100;
-	private static final int CAMERA_REQUEST = 1888; 
-	
 	private UsuarioController mController;
 	private TabHost mTabHost;
 	private ImageView mBtnCriarPoema;
 	private ImageView mBtnPesquisar;
-	private ImageView mUserPicturePreview;
-	private ImageView mUserPicture;
-	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario;
+	private View mLoading;
+	private CameraActivityBundle mCameraBundle;
 	
-	private void setPhoto(byte[] photo) {
-		ImageView userPicture = (ImageView) findViewById(R.id.userPicture);
-		if (photo.length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			userPicture.setImageBitmap(bmp);
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			if (bmp.getHeight() > dm.heightPixels / 2) {
-				int width = (int)((float)bmp.getWidth() / bmp.getHeight() * dm.heightPixels / 2);
-				int height = dm.heightPixels / 2;
-				bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
-			}
-			mUserPicturePreview.setImageBitmap(bmp);
-		} else {
-			mUserPicturePreview.setImageResource(R.drawable.icone_foto);
-		}
-	}
-	
-	private void setUp() {
+	private void setTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		
@@ -115,14 +78,48 @@ public class MainActivity extends TabActivity {
 			}
 		});
 		setTabColor(mTabHost);
+	}
+
+	private void setTabColor(TabHost tabhost) {
+		for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
+			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#f8f5af")); //unselected
+		}
+		if(tabhost.getCurrentTab() == 0) {
+			tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#F5DA81")); //1st tab selected
+		} else {
+			tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#F5DA81")); //2nd tab selected
+		}
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_tabbed_main);
 		
+		sInstance = this;
+		
+		getActionBar().hide(); 
+
+		mController = new UsuarioController(this);
+		mUsuario = UsuarioController.usuarioLogado;
+		
+		setTabs();
+
 		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
 		mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
 		
+		View profilePhotoContent = findViewById(R.id.profilePhotoContent);
+		Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
+		ImageView foto = (ImageView) findViewById(R.id.profilePhoto);
+		ImageView fotoFull = (ImageView) findViewById(R.id.userPicture);
+		
+		mCameraBundle = new CameraActivityBundle(this, foto, fotoFull, profilePhotoContent);
+		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
+		mCameraBundle.editarFoto(btnEditPhoto);
+		
 		//set userName
-		Usuario usuario = mUsuario;
 		TextView usuarioName = (TextView) findViewById(R.id.userName);
-		usuarioName.setText(usuario.getNome());
+		usuarioName.setText(mUsuario.getNome());
 		
 		// submenu
 		TextView biografia = (TextView) findViewById(R.id.textBiografia);
@@ -137,91 +134,8 @@ public class MainActivity extends TabActivity {
 				finish();
 			}
 		});
-		
-		//set userPicture
-		mUserPicturePreview = (ImageView) findViewById(R.id.profilePhoto);
-		mUserPicture = (ImageView) findViewById(R.id.userPicture);
-		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.profilePhotoContent);
-		setPhoto(usuario.getFoto());
-		mUserPicture.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mProfilePhotoContent.setVisibility(View.VISIBLE);
-			}
-		});
-		mProfilePhotoContent.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mProfilePhotoContent.setVisibility(View.GONE);
-			}
-		});
-		final Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
-		btnEditPhoto.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				new AlertDialog.Builder(MainActivity.this)
-					.setTitle("Editar foto")
-					.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-							photoPickerIntent.setType("image/*");
-							startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
-						}
-					})
-					.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-			                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
-						}
-					})
-					.create().show();
-			}
-		});
 	}
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_tabbed_main);
-		
-		sInstance = this;
-		
-		getActionBar().hide(); 
-
-		mController = new UsuarioController(this);
-		mController.getLoggedUser(new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mUsuario = (Usuario) result;
-				setUp();
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-			}
-		});
-	}
-	
-	private void setTabColor(TabHost tabhost) {
-		for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#f8f5af")); //unselected
-		}
-		if(tabhost.getCurrentTab() == 0) {
-			tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#F5DA81")); //1st tab selected
-		} else {
-			tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#F5DA81")); //2nd tab selected
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -246,80 +160,11 @@ public class MainActivity extends TabActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
 	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-        if(resultCode == RESULT_OK){ 
-        	Bitmap bitmap = null;
-        	//camera
-        	if (requestCode == CAMERA_REQUEST) {
-        		Bundle extras = imageReturnedIntent.getExtras();
-    	        bitmap = (Bitmap) extras.get("data");
-        	//galeria
-        	} else {
-        		Uri selectedImage = imageReturnedIntent.getData();
-	            InputStream imageStream = null;
-				try {
-					imageStream = getContentResolver().openInputStream(selectedImage);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				bitmap = BitmapFactory.decodeStream(imageStream);
-        	}
-        	if (bitmap.getWidth() > MAX_PHOTO_SIZE) {
-        		int width = MAX_PHOTO_SIZE;
-        		int height = (int)((float)bitmap.getHeight() / bitmap.getWidth() * MAX_PHOTO_SIZE);
-        		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        	}
-        	if (bitmap.getHeight() > MAX_PHOTO_SIZE) {
-        		int width = (int)((float)bitmap.getWidth() / bitmap.getHeight() * MAX_PHOTO_SIZE);
-        		int height = MAX_PHOTO_SIZE;
-        		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        	}
-        	ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        	byte[] b = stream.toByteArray();
-        	mController.addFoto(mUsuario, b, new OnRequestListener(this) {
-				
-				@Override
-				public void onSuccess(Object result) {
-					setPhoto(mUsuario.getFoto());
-					mProfilePhotoContent.setVisibility(View.GONE);
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					new AlertDialog.Builder(MainActivity.this)
-						.setTitle("Um erro ocorreu")
-						.setMessage(errorMessage)
-						.setNeutralButton("OK", null)
-						.create().show();
-				}
-			});
-        }
-	}
-	
-	public void onClick(View view) {
-		Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-		 
-		TextView tvTitulo = (TextView) findViewById(R.id.poemaTitulo);
-		TextView tvPoema = (TextView) findViewById(R.id.poema);
-		TextView tvAutor = (TextView) findViewById(R.id.poemaAutor);
-		TextView tvTag = (TextView) findViewById(R.id.poemaTags);
-		
-		String titulo = tvTitulo.getText().toString();
-		String poema = tvPoema.getText().toString();
-		String autor = tvAutor.getText().toString();
-		String tag = tvTag.getText().toString();
-		
-		intent.putExtra("poemaTitulo", titulo);
-		intent.putExtra("poema", poema);
-		intent.putExtra("poemaAutor", autor);
-		intent.putExtra("poemaTag", tag);
-		intent.putExtra("callback", MainActivity.class);
-		startActivity(intent);
-		finish();
+	    mCameraBundle. onActivityResult(requestCode, resultCode, imageReturnedIntent, mLoading);
 	}
 	
 }

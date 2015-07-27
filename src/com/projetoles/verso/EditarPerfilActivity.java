@@ -1,18 +1,8 @@
 package com.projetoles.verso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,43 +10,54 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.facebook.AccessToken;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class EditarPerfilActivity extends Activity {
 	
 	private UsuarioController mController;
-	private RelativeLayout mProfilePhotoContent;
-	private RelativeLayout mLoading;
-	private ImageView mFoto;
-	private ImageView mFotoFull;
-	private Usuario mUsuario;
+	private EditText etNome;
+	private EditText etBiografia;
+	private EditText etSenha;
+	private EditText etEditarSenha;
+	private Button btnSalvarPerfil;
+	private View mLoading;
+	private CameraActivityBundle mCameraBundle;
 
-	private static final int MAX_PHOTO_SIZE = 600;
-	private static final int SELECT_PHOTO = 100;
-	private static final int CAMERA_REQUEST = 1888; 
-	
-	private void setPhoto(byte[] photo) {
-		if (mUsuario.getFoto().length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			mFoto.setImageBitmap(bmp);
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			if (bmp.getHeight() > dm.heightPixels / 2) {
-				int width = (int)((float)bmp.getWidth() / bmp.getHeight() * dm.heightPixels / 2);
-				int height = dm.heightPixels / 2;
-				bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
+	private void salvarPerfil() {
+		btnSalvarPerfil.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mLoading.setVisibility(View.VISIBLE);
+				String nome = etNome.getText().toString();
+				String biografia = etBiografia.getText().toString();
+				String senha = etSenha.getText().toString();
+				String repetirSenha = etEditarSenha.getText().toString();
+				mController.put(nome, biografia, senha, repetirSenha, new OnRequestListener<Usuario>(EditarPerfilActivity.this) {
+					 
+					@Override
+					public void onSuccess(Usuario usuario) {
+						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Successo!", "Usuário alterado com sucesso.", mLoading);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println(errorMessage);
+						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+					}
+				});
+			
 			}
-			mFotoFull.setImageBitmap(bmp);
-		} else {
-			mFoto.setImageResource(R.drawable.icone_foto);
-		}
+		});
+	}
+	
+	private void preencheCampos() {
+		etNome.setText(UsuarioController.usuarioLogado.getNome());
+		etBiografia.setText(UsuarioController.usuarioLogado.getBiografia());
 	}
 	
 	@Override
@@ -66,118 +67,38 @@ public class EditarPerfilActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mController = new UsuarioController(this);
-		mController.getLoggedUser(new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mUsuario = (Usuario) result;
-				mFoto = (ImageView) findViewById(R.id.showPhoto);
-				mFotoFull = (ImageView) findViewById(R.id.editarFotoFull);
-				Button editarFoto = (Button) findViewById(R.id.btnEditPhoto);
-				editarFoto.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						new AlertDialog.Builder(EditarPerfilActivity.this)
-							.setTitle("Editar foto")
-							.setPositiveButton("Galeria", new DialogInterface.OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-									photoPickerIntent.setType("image/*");
-									startActivityForResult(photoPickerIntent, SELECT_PHOTO);    
-								}
-							})
-							.setNeutralButton("Câmera", new DialogInterface.OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-					                startActivityForResult(cameraIntent, CAMERA_REQUEST); 
-								}
-							})
-							.create().show();
-					}
-				
-				});
-				
-				final EditText nome = (EditText) findViewById(R.id.etEditName);
-				final EditText biografia = (EditText) findViewById(R.id.etEditBio);
-				final EditText senha = (EditText) findViewById(R.id.etEditPassword);
-				final EditText editarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
-				final Button salvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
-				if (AccessToken.getCurrentAccessToken()!=null){
-					senha.setVisibility(View.INVISIBLE);
-					editarSenha.setVisibility(View.INVISIBLE);
-				}
-				salvarPerfil.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						mLoading.setVisibility(View.VISIBLE);
-						String sNome = nome.getText().toString();
-						String sBiografia = biografia.getText().toString();
-						String sSenha = senha.getText().toString();
-						String seditarSenha = editarSenha.getText().toString();
-						mController.editUser(sNome, sBiografia, sSenha, seditarSenha, new OnRequestListener(EditarPerfilActivity.this) {
-							
-							@Override
-							public void onSuccess(Object result) {
-								mLoading.setVisibility(View.GONE);
-								new AlertDialog.Builder(EditarPerfilActivity.this)
-									.setTitle("Sucesso!")
-									.setMessage("Usuário alterado com sucesso.")
-									.setNeutralButton("OK", null)
-									.create().show();
-							}
-							
-							@Override
-							public void onError(String errorMessage) {
-								mLoading.setVisibility(View.GONE);
-								new AlertDialog.Builder(EditarPerfilActivity.this)
-									.setTitle("Um erro ocorreu")
-									.setMessage(errorMessage)
-									.setNeutralButton("OK", null)
-									.create().show();	
-							}
-						});
-					
-					}
-				});
-				setPhoto(mUsuario.getFoto());
-				mProfilePhotoContent = (RelativeLayout) findViewById(R.id.editarFotoContent);
-				mFoto.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View arg0) {
-						mProfilePhotoContent.setVisibility(View.VISIBLE);
-					}
-				});
-				mProfilePhotoContent.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View arg0) {
-						mProfilePhotoContent.setVisibility(View.GONE);;
-					}
-				});
-				nome.setText(mUsuario.getNome());
-				biografia.setText(mUsuario.getBiografia());
-				mLoading = (RelativeLayout) findViewById(R.id.editarPerfilLoading);
-				mLoading.setVisibility(View.GONE);
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-			}
-		});
+		
+		ImageView foto = (ImageView) findViewById(R.id.showPhoto);
+		ImageView fotoFull = (ImageView) findViewById(R.id.editarFotoFull);
+		View mProfilePhotoContent = findViewById(R.id.editarFotoContent);
+		Button btnEditarFoto = (Button) findViewById(R.id.btnEditPhoto);
+		mLoading = findViewById(R.id.editarPerfilLoading);
+		mLoading.setVisibility(View.GONE);
+		
+		etNome = (EditText) findViewById(R.id.etEditName);
+		etBiografia = (EditText) findViewById(R.id.etEditBio);
+		etSenha = (EditText) findViewById(R.id.etEditPassword);
+		etEditarSenha = (EditText) findViewById(R.id.etEditPasswordAgain);
+		btnSalvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
+		// Para evitar usuarios do Facebook alterarem senha
+		if (AccessToken.getCurrentAccessToken() != null) {
+			etSenha.setVisibility(View.INVISIBLE);
+			etEditarSenha.setVisibility(View.INVISIBLE);
+		}
+		
+		mCameraBundle = new CameraActivityBundle(this, foto, fotoFull, mProfilePhotoContent);
+		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
+		mCameraBundle.editarFoto(btnEditarFoto);
+		
+		preencheCampos();
+		
+		salvarPerfil();
 	}
 	
 	@Override
 	public void onBackPressed() {
 		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);
-		i.putExtra("usuario", mUsuario);
+		i.putExtra("usuario", UsuarioController.usuarioLogado);
 		i.putExtra("callback", MainActivity.class);
 		startActivity(i);
 		finish();
@@ -206,58 +127,7 @@ public class EditarPerfilActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
 	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-        if (resultCode == RESULT_OK) { 
-        	Bitmap bitmap = null;
-        	//camera
-        	if (requestCode == CAMERA_REQUEST) {
-        		Bundle extras = imageReturnedIntent.getExtras();
-    	        bitmap = (Bitmap) extras.get("data");
-        	//galeria
-        	} else {
-        		Uri selectedImage = imageReturnedIntent.getData();
-	            InputStream imageStream = null;
-				try {
-					imageStream = getContentResolver().openInputStream(selectedImage);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				bitmap = BitmapFactory.decodeStream(imageStream);
-        	}
-        	if (bitmap.getWidth() > MAX_PHOTO_SIZE) {
-        		int width = MAX_PHOTO_SIZE;
-        		int height = (int)((float)bitmap.getHeight() / bitmap.getWidth() * MAX_PHOTO_SIZE);
-        		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        	}
-        	if (bitmap.getHeight() > MAX_PHOTO_SIZE) {
-        		int width = (int)((float)bitmap.getWidth() / bitmap.getHeight() * MAX_PHOTO_SIZE);
-        		int height = MAX_PHOTO_SIZE;
-        		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        	}
-        	ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-        	byte[] b = stream.toByteArray();
-        	//mLoading.setVisibility(View.VISIBLE);
-        	mController.addFoto(UsuarioController.usuarioLogado, b, new OnRequestListener(this) {
-				
-				@Override
-				public void onSuccess(Object result) {
-					mLoading.setVisibility(View.GONE);
-					setPhoto(mUsuario.getFoto());
-					mProfilePhotoContent.setVisibility(View.GONE);
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					mLoading.setVisibility(View.GONE);
-					new AlertDialog.Builder(EditarPerfilActivity.this)
-						.setTitle("Um erro ocorreu")
-						.setMessage(errorMessage)
-						.setNeutralButton("OK", null)
-						.create().show();
-				}
-			});
-        }
+	    mCameraBundle. onActivityResult(requestCode, resultCode, imageReturnedIntent, mLoading);
 	}
 	
 }

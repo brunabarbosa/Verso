@@ -47,25 +47,24 @@ public class PesquisarActivity extends Activity {
 				String autor = etAutor.getText().toString();
 				String tag = etTag.getText().toString();
 				String trecho = etTrecho.getText().toString();
-				mController.pesquisar(titulo, autor, tag, trecho, new OnRequestListener(PesquisarActivity.this) {
-					
-					@Override
-					public void onSuccess(Object result) {
-						ArrayList<String> resultados = (ArrayList<String>) result;
-						Intent i = new Intent(PesquisarActivity.this, ResultadoPesquisaActivity.class);
-						i.putStringArrayListExtra("resultados", resultados);
-						startActivity(i);
-					}
-					
-					@Override
-					public void onError(String errorMessage) {
-						new AlertDialog.Builder(PesquisarActivity.this)
-							.setTitle("Um erro ocorreu")
-							.setMessage(errorMessage)
-							.setNeutralButton("OK", null)
-							.create().show();	
-					}
-				});
+				if (titulo.trim().isEmpty() && autor.trim().isEmpty() && tag.trim().isEmpty() && trecho.trim().isEmpty()) {
+					ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", "É preciso informar pelo menos um campo.", null);
+				} else {
+					mController.pesquisar(titulo, autor, tag, trecho, new OnRequestListener<ArrayList<String>>(PesquisarActivity.this) {
+						
+						@Override
+						public void onSuccess(ArrayList<String> resultados) {
+							Intent i = new Intent(PesquisarActivity.this, ResultadoPesquisaActivity.class);
+							i.putStringArrayListExtra("resultados", resultados);
+							startActivity(i);
+						}
+						
+						@Override
+						public void onError(String errorMessage) {
+							ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", errorMessage, null);
+						}
+					});
+				}
 			}
 		});
 	}
