@@ -5,7 +5,7 @@ import android.app.Activity;
 /**
  * Listener genérico que possuí uma chamada para falha e outra para sucesso
  */
-public abstract class OnRequestListener {
+public abstract class OnRequestListener<T> {
 
 	private Activity mContext;
 	
@@ -26,7 +26,7 @@ public abstract class OnRequestListener {
 	 * @param result
 	 * 		Retorno do evento
 	 */
-	public abstract void onSuccess(Object result);
+	public abstract void onSuccess(T result);
 	
 	/**
 	 * Método que será chamado em caso de falha do evento

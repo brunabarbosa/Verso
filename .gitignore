@@ -30,3 +30,6 @@ proguard/
 .\project.properties
 .\.project
 .\.settings/
+
+project.properties
+./project.properties

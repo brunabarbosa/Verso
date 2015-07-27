@@ -1,7 +1,6 @@
 package com.projetoles.verso;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,13 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.util.Base64;
@@ -37,6 +33,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Usuario;
 
 public class LoginActivity extends Activity {
 
@@ -46,7 +43,13 @@ public class LoginActivity extends Activity {
     //permissões que usaremos para recuperar dados do usuário
 	private List<String> facebookPermitions;  
 	//responsável por gerenciar as ações em suas aplicações após o retorno das chamadas ao FacebookSDK
-    private CallbackManager callbackManager;  
+    private CallbackManager callbackManager;
+
+	private Button mBtnEntrar;
+	private EditText etEmail;
+	private EditText etSenha;
+	private Button mBtnCadastrar; 
+	private View mLoading;
     
     public static void showHashKey(Context context) {
         try {
@@ -57,27 +60,40 @@ public class LoginActivity extends Activity {
                 md.update(signature.toByteArray());
                 Log.i("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
                 }
-        } catch (NameNotFoundException e) {
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
         }
     }
     
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		showHashKey(this);
-		FacebookSdk.sdkInitialize(this);   
-		setContentView(R.layout.activity_login);  
-		callbackManager = CallbackManager.Factory.create(); 
-		
-		facebookPermitions = Arrays.asList("email", "public_profile", "user_friends"); 
-		   
-		buttonFacebook = (LoginButton)findViewById(R.id.login_button);
-		buttonFacebook.setReadPermissions(facebookPermitions); 
-		final RelativeLayout etLoading = (RelativeLayout) findViewById(R.id.loginLoading);
-		
-		buttonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {            
-      
+    private void logar() {
+    	mBtnEntrar.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mLoading.setVisibility(View.VISIBLE);
+				String email = etEmail.getText().toString();
+				String senha = etSenha.getText().toString();
+				mController.login(email, senha, new OnRequestListener<Usuario>(LoginActivity.this) {
+					 
+					@Override
+					public void onSuccess(Usuario usuario) {
+						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+						startActivity(intent);
+						finish();
+					}
+					
+					
+					@Override
+					public void onError(final String errorMessage) {
+						ActivityUtils.showMessageDialog(LoginActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+					}
+				});
+			}
+		});
+    }
+    
+    private void logarComFacebook() {
+    	buttonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {            
+    	      
 	        public void onSuccess(LoginResult loginResult) {  
 	        	// App code
                // Toast.makeText(Ready.this, "Connected!", Toast.LENGTH_SHORT).show();
@@ -91,48 +107,35 @@ public class LoginActivity extends Activity {
                                     GraphResponse response) {
                                 // Application code 
                                 try {
-                                    final String id=object.getString("id");
-                                    final String name=object.getString("name");
-                                    final String email=object.getString("email");
+                                    final String id = object.getString("id");
+                                    final String name = object.getString("name");
+                                    final String email = object.getString("email");
                                     //biografia
                                     //final String biografia=object.getString("user_about_me");
-                                    etLoading.setVisibility(View.VISIBLE);
-                                    mController.login(email, id, new OnRequestListener(LoginActivity.this) {
+                                    mLoading.setVisibility(View.VISIBLE);
+                                    mController.login(email, id, new OnRequestListener<Usuario>(LoginActivity.this) {
 										
 										@Override
-										public void onSuccess(Object result) {
-											Intent i = new Intent(LoginActivity.this, MainActivity.class);
-											startActivity(i);
-											 
-											 finish();	
+										public void onSuccess(Usuario result) {
+											Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+											startActivity(intent);
+											finish();	
 										}
 										
 										@Override
 										public void onError(String errorMessage) {
-											mController.registrar(name, email, id, id, new OnRequestListener(LoginActivity.this) {
+											mController.post(name, email, id, id, new OnRequestListener<Usuario>(LoginActivity.this) {
 												
 												@Override
-												public void onSuccess(Object result) {
-													Intent i = new Intent(LoginActivity.this, MainActivity.class);
-													startActivity(i);
+												public void onSuccess(Usuario result) {
+													Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+													startActivity(intent);
 													finish();
 												}
 												
 												@Override
 												public void onError(String errorMessage) {
-													new AlertDialog.Builder(LoginActivity.this)
-													.setTitle("Um erro ocorreu")
-													.setMessage(errorMessage)
-													.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-														
-														@Override
-														public void onClick(DialogInterface dialog, int which) {
-															etLoading.setVisibility(View.GONE);
-														}
-													})
-													.create().show();
-											
-													
+													ActivityUtils.showMessageDialog(LoginActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 												}
 											});
 											
@@ -164,79 +167,27 @@ public class LoginActivity extends Activity {
 	             System.out.println("cancel");
 	        }  
 	    });  
-	
-		getActionBar().hide();
-	
-		
-		final EditText etEmail = (EditText) findViewById(R.id.editEmail);
-		final EditText etSenha = (EditText) findViewById(R.id.editSenha);
-		final Button cadastrar = (Button) findViewById(R.id.btnCadastrar);
-		cadastrar.setOnClickListener(new OnClickListener() {
+    }
+    
+    private void cadastrar() {
+    	mBtnCadastrar.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(LoginActivity.this, CriarContaActivity.class);
-				startActivity(i);
+				Intent intent = new Intent(LoginActivity.this, CriarContaActivity.class);
+				startActivity(intent);
 			}
 		});
-		final Button entrar = (Button) findViewById(R.id.btnEntrar);
-		entrar.setOnClickListener(new OnClickListener() {
+    }
+    
+    private void checaSeEstaLogado() {
+    	mController = new UsuarioController(this);
+		mController.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
 			
 			@Override
-			public void onClick(View v) {
-				etLoading.setVisibility(View.VISIBLE);
-				String email = etEmail.getText().toString();
-				String senha = etSenha.getText().toString();
-				mController.login(email, senha, new OnRequestListener(LoginActivity.this) {
-					
-					@Override
-					public void onSuccess(Object result) {
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								Intent i = new Intent(LoginActivity.this, MainActivity.class);
-								startActivity(i);
-								finish();
-							}
-						});
-					}
-					
-					
-					@Override
-					public void onError(final String errorMessage) {
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								new AlertDialog.Builder(LoginActivity.this)
-									.setTitle("Um erro ocorreu")
-									.setMessage(errorMessage)
-									.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-										
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											etLoading.setVisibility(View.GONE);
-										}
-									})
-									.create().show();
-							}
-						});
-					}
-				});
-			}
-		});
-		
-		
-		   
-
-		mController = new UsuarioController(this);
-		mController.getLoggedUser(new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				Intent i = new Intent(LoginActivity.this, MainActivity.class);
-				startActivity(i);
+			public void onSuccess(Usuario usuario) {
+				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+				startActivity(intent);
 				finish();
 			}
 			
@@ -246,12 +197,42 @@ public class LoginActivity extends Activity {
 					
 					@Override
 					public void run() {
-						etLoading.setVisibility(View.GONE);
+						mLoading.setVisibility(View.GONE);
 					}
 				});
 			}
 		});
+    }
+    
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		showHashKey(this);
+		FacebookSdk.sdkInitialize(this);   
+		setContentView(R.layout.activity_login);  
 		
+		getActionBar().hide();
+		
+		callbackManager = CallbackManager.Factory.create(); 
+		
+		etEmail = (EditText) findViewById(R.id.editEmail);
+		etSenha = (EditText) findViewById(R.id.editSenha);
+		mBtnEntrar = (Button) findViewById(R.id.btnEntrar);
+		mBtnCadastrar = (Button) findViewById(R.id.btnCadastrar);
+		mLoading = (RelativeLayout) findViewById(R.id.loginLoading);
+
+		facebookPermitions = Arrays.asList("email", "public_profile", "user_friends"); 
+		   
+		buttonFacebook = (LoginButton)findViewById(R.id.login_button);
+		buttonFacebook.setReadPermissions(facebookPermitions); 
+		
+		cadastrar();
+		
+		logar();
+		
+		logarComFacebook();
+		
+		checaSeEstaLogado();
 	}
 	
 	@Override  

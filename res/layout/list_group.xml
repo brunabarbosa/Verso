@@ -40,7 +40,8 @@
            android:text="author"
            android:textColor="#927e58"
            android:textSize="16sp"
-           android:paddingBottom="10dp"/>
+           android:paddingBottom="10dp"
+		   android:clickable="true"/>
         
         <ImageView
             android:id="@+id/commentIcon"

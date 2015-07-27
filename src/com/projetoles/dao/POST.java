@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -18,7 +17,7 @@ import org.jsoup.Jsoup;
 
 import android.net.Uri;
 
-import com.projetoles.model.ImageEncoder;
+import com.projetoles.model.ImageUtils;
 
 /**
  * Classe responsável por realizar uma requisição HTTP do tipo POST
@@ -34,7 +33,8 @@ public class POST extends HTTPRequest {
 		this.mParams = params;
 	}
 
-	private String execute() throws ClientProtocolException, IOException {
+	@Override 
+	protected String getContent() throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPost postRequest = new HttpPost(mUrl);
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();        
@@ -61,40 +61,7 @@ public class POST extends HTTPRequest {
 			output += line;
 		}
 		client.getConnectionManager().shutdown();
-		System.out.println(output);
-		return Jsoup.parse(output).text();
-	}
-	
-	public void execute(final OnRequestListener listener) {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				String errorMessage = null;
-				String message = null;
-				try {
-					message = execute();
-				} catch(Exception e) {
-					errorMessage = e.getMessage();
-					e.printStackTrace();
-				}
-				//necessário para acessar dentro da thread
-				final String finalErrorMessage = errorMessage;
-				final String finalMessage = message;
-				listener.getContext().runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (finalErrorMessage != null) {
-							listener.onError(finalErrorMessage);
-						} else {
-							System.out.println(finalMessage);
-							listener.onSuccess(finalMessage);
-						}
-					}
-				});
-			}
-		}).start();
+		return output;
 	}
 	
 	public static class Builder extends HTTPRequest.Builder {
@@ -108,8 +75,8 @@ public class POST extends HTTPRequest {
 		 * @throws IOException 
 		 */
 		public Builder addPhoto(byte[] photo) throws IOException {
-			String encodedPhoto = ImageEncoder.encode(photo);
-			this.addParam("foto", encodedPhoto);
+			String encodedPhoto = ImageUtils.encode(photo);
+			this.addParam("photo", encodedPhoto);
 			return this;
 		}
 

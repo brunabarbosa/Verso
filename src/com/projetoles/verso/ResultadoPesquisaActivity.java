@@ -5,21 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.TextView;
 
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.dao.OnRequestListener;
@@ -27,11 +19,14 @@ import com.projetoles.model.Poesia;
 
 public class ResultadoPesquisaActivity extends Activity {
 
-	private PoesiaController poemaController;
-	private ExpandablePoesiaAdapter listAdapter;
-	private ExpandableListView expListView;
-	private List<Poesia> listPoesias;
+	private PoesiaController mPoemaController;
+	private ExpandablePoesiaAdapter mAdapter;
+	private ExpandableListView mExpListView;
+	private View mLoading;
+	private TextView tvNenhumResultado;
+	private List<Poesia> mListPoesias;
 	private Bundle mBundle;
+	private int countCarregados;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,49 +40,54 @@ public class ResultadoPesquisaActivity extends Activity {
 		}
 		mBundle = b;
 
-		// change fonts
-		poemaController = new PoesiaController(this);
+		mPoemaController = new PoesiaController(this);
+		mExpListView = (ExpandableListView) findViewById(R.id.lvExpPesquisa);
 
-		// get the listview
-		expListView = (ExpandableListView) findViewById(R.id.lvExpPesquisa);
+		mListPoesias = new ArrayList<Poesia>();
+		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mListPoesias, mBundle);
 
-		// preparing list data
-		listPoesias = new ArrayList<Poesia>();
-		listAdapter = new ExpandablePoesiaAdapter(
-				ResultadoPesquisaActivity.this, listPoesias, mBundle);
-
-		expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 			int previousGroup = -1;
 
 			@Override
 			public void onGroupExpand(int groupPosition) {
 				if (groupPosition != previousGroup)
-					expListView.collapseGroup(previousGroup);
+					mExpListView.collapseGroup(previousGroup);
 				previousGroup = groupPosition;
 			}
 		});
 
-		// setting the list adapter
-		expListView.setAdapter(listAdapter);
-		listAdapter.notifyDataSetChanged();
+		mExpListView.setAdapter(mAdapter);
+		mAdapter.notifyDataSetChanged();
 
-		List<String> resultados = b.getStringArrayList("resultados");
-		for (String id : resultados) {
-			poemaController.getPoesia(id, new OnRequestListener(this) {
+		mLoading = findViewById(R.id.load);
+		tvNenhumResultado = (TextView) findViewById(R.id.nenhum_resultado_encontrado);
+		
+		final List<String> resultados = b.getStringArrayList("resultados");
+		if (resultados.isEmpty()) {
+			mLoading.setVisibility(View.GONE);
+		} else {
+			tvNenhumResultado.setVisibility(View.GONE);
+			for (String id : resultados) {
+				mPoemaController.get(id, new OnRequestListener<Poesia>(this) {
 
-				@Override
-				public void onSuccess(Object result) {
-					Poesia p = (Poesia) result;
-					listPoesias.add(p);
-					Collections.sort(listPoesias);
-					listAdapter.notifyDataSetChanged();
-				}
+					@Override
+					public void onSuccess(Poesia p) {
+						mListPoesias.add(p);
+						Collections.sort(mListPoesias);
+						mAdapter.notifyDataSetChanged();
+						countCarregados++;
+						if (countCarregados == resultados.size()) {
+							mLoading.setVisibility(View.GONE);
+						}
+					}
 
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-				}
-			});
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println(errorMessage);
+					}
+				});
+			}
 		}
 	}
 

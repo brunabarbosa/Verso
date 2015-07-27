@@ -2,62 +2,67 @@ package com.projetoles.model;
 
 import java.util.Calendar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Curtida implements Comparable<Curtida> {
 
-	private String mId;
-	private String mPostador;
-	private Calendar mDataCriacao;
-	
-	public Curtida(String postador, Calendar dataCriacao) {
+public class Curtida extends TemporalModel {
+
+	private Usuario mPostador;
+	private Poesia mPoesia;
+
+	public static final Parcelable.Creator<Curtida> CREATOR = 
+			new Parcelable.Creator<Curtida>() {
+        public Curtida createFromParcel(Parcel in) {
+            return new Curtida(in); 
+        }
+ 
+        public Curtida[] newArray(int size) {
+            return new Curtida[size];
+        }
+    };
+    
+	public Curtida(Parcel in) {
+		super(in);
+		this.setPostador((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
+		this.setPoesia((Poesia)in.readParcelable(Poesia.class.getClassLoader()));
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);	
+		dest.writeParcelable(this.getPostador(), flags);
+		dest.writeParcelable(this.getPoesia(), flags);
+	}
+
+	public Curtida(String id, Calendar dataCriacao, Usuario postador, Poesia poesia) {
+		super(id, dataCriacao);
 		setPostador(postador);
-		setDataCriacao(dataCriacao);
+		setPoesia(poesia);
 	}
 	
-	public void setPostador(String postador) {
-		if (postador == null || postador.trim().isEmpty()) {
-			throw new IllegalArgumentException("Autor é obrigatório.");
+	public void setPostador(Usuario postador) {
+		if (postador == null) {
+			throw new IllegalArgumentException("Postador é obrigatório.");
 		}
 		this.mPostador = postador;
 	}
 	
-	public String getPostador() {
+	public Usuario getPostador() {
 		return mPostador;
 	}
 	
-	public void setDataCriacao(Calendar dataCriacao) {
-		this.mDataCriacao = dataCriacao;
+	public void setPoesia(Poesia poesia) {
+		if (poesia == null) {
+			throw new IllegalArgumentException("Poesia é obrigatória.");
+		}
+		this.mPoesia = poesia;
 	}
 	
-	public Calendar getDataCriacao() {
-		return this.mDataCriacao;
-	}
-
-	public String getStringDataCriacao() {
-		return String.valueOf(mDataCriacao.getTimeInMillis());
-	}
-
-	public void setId(String id) {
-		this.mId = id;
+	public Poesia getPoesia() {
+		return this.mPoesia;
 	}
 	
-	public String getId() {
-		return this.mId;
-	}
-	
-	public static Curtida converteJson(JSONObject json) throws JSONException {
-		Long tempo = Long.valueOf(json.getString("dataCriacao"));
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(tempo);
-		String postador = json.getString("postador");
-		Curtida curtida = new Curtida(postador, c);
-		String id = json.getString("id");
-		curtida.setId(id);
-		return curtida;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -84,9 +89,4 @@ public class Curtida implements Comparable<Curtida> {
 		return true;
 	}
 
-	@Override
-	public int compareTo(Curtida arg0) {
-		return arg0.mDataCriacao.compareTo(this.mDataCriacao);
-	}
-	
 }

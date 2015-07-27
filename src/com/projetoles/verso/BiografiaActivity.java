@@ -2,16 +2,7 @@ package com.projetoles.verso;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
-import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,52 +16,22 @@ import com.projetoles.controller.UsuarioController;
 import com.projetoles.model.Usuario;
 
 public class BiografiaActivity extends Activity {
-	
-	private ImageView mFoto;
-	private ImageView mFotoFull;
+	 
 	private Class mCallback;
-	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
-	
-	private void setPhoto(byte[] photo) {
-		if (UsuarioController.usuarioLogado.getFoto().length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = getCroppedBitmap(bmp);
-			mFoto.setImageBitmap(bmp);
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			if (bmp.getHeight() > dm.heightPixels / 2) {
-				int width = (int)((float)bmp.getWidth() / bmp.getHeight() * dm.heightPixels / 2);
-				int height = dm.heightPixels / 2;
-				bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
-			}
-			mFotoFull.setImageBitmap(bmp);
-		} else {
-			mFoto.setImageResource(R.drawable.icone_foto);
-		}
-	}
-	
 	private Usuario mUsuario;
+	private Button btnEditarPerfil;
+	
+	private void editarPerfil() {
+		btnEditarPerfil.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
+				startActivity(i);
+				finish();
+			}
+		});
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,37 +48,19 @@ public class BiografiaActivity extends Activity {
 		} else {
 			editBio.setText(mUsuario.getBiografia());
 		}
-		mFotoFull = (ImageView) findViewById(R.id.biografiaFullPhoto);
- 		mFoto = (ImageView) findViewById(R.id.biografiaFoto);
-		setPhoto(mUsuario.getFoto());
-		final RelativeLayout biografiaPhotoContent = (RelativeLayout) findViewById(R.id.biografiaPhotoContent);
-		mFoto.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				biografiaPhotoContent.setVisibility(View.VISIBLE);
-			}
-		});
-		biografiaPhotoContent.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				biografiaPhotoContent.setVisibility(View.GONE);
-			}
-		});
-		Button editarPerfil = (Button) findViewById(R.id.btnEditarPerfil);
+		ImageView fotoFull = (ImageView) findViewById(R.id.biografiaFullPhoto);
+ 		ImageView fotoPreview = (ImageView) findViewById(R.id.biografiaFoto);
+ 		View loading = (View) findViewById(R.id.biografiaPhotoContent);
+ 		
+ 		CameraActivityBundle cameraBundle = new CameraActivityBundle(this, fotoPreview, fotoFull, loading);
+ 		cameraBundle.setFoto(mUsuario.getFoto());
+ 		
+		btnEditarPerfil = (Button) findViewById(R.id.btnEditarPerfil);
 		if (!mUsuario.equals(UsuarioController.usuarioLogado)) {
-			editarPerfil.setVisibility(View.GONE);
+			btnEditarPerfil.setVisibility(View.GONE);
 		}
-		editarPerfil.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
-				startActivity(i);
-				finish();
-			}
-		});
+		
+		editarPerfil();
 	}
 	
 	@Override

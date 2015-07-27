@@ -3,8 +3,6 @@ package com.projetoles.verso;
 import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,21 +19,15 @@ import com.projetoles.model.Poesia;
 public class CriarPoesiaActivity extends Activity {
 	
 	private PoesiaController mController;
+	private EditText etTitulo;
+	private EditText etAutor;
+	private EditText etPoesia;
+	private EditText etTags;
+	private ImageView btnCriarPoesia;
+	private View mLoading;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cria_poesia);
-		
-		mController = new PoesiaController(this);
-		//verificar se vai precisar
-		final RelativeLayout loading = (RelativeLayout) MainActivity.sInstance.findViewById(R.id.mainLoading);
-		final EditText etTitulo = (EditText) findViewById(R.id.poemaTitulo);
-		final EditText etAutor = (EditText) findViewById(R.id.poemaAutor);
-		final EditText etPoesia = (EditText) findViewById(R.id.poema);
-		final EditText etTags = (EditText) findViewById(R.id.poemaTags);
-		final ImageView criar = (ImageView) MainActivity.sInstance.findViewById(R.id.btnCriarPoema);
-		criar.setOnClickListener(new OnClickListener() {
+	private void criarPoesia() {
+		btnCriarPoesia.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -46,50 +38,44 @@ public class CriarPoesiaActivity extends Activity {
 				}
 				String poesia = etPoesia.getText().toString(); 
 				String tags = etTags.getText().toString();
-				Calendar dataDeCriacao = Calendar.getInstance();
+				Calendar dataCriacao = Calendar.getInstance();
 				
-				//verificar se vai precisar
-				loading.setVisibility(View.VISIBLE);
-				mController.criarPoesia(titulo, autor, UsuarioController.usuarioLogado.getEmail(), 
-						poesia, dataDeCriacao, tags, new OnRequestListener(CriarPoesiaActivity.this) {
+				mLoading.setVisibility(View.VISIBLE);
+				mController.post(titulo, autor, UsuarioController.usuarioLogado, poesia, dataCriacao, 
+						tags, new OnRequestListener<Poesia>(CriarPoesiaActivity.this) {
 					
 					@Override
-					public void onSuccess(Object result) {
-						UsuarioController.usuarioLogado.addPoesiaCarregada((Poesia)result);
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
-								startActivity(i);
-								finish();
-							}
-						});
+					public void onSuccess(Poesia poesia) {
+						UsuarioController.usuarioLogado.getPoesias().add(poesia.getId());
+						Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
+						startActivity(i);
+						finish();
 					}
 					
 					@Override
 					public void onError(final String errorMessage) {
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								new AlertDialog.Builder(CriarPoesiaActivity.this)
-									.setTitle("Um erro ocorreu")
-									.setMessage(errorMessage)
-									.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-										
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											loading.setVisibility(View.GONE);
-										}
-									})
-									.create().show();
-							}
-						});
+						ActivityUtils.showMessageDialog(CriarPoesiaActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 					}
 				});
 			}
 		});
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_cria_poesia);
+		
+		mController = new PoesiaController(this);
+	
+		mLoading = MainActivity.sInstance.findViewById(R.id.mainLoading);
+		etTitulo = (EditText) findViewById(R.id.poemaTitulo);
+		etAutor = (EditText) findViewById(R.id.poemaAutor);
+		etPoesia = (EditText) findViewById(R.id.poema);
+		etTags = (EditText) findViewById(R.id.poemaTags);
+		btnCriarPoesia = (ImageView) MainActivity.sInstance.findViewById(R.id.btnCriarPoema);
+		
+		criarPoesia();
 	}
 
 }

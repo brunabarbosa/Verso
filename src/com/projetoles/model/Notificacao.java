@@ -2,25 +2,46 @@ package com.projetoles.model;
 
 import java.util.Calendar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Notificacao {
+public class Notificacao extends TemporalModel {
 	
 	private String mEnderecado;
 	private String mTitulo;
 	private String mMensagem;
-	private Calendar mDataDeCriacao;
-	
-	public Notificacao(String enderecado, String titulo, String mensagem, Calendar dataDeCriacao) {
-		setTitulo(titulo);
-		setMensagem(mensagem);
-		setDataDeCriacao(dataDeCriacao);
-		setEnderecado(enderecado);
+
+	public static final Parcelable.Creator<Notificacao> CREATOR = 
+			new Parcelable.Creator<Notificacao>() {
+        public Notificacao createFromParcel(Parcel in) {
+            return new Notificacao(in); 
+        }
+
+        public Notificacao[] newArray(int size) {
+            return new Notificacao[size];
+        }
+    };
+    
+	public Notificacao(Parcel in) {
+		super(in);
+		setEnderecado(in.readString());
+		setTitulo(in.readString());
+		setMensagem(in.readString());
 	}
 
-	public Notificacao() {
-		// TODO Auto-generated constructor stub
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);		
+		dest.writeString(this.getEnderecado());
+		dest.writeString(this.getTitulo());
+		dest.writeString(this.getMensagem());
+	}
+
+	public Notificacao(String id, Calendar dataCriacao, String enderecado, String titulo, String mensagem) {
+		super(id, dataCriacao);
+		setTitulo(titulo);
+		setMensagem(mensagem);
+		setEnderecado(enderecado);
 	}
 
 	private void setEnderecado(String enderecado) {
@@ -31,10 +52,10 @@ public class Notificacao {
 		
 	}
 
-	public String getTitulo() {
-		return mTitulo;
+	public String getEnderecado() {
+		return mEnderecado;
 	}
-
+	
 	public void setTitulo(String mTitulo) {
 		if (mTitulo == null || mTitulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("Título é obrigatório.");
@@ -42,8 +63,8 @@ public class Notificacao {
 		this.mTitulo = mTitulo;
 	}
 
-	public String getMensagem() {
-		return mMensagem;
+	public String getTitulo() {
+		return mTitulo;
 	}
 
 	public void setMensagem(String mMensagem) {
@@ -53,14 +74,10 @@ public class Notificacao {
 		this.mMensagem = mMensagem;
 	}
 
-	public Calendar getDataDeCriacao() {
-		return mDataDeCriacao;
+	public String getMensagem() {
+		return mMensagem;
 	}
 
-	public void setDataDeCriacao(Calendar mDataDeCriacao) {
-		this.mDataDeCriacao = mDataDeCriacao;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Notificacao))
@@ -77,31 +94,13 @@ public class Notificacao {
 				+ ((mEnderecado == null) ? 0 : mEnderecado.hashCode());
 		return result;
 	}
-
+ 
 	@Override
 	public String toString() {
 		if ((getTitulo() != null && !getTitulo().trim().equals("")) && (getMensagem() != null && !getMensagem().trim().equals(""))) {
 			return "";
 		}
 		return getTitulo() + ": " + getMensagem();
-	}
-
-	public String getStringDataCriacao(){
-		return String.valueOf(mDataDeCriacao.getTimeInMillis());
-	}
-
-	public String getEnderecado() {
-		return mEnderecado;
-	}
-	
-	public static Notificacao converteJson(JSONObject json) throws JSONException {
-		Long tempo = Long.valueOf(json.getString("dataCriacao"));
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(tempo);
-		String enderecado = json.getString("enderecado");
-		String titulo = json.getString("titulo");
-		String mensagem = json.getString("mensagem");
-		return new Notificacao(enderecado, titulo, mensagem, c);
 	}
 
 }
