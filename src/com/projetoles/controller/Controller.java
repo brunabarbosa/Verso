@@ -235,7 +235,6 @@ public abstract class Controller<T extends Model> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
-				
 			}
 		});
 	}

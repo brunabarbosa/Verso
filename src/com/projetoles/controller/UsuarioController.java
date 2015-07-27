@@ -34,8 +34,9 @@ public class UsuarioController extends Controller<Usuario> {
 				usuarioLogado.setId(usuario.getId());
 				usuarioLogado.setNotificacoes(usuario.getNotificacoes());
 				usuarioLogado.setPoesias(usuario.getPoesias());
-				usuarioLogado.setSenha(usuario.getSenha());
-			}
+				if (usuario.getSenha() != null && !usuario.getSenha().isEmpty())
+					usuarioLogado.setSenha(usuario.getSenha());
+			} 
 			mEditor.putString("id", usuario.getId()).apply();
 			mEditor.putString("senha", usuario.getSenha()).apply();
 		}
@@ -152,23 +153,29 @@ public class UsuarioController extends Controller<Usuario> {
 		}
 	}
 
-	public void put(String nome, String biografia, String senha, String repetirSenha, 
+	public void put(final String nome, final String biografia, String senha, String repetirSenha, 
 			final OnRequestListener<Usuario> callback) {
 		try {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
 				if (senha.trim().isEmpty()) {
-					senha = usuarioLogado.getSenha();
+					senha = null;
 				} 
+				final String ssenha = senha;
 				Usuario usuario = new Usuario(usuarioLogado.getId(), senha, nome, biografia, usuarioLogado.getFoto(), 
 						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
-					public void onSuccess(Usuario result) {
-						login(result);
-						callback.onSuccess(result);
+					public void onSuccess(Usuario usuario) {
+						usuario.setNome(nome); 
+						usuario.setBiografia(biografia);
+						if (ssenha != null) {
+							usuario.setSenha(ssenha);
+						}
+						login(usuario);
+						callback.onSuccess(usuario);
 					}
 
 					@Override

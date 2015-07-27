@@ -80,7 +80,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 			.addParam("email", usuario.getId())
 			.addParam("nome", usuario.getNome())
 			.addParam("bio", usuario.getBiografia())
-			.addParam("senha", usuario.getSenha())
+			.addParam("senha", usuario.getSenha() == null ? "" : usuario.getSenha())
 			.setDomain(DOMAIN)
 			.setPath("edit_user");
 		POST post = (POST) postRequest.create();

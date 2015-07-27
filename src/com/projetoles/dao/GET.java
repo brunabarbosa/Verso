@@ -34,7 +34,7 @@ public class GET extends HTTPRequest {
 			output += line;
 		}
 		client.getConnectionManager().shutdown();
-		return Jsoup.parse(output).text();
+		return output;
 	}
 	 
 	public static class Builder extends HTTPRequest.Builder {

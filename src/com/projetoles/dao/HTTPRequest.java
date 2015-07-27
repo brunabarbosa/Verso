@@ -43,10 +43,7 @@ public abstract class HTTPRequest {
 				boolean isError = false;
 				String content;
 				try {
-					do {
-						content = getContent();
-					//propaganda
-					} while (content.substring(content.length() >= 30 ? 30 : content.length()).equals("Web hosting, domain names, VPS"));
+					content = getContent();
 				} catch(Exception e) {
 					content = e.getMessage();
 					isError = true;

@@ -2,7 +2,6 @@ package com.projetoles.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
