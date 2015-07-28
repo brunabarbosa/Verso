@@ -66,6 +66,8 @@
         </activity>
         <activity android:name=".NotificacoesActivity" >
         </activity>
+        <activity android:name=".NotificacoesTelaActivity" >
+        </activity>
         <activity
             android:name=".ResultadoPesquisaActivity"
             android:label="Verso - Resultados da pesquisa" >

@@ -1,8 +1,11 @@
 package com.projetoles.controller;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 
 import com.projetoles.dao.NotificacaoDAO;
+import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
 
 public class NotificacaoController extends Controller<Notificacao> {
@@ -14,5 +17,21 @@ public class NotificacaoController extends Controller<Notificacao> {
 		mDAO = new NotificacaoDAO();
 		mLoader = sLoader;
 	} 
+	
+	public void post(String enderecado, String titulo, String mensagem,
+			OnRequestListener<Notificacao> callback) {
+		try {
+			Notificacao c = new Notificacao(null, Calendar.getInstance(), enderecado, titulo, mensagem);
+			super.post(c, callback); 
+		} catch (Exception e) {
+			callback.onError(e.getMessage());
+		}
+	}
+ 
+	public void get(String id, OnRequestListener<Notificacao> callback) {
+		Dependencies dependencies = new Dependencies();
+		dependencies.addDependency("titulo", new UsuarioController(callback.getContext()));
+		super.get(id, callback, dependencies);
+	}
 
 }
