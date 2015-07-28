@@ -13,9 +13,9 @@
         android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:textSize="17dip" />
- 
+    
     <TextView 
-        android:id="@+id/date"
+        android:id="@+id/tags"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
@@ -23,7 +23,7 @@
         android:paddingTop="5dp" />
     
     <TextView 
-        android:id="@+id/tags"
+        android:id="@+id/date"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"

@@ -26,96 +26,18 @@ import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
 	
-	private UsuarioController mController;
+	private UsuarioController mUsuarioController;
+	private PoesiaController mPoesiaController;
 	private ImageView mUserPicturePreview;
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario; 
-	private PoesiaController mPoesiaController;
-	private Poesia mPoesia;
 	private Class mCallback;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user_profile);
-		
-		getActionBar().hide();
-		
-		
-		Bundle b = getIntent().getExtras();
-		mCallback = (Class) b.get("callback");
-		
-		
-		String poema = b.getParcelable("poema");
-		String titulo = b.getParcelable("poemaTitulo");
-		String autor = b.getParcelable("poemaAutor");
-		String tag = b.getParcelable("poemaTag");
-				
- 		mPoesiaController.pesquisar(titulo, autor, tag, poema, new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mPoesia = (Poesia) result;
-				
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-				
-			}
-		});
 
-		mController = new UsuarioController(this);
-		/*mController.getUsuario(mPoesia.getPostador(), new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mUsuario = (Usuario) result;
-				setUp();
-				
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-				
-			}
-		});*/
-						
-	}
-	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
-	
-	
-	
 	private void setUp() {
-
-		// set userName
-		Usuario usuario = mUsuario;
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
-		usuarioName.setText(usuario.getNome());
+		usuarioName.setText(mUsuario.getNome());
 
 		// submenu
 		TextView biografia = (TextView) findViewById(R.id.otherTextBiografia);
@@ -143,11 +65,26 @@ public class UserProfileActivity extends Activity {
 			public void onClick(View v) {
 				mProfilePhotoContent.setVisibility(View.VISIBLE);
 			}
-		});
-		
-		
+		});		
 	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_user_profile);
+		
+		getActionBar().hide();
+		
+		Bundle b = getIntent().getExtras();
+		mUsuario = (Usuario) b.getParcelable("usuario");
+		mCallback = (Class) b.get("callback");
+		
+		mUsuarioController = new UsuarioController(this);					
+	
+		setUp();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -166,4 +103,5 @@ public class UserProfileActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }

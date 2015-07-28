@@ -81,6 +81,15 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         }
         date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por " 
         		+ poesia.getPostador().getNome());
+        date.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(mContext, UserProfileActivity.class);
+				intent.putExtra("usuario", poesia.getPostador());
+				mContext.startActivity(intent);
+			}
+		});
         txtListChild.setText(childText);
         return convertView;
     }
