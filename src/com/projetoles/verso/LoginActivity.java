@@ -1,5 +1,6 @@
 package com.projetoles.verso;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Usuario;
 
 public class LoginActivity extends Activity {
@@ -40,9 +42,9 @@ public class LoginActivity extends Activity {
 	private UsuarioController mController;
 	
 	private LoginButton buttonFacebook;  
-    //permissões que usaremos para recuperar dados do usuário
+    //permissÃµes que usaremos para recuperar dados do usuÃ¡rio
 	private List<String> facebookPermitions;  
-	//responsável por gerenciar as ações em suas aplicações após o retorno das chamadas ao FacebookSDK
+	//responsÃ¡vel por gerenciar as aÃ§Ãµes em suas aplicaÃ§Ãµes apÃ³s o retorno das chamadas ao FacebookSDK
     private CallbackManager callbackManager;
 
 	private Button mBtnEntrar;
@@ -116,10 +118,10 @@ public class LoginActivity extends Activity {
                                     mController.login(email, id, new OnRequestListener<Usuario>(LoginActivity.this) {
 										
 										@Override
-										public void onSuccess(Usuario result) {
+										public void onSuccess(final Usuario result) {
 											Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 											startActivity(intent);
-											finish();	
+											finish();
 										}
 										
 										@Override
@@ -127,10 +129,40 @@ public class LoginActivity extends Activity {
 											mController.post(name, email, id, id, new OnRequestListener<Usuario>(LoginActivity.this) {
 												
 												@Override
-												public void onSuccess(Usuario result) {
-													Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-													startActivity(intent);
-													finish();
+												public void onSuccess(final Usuario result) {
+													new Thread(new Runnable() {
+														
+														@Override
+														public void run() {
+															
+															byte[] foto = {};
+															try {
+																foto = ImageUtils.getPhotoFromURL("https://graph.facebook.com/" + id + "/pictureâ€Œâ€‹");
+															} catch (IOException e) {
+																// TODO Auto-generated catch block
+																e.printStackTrace();
+																Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+															}
+															mController.setFoto(result, foto, new OnRequestListener<Usuario>(LoginActivity.this) {
+
+																@Override
+																public void onSuccess(Usuario result) {
+																	Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+																	startActivity(intent);
+																	finish();
+																}
+
+																@Override
+																public void onError(String errorMessage) {
+																	Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show(); 
+																	Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+																	startActivity(intent);
+																	finish();
+																	System.out.println(errorMessage);
+																}
+															});
+														}
+													}).start();
 												}
 												
 												@Override

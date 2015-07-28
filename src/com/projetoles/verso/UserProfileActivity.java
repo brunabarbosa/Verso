@@ -33,7 +33,7 @@ public class UserProfileActivity extends Activity {
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario; 
 	private Class mCallback;
-
+	private CameraActivityBundle mCameraBundle;
 
 	private void setUp() {
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
@@ -55,17 +55,12 @@ public class UserProfileActivity extends Activity {
 		});
 
 		// set userPicture, precisa consertar nessa classe
-		mUserPicturePreview = (ImageView) findViewById(R.id.otherProfilePhoto);
-		mUserPicture = (ImageView) findViewById(R.id.otherUserPicture);
-		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhoto);
+		mUserPicturePreview = (ImageView) findViewById(R.id.otherUserPicture);
+		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
+		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
 		
-		mUserPicture.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				mProfilePhotoContent.setVisibility(View.VISIBLE);
-			}
-		});		
+		mCameraBundle = new CameraActivityBundle(this, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
+		mCameraBundle.setFoto(mUsuario.getFoto());
 	}
 
 
