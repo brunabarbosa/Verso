@@ -164,45 +164,47 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			
 			@Override
 			public void onClick(final View v) {
-				final Poesia clicada = (Poesia) v.getTag();
-				btnLike.setClickable(false);
-				String curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
-				if (curtidaId != null) {
-					mCurtidaController.delete(curtidaId, new OnRequestListener<String>(mContext) {
-						 
-						@Override
-						public void onSuccess(String id) {
-							mUsuario.getCurtidas().remove(id);
-							clicada.getCurtidas().remove(id);
-							((ImageView)v).setImageResource(R.drawable.like_icon);
-							numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
-							btnLike.setClickable(true);
-						}
-						 
-						@Override
-						public void onError(String errorMessage) {
-							System.out.println("ERROR descurtir: " + errorMessage);
-							btnLike.setClickable(true);
-						}
-					});
-				} else {
-					mCurtidaController.post(mUsuario, poesia, new OnRequestListener<Curtida>(mContext) {
-						
-						@Override
-						public void onSuccess(Curtida curtida) {
-							mUsuario.getCurtidas().add(curtida.getId());
-							clicada.getCurtidas().add(curtida.getId());
-							((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
-							numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
-							btnLike.setClickable(true);
-						}
-						
-						@Override
-						public void onError(String errorMessage) {
-							System.out.println("ERROR curtir: " + errorMessage);
-							btnLike.setClickable(true);
-						}
-					});
+				if (v.isClickable()) {
+					final Poesia clicada = (Poesia) v.getTag();
+					v.setClickable(false);
+					String curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
+					if (curtidaId != null) {
+						mCurtidaController.delete(curtidaId, new OnRequestListener<String>(mContext) {
+							 
+							@Override
+							public void onSuccess(String id) {
+								mUsuario.getCurtidas().remove(id);
+								clicada.getCurtidas().remove(id);
+								((ImageView)v).setImageResource(R.drawable.like_icon);
+								numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+								v.setClickable(true);
+							}
+							 
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println("ERROR descurtir: " + errorMessage);
+								v.setClickable(true);
+							}
+						});
+					} else {
+						mCurtidaController.post(mUsuario, poesia, new OnRequestListener<Curtida>(mContext) {
+							
+							@Override
+							public void onSuccess(Curtida curtida) {
+								mUsuario.getCurtidas().add(curtida.getId());
+								clicada.getCurtidas().add(curtida.getId());
+								((ImageView)v).setImageResource(R.drawable.like_icon_ativo);
+								numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+								v.setClickable(true);
+							}
+							
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println("ERROR curtir: " + errorMessage);
+								v.setClickable(true);
+							}
+						});
+					}
 				}
 			}
 		});

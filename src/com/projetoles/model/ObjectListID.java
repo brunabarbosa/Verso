@@ -86,4 +86,8 @@ public class ObjectListID implements Parcelable {
 		return Collections.unmodifiableList(this.mList);
 	}
 
+	public void setList(List<String> list) {
+		this.mList = list;
+	}
+	
 }

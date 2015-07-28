@@ -46,7 +46,7 @@ public class ComentarioActivity extends Activity {
  
 					@Override
 					public void onSuccess(Comentario comentario) {
-						comentario.getPoesia().getComentarios().add(comentario.getId());
+						mPoesia.getComentarios().add(comentario.getId());
 						mListComentarios.add(comentario);
 						Collections.sort(mListComentarios);
 						mListAdapter.notifyDataSetChanged();

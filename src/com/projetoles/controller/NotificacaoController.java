@@ -16,6 +16,12 @@ public class NotificacaoController extends Controller<Notificacao> {
 		super(context);
 		mDAO = new NotificacaoDAO();
 		mLoader = sLoader;
+	}
+
+	@Override
+	public void update(Notificacao object,
+			OnRequestListener<Notificacao> callback) {
+		callback.onSuccess(object);
 	} 
 	
 	public void post(String enderecado, String titulo, String mensagem,

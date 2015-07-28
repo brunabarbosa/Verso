@@ -2,6 +2,7 @@ package com.projetoles.controller;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -173,6 +174,45 @@ public class UsuarioController extends Controller<Usuario> {
 			e.printStackTrace(); 
 			callback.onError(e.getMessage());
 		}
+	}
+
+	@Override
+	public void update(final Usuario object, final OnRequestListener<Usuario> callback) {
+		mDAO.update(object, new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String jsonResult) {
+				try {
+					JSONObject json = new JSONObject(jsonResult);
+					boolean success = json.getBoolean("success");
+					if (success) {
+						ArrayList<String> likes = new ArrayList<String>();
+						JSONArray array = json.getJSONArray("likes");
+						for (int i = 0; i < array.length(); i++) {
+							likes.add(array.get(i).toString());
+						}
+						ArrayList<String> poesias = new ArrayList<String>();
+						array = json.getJSONArray("poetries");
+						for (int i = 0; i < array.length(); i++) {
+							poesias.add(array.get(i).toString());
+						}
+						object.getCurtidas().setList(likes);
+						object.getPoesias().setList(poesias);
+						callback.onSuccess(object);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);	
+			}
+		});
 	}
 
 }

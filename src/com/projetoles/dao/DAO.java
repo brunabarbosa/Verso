@@ -23,6 +23,10 @@ public abstract class DAO<T extends Model> {
 		throw new UnsupportedOperationException();
 	}
 
+	public void update(T object, OnRequestListener<String> callback) {
+		
+	}
+	
 	public abstract T getFromJSON(JSONObject json, List<Object> params) throws JSONException;
 	
 }

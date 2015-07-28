@@ -71,8 +71,47 @@ public class PoesiaController extends Controller<Poesia> {
 
 	public void get(String id, OnRequestListener<Poesia> callback) {
 		Dependencies dependencies = new Dependencies();
-		dependencies.addDependency("postador", new UsuarioController(callback.getContext()));
+		dependencies.addDependency("poster", new UsuarioController(callback.getContext()));
 		super.get(id, callback, dependencies);
+	}
+
+	@Override
+	public void update(final Poesia object, final OnRequestListener<Poesia> callback) {
+		mDAO.update(object, new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String jsonResult) {
+				try {
+					JSONObject json = new JSONObject(jsonResult);
+					boolean success = json.getBoolean("success");
+					if (success) {
+						ArrayList<String> likes = new ArrayList<String>();
+						JSONArray array = json.getJSONArray("likes");
+						for (int i = 0; i < array.length(); i++) {
+							likes.add(array.get(i).toString());
+						}
+						ArrayList<String> comments = new ArrayList<String>();
+						array = json.getJSONArray("comments");
+						for (int i = 0; i < array.length(); i++) {
+							comments.add(array.get(i).toString());
+						}
+						object.getCurtidas().setList(likes);
+						object.getComentarios().setList(comments);
+						callback.onSuccess(object);
+					} else {
+						callback.onError(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);	
+			}
+		});
 	}
 	
 }

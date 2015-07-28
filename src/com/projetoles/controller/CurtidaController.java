@@ -22,8 +22,8 @@ public class CurtidaController extends Controller<Curtida> {
   
 	public void get(String id, OnRequestListener<Curtida> callback) {
 		Dependencies dependencies = new Dependencies();
-		dependencies.addDependency("postador", new UsuarioController(callback.getContext()));
-		dependencies.addDependency("poesia", new PoesiaController(callback.getContext()));
+		dependencies.addDependency("poster", new UsuarioController(callback.getContext()));
+		dependencies.addDependency("poetry", new PoesiaController(callback.getContext()));
 		super.get(id, callback, dependencies);
 	}
 
@@ -35,6 +35,11 @@ public class CurtidaController extends Controller<Curtida> {
 			e.printStackTrace();
 			callback.onError(e.getMessage());
 		}
+	}
+
+	@Override
+	public void update(Curtida object, OnRequestListener<Curtida> callback) {
+		callback.onSuccess(object);
 	}
  
 }
