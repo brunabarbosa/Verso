@@ -14,6 +14,7 @@
         android:paddingTop="5dp"
         android:textSize="17dip" />
     
+    
     <TextView 
         android:id="@+id/tags"
         android:layout_height="wrap_content"
@@ -29,5 +30,18 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
         android:paddingTop="5dp" />
+    
+    <Button 
+		android:id="@+id/btnCompartilharFacebook"
+		android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+		android:background="@drawable/compartilhar_facebook"
+		 />
+    
+    
+    "
+    
 
 </LinearLayout>

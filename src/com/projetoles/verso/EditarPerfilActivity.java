@@ -84,8 +84,8 @@ public class EditarPerfilActivity extends Activity {
 		btnSalvarPerfil = (Button) findViewById(R.id.btnSalvarPerfil);
 		// Para evitar usuarios do Facebook alterarem senha
 		if (AccessToken.getCurrentAccessToken() != null) {
-			etSenha.setVisibility(View.INVISIBLE);
-			etEditarSenha.setVisibility(View.INVISIBLE);
+			etSenha.setVisibility(View.GONE);
+			etEditarSenha.setVisibility(View.GONE);
 		}
 		
 		mCameraBundle = new CameraActivityBundle(this, foto, fotoFull, mProfilePhotoContent);

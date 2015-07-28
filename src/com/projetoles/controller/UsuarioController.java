@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.UsuarioDAO;
 import com.projetoles.model.ObjectListID;
@@ -33,8 +35,11 @@ public class UsuarioController extends Controller<Usuario> {
 	}
 	 
 	public void logout() {
+		if (AccessToken.getCurrentAccessToken() != null) {
+			LoginManager.getInstance().logOut();
+		}
 		usuarioLogado = null;
-		mEditor.clear().apply();
+		mEditor.clear().apply();		
 	}
 
 	public void getUsuarioLogado(final OnRequestListener<Usuario> callback) {

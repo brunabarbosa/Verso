@@ -1,20 +1,40 @@
 package com.projetoles.verso;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookActivity;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.nearby.sharing.SharedContent;
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
@@ -30,6 +50,12 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
     private CurtidaController mCurtidaController;
     private Bundle mBundle;
     private Usuario mUsuario;
+    private Button btnCompartilharFacebook;
+    
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    
+ 
     
     public ExpandablePoesiaAdapter(Activity context, List<Poesia> listPoesias, 
     		Bundle bundle) {
@@ -49,8 +75,30 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
- 
-    @Override
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  @Override
     public View getChildView(int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
  
@@ -69,6 +117,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         
         TextView tags = (TextView) convertView.findViewById(R.id.tags);
         TextView date = (TextView) convertView.findViewById(R.id.date);
+        btnCompartilharFacebook = (Button) convertView.findViewById(R.id.btnCompartilharFacebook);
         if (poesia.getTags().trim().isEmpty()) {
         	tags.setVisibility(View.GONE);
         } else {
@@ -90,7 +139,28 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				mContext.startActivity(intent);
 			}
 		});
-        txtListChild.setText(childText);
+        
+        btnCompartilharFacebook.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent share = new Intent(android.content.Intent.ACTION_SEND);
+			    share.setType("text/plain");
+			    
+			    String saida = poesia.getTitulo().toString() + "\n" + "\n" +
+			    poesia.getPoesia().toString() + "\n" +  "\n" +  
+					    poesia.getAutor() + "\n"  + "\n" + "#appVer(Só)";
+			    
+				
+			    // Add data to the intent, the receiving app will decide
+			    // what to do with it.
+			    share.putExtra(Intent.EXTRA_SUBJECT, poesia.getTitulo().toString() + "\n" + "\n");
+			    share.putExtra(Intent.EXTRA_TEXT,saida);
+			    mContext.startActivity(Intent.createChooser(share, "Share link!"));	
+			}
+		});
+        
+        
+      txtListChild.setText(childText);
         return convertView;
     }
  
