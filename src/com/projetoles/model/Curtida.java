@@ -62,31 +62,5 @@ public class Curtida extends TemporalModel {
 	public Poesia getPoesia() {
 		return this.mPoesia;
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((mPostador == null) ? 0 : mPostador.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Curtida other = (Curtida) obj;
-		if (mPostador == null) {
-			if (other.mPostador != null)
-				return false;
-		} else if (!mPostador.equals(other.mPostador))
-			return false;
-		return true;
-	}
 
 }

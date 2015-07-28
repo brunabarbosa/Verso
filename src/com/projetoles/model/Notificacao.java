@@ -79,23 +79,6 @@ public class Notificacao extends TemporalModel {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Notificacao))
-			return false;
-		Notificacao other = (Notificacao) obj;
-		return other.getTitulo().equals(this.getTitulo()) && other.getMensagem().equals(this.getMensagem());
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((mEnderecado == null) ? 0 : mEnderecado.hashCode());
-		return result;
-	}
- 
-	@Override
 	public String toString() {
 		if ((getTitulo() != null && !getTitulo().trim().equals("")) && (getMensagem() != null && !getMensagem().trim().equals(""))) {
 			return "";

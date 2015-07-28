@@ -112,7 +112,9 @@ public class UsuarioDAO extends DAO<Usuario> {
 		ObjectListID poesias = new ObjectListID(obj.getJSONArray("poetries"));
 		ObjectListID notificacoes = new ObjectListID(obj.getJSONArray("notifications"));
 		ObjectListID curtidas = new ObjectListID(obj.getJSONArray("likes"));
-		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas);
+		ObjectListID seguindo = new ObjectListID(obj.getJSONArray("followeds"));
+		ObjectListID seguidores = new ObjectListID(obj.getJSONArray("followers"));
+		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores);
 	}
 
 }

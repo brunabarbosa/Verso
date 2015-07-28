@@ -20,6 +20,8 @@ public class Usuario extends Model {
 	private ObjectListID mPoesias;
 	private ObjectListID mNotificacoes;
 	private ObjectListID mCurtidas;
+	private ObjectListID mSeguindo;
+	private ObjectListID mSeguidores;
 
 	public static final Parcelable.Creator<Usuario> CREATOR = 
 			new Parcelable.Creator<Usuario>() {
@@ -43,6 +45,8 @@ public class Usuario extends Model {
 		setPoesias((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 		setNotificacoes((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 		setCurtidas((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
+		setSeguindo((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
+		setSeguidores((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 	}
 
 	@Override
@@ -55,10 +59,13 @@ public class Usuario extends Model {
 		dest.writeParcelable(this.getPoesias(), flags);
 		dest.writeParcelable(this.getNotificacoes(), flags);
 		dest.writeParcelable(this.getCurtidas(), flags);
+		dest.writeParcelable(this.getSeguindo(), flags);
+		dest.writeParcelable(this.getSeguidores(), flags);
 	}
 	
 	public Usuario(String email, String senha, String nome, String biografia, byte[] foto, 
-			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas) {
+			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
+			ObjectListID seguindo, ObjectListID seguidores) {
 		super(email);
 		setSenha(senha);
 		setNome(nome);
@@ -67,11 +74,14 @@ public class Usuario extends Model {
 		setPoesias(poesias);
 		setNotificacoes(notificacoes);
 		setCurtidas(curtidas);
+		setSeguindo(seguindo);
+		setSeguidores(seguidores);
 	}
 
 	public Usuario(String email, String nome, String biografia, byte[] foto,
-			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas) {
-		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas);
+			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
+			ObjectListID seguindo, ObjectListID seguidores) {
+		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores);
 	}
 
 	@Override
@@ -159,14 +169,22 @@ public class Usuario extends Model {
 		return this.mCurtidas;
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Usuario))
-			return false;
-		Usuario other = (Usuario) obj;
-		return other.getId().equals(this.getId());
+	public void setSeguindo(ObjectListID seguindo) {
+		this.mSeguindo = seguindo;
 	}
-
+	
+	public ObjectListID getSeguindo() {
+		return this.mSeguindo;
+	}
+	
+	public void setSeguidores(ObjectListID seguidores) {
+		this.mSeguidores = seguidores;
+	}
+	
+	public ObjectListID getSeguidores() {
+		return this.mSeguidores;
+	}
+	
 	@Override
 	public String toString() {
 		return this.getNome();

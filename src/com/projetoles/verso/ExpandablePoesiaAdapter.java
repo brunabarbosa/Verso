@@ -69,13 +69,18 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         
         TextView tags = (TextView) convertView.findViewById(R.id.tags);
         TextView date = (TextView) convertView.findViewById(R.id.date);
-        String poesiasTagss = "";
-        String[] poesiasTags = poesia.getTags().split(",");
-        for (String tag : poesiasTags) { 
-        	poesiasTagss += "#" + tag;
+        if (poesia.getTags().trim().isEmpty()) {
+        	tags.setVisibility(View.GONE);
+        } else {
+			String poesiasTagss = "";
+			String[] poesiasTags = poesia.getTags().split(",");
+			for (String tag : poesiasTags) { 
+				poesiasTagss += "#" + tag;
+			}
+			tags.setText(poesiasTagss);
         }
-        tags.setText(poesiasTagss);
-        date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()));
+        date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por " 
+        		+ poesia.getPostador().getNome());
         txtListChild.setText(childText);
         return convertView;
     }
@@ -117,8 +122,6 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
         
         final TextView autor = (TextView) convertView.findViewById(R.id.author);
         autor.setText(poesia.getAutor());
-        final TextView postador = (TextView) convertView.findViewById(R.id.postador);
-        //postador.setText(poesia.getPostador().getNome());
         final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
         numLikes.setText(String.valueOf(poesia.getCurtidas().size()));
         final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
