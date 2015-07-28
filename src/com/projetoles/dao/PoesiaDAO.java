@@ -64,6 +64,16 @@ public class PoesiaDAO extends DAO<Poesia> {
 	}
 
 	@Override
+	public void update(Poesia poesia, OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("id", poesia.getId())
+			.setDomain(DOMAIN)
+			.setPath("poetry/update");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	
+	@Override
 	public Poesia getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));

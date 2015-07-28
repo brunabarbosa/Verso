@@ -77,9 +77,22 @@ public abstract class Controller<T extends Model> {
     	}
     }
     
+    public abstract void update(final T object, final OnRequestListener<T> callback);
+    
 	public void get(final String id, final OnRequestListener<T> callback, final Dependencies dependencies) {
 		if (mLoader.contains(id)) {
-			callback.onSuccess(mLoader.get(id));
+			this.update(mLoader.get(id), new OnRequestListener<T>(callback.getContext()) {
+
+				@Override
+				public void onSuccess(T result) {
+					callback.onSuccess(result);
+				}
+
+				@Override
+				public void onError(String errorMessage) {
+					callback.onError(errorMessage);
+				}
+			});
 		} else { 
 			if (!mRequisitions.containsKey(id)) {
 				mRequisitions.put(id, new ArrayList<OnRequestListener<T>>());

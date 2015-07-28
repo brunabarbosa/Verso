@@ -88,6 +88,16 @@ public class UsuarioDAO extends DAO<Usuario> {
 	}
 
 	@Override
+	public void update(Usuario usuario, OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+			.addParam("email", usuario.getId())
+			.setDomain(DOMAIN)
+			.setPath("user/update");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	
+	@Override
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {
 		String email = obj.getString("email");
 		String nome = obj.getString("name");

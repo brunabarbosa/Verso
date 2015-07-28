@@ -32,9 +32,14 @@ public class ComentarioController extends Controller<Comentario> {
  
 	public void get(String id, OnRequestListener<Comentario> callback) {
 		Dependencies dependencies = new Dependencies();
-		dependencies.addDependency("postador", new UsuarioController(callback.getContext()));
-		dependencies.addDependency("poesia", new PoesiaController(callback.getContext()));
+		dependencies.addDependency("poster", new UsuarioController(callback.getContext()));
+		dependencies.addDependency("poetry", new PoesiaController(callback.getContext()));
 		super.get(id, callback, dependencies);
+	}
+
+	@Override
+	public void update(Comentario object, OnRequestListener<Comentario> callback) {
+		callback.onSuccess(object);
 	}
 	
 }
