@@ -59,4 +59,9 @@ public abstract class Model implements Parcelable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return this.getId();
+	}
+	
 }
