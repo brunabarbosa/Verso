@@ -16,7 +16,13 @@
 
 package com.projetoles.verso;
 
+import java.util.Calendar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.projetoles.model.CalendarUtils;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -86,7 +92,7 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
+                sendNotification(extras.toString());
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -97,19 +103,39 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void sendNotification(String m) {
+    	
+    	JSONObject msg = null;
+		try {
+			msg = new JSONObject(m);
+		} catch (JSONException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, NotificacoesActivity.class), 0);
-
+        
+        Calendar dataCriacao = Calendar.getInstance();
+        String mensagem = "";
+		try {
+			dataCriacao = CalendarUtils.stringToCalendar(msg.getString("dataCriacao"));
+			 mensagem = msg.getString("mensagem");
+/*			String enderecado = msg.getString("enderecado");
+			String titulo = msg.getString("titulo");
+*/		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.like_icon)
-        .setContentTitle("GCM Notification")
+        .setContentTitle("Ver(só)")
         .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        .bigText(mensagem +"\n" + CalendarUtils.getDataFormada(dataCriacao)))
+        .setContentText(mensagem);
 
         mBuilder.setContentIntent(contentIntent);
         
