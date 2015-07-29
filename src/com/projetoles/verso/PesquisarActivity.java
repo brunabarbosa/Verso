@@ -47,6 +47,7 @@ public class PesquisarActivity extends Activity {
 				String autor = etAutor.getText().toString();
 				String tag = etTag.getText().toString();
 				String trecho = etTrecho.getText().toString();
+				((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.VISIBLE);
 				if (titulo.trim().isEmpty() && autor.trim().isEmpty() && tag.trim().isEmpty() && trecho.trim().isEmpty()) {
 					ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", "É preciso informar pelo menos um campo.", null);
 				} else {
@@ -54,6 +55,7 @@ public class PesquisarActivity extends Activity {
 						
 						@Override
 						public void onSuccess(ArrayList<String> resultados) {
+							((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 							Intent i = new Intent(PesquisarActivity.this, ResultadoPesquisaActivity.class);
 							i.putStringArrayListExtra("resultados", resultados);
 							startActivity(i);

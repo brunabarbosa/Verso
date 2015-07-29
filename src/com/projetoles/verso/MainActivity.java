@@ -28,8 +28,7 @@ public class MainActivity extends TabActivity {
 	private ImageView mBtnPesquisar;
 	private ImageView mBtnSair;
 	private Usuario mUsuario;
-	private View mLoading;
-	private ImageView btnSair;
+	public View mLoading;
 	private CameraActivityBundle mCameraBundle;
 	
 	private void setTabs() {
@@ -142,11 +141,7 @@ public class MainActivity extends TabActivity {
 				startActivity(intent);
 				finish();
 			}
-			
-			
 		});
-		
-		ImageView sair = (ImageView) MainActivity.sInstance.findViewById(R.id.btnSair);
 		mBtnSair.setOnClickListener(new OnClickListener() {
 			
 			@Override

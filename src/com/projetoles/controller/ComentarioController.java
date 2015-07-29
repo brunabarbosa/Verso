@@ -30,15 +30,16 @@ public class ComentarioController extends Controller<Comentario> {
 			super.post(c, new OnRequestListener<Comentario>(callback.getContext()) {
 
 				@Override
-				public void onSuccess(Comentario result) {
+				public void onSuccess(final Comentario comentarioResult) {
 					if (!postador.equals(poesia.getPostador())) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-						poesia.getPostador(), postador, " comentou sua poesia."), 
+						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), poesia.getPostador(), postador, " comentou sua poesia."), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override
 								public void onSuccess(Notificacao result) {
+									System.out.println("Notificação: " + result.getId());
 									poesia.getPostador().getNotificacoes().add(result.getId());
+									callback.onSuccess(comentarioResult);
 								}
 
 								@Override
@@ -47,7 +48,7 @@ public class ComentarioController extends Controller<Comentario> {
 								}
 							});
 					}
-					callback.onSuccess(result);
+					callback.onSuccess(comentarioResult);
 				}
 
 				@Override
