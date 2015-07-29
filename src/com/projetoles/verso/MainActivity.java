@@ -145,6 +145,18 @@ public class MainActivity extends TabActivity {
 			
 			
 		});
+		
+		ImageView sair = (ImageView) MainActivity.sInstance.findViewById(R.id.btnSair);
+		mBtnSair.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mController.logout();
+				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+				MainActivity.this.startActivity(intent);
+				finish();
+			}
+		});
 	}
 	
 	@Override

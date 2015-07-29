@@ -29,8 +29,10 @@ public class UsuarioController extends Controller<Usuario> {
 	private void login(Usuario usuario) {
 		if (usuario != null) {
 			usuarioLogado = usuario;
-			mEditor.putString("id", usuario.getId()).apply();
-			mEditor.putString("senha", usuario.getSenha()).apply();
+			mEditor.putString("id", usuario.getId());
+			mEditor.commit();
+			mEditor.putString("senha", usuario.getSenha());
+			mEditor.commit();
 		}
 	}
 	 
@@ -39,15 +41,16 @@ public class UsuarioController extends Controller<Usuario> {
 			LoginManager.getInstance().logOut();
 		}
 		usuarioLogado = null;
-		mEditor.clear().apply();		
+		mEditor.clear().commit();		
 	}
 
 	public void getUsuarioLogado(final OnRequestListener<Usuario> callback) {
 		if (usuarioLogado != null) {
 			callback.onSuccess(usuarioLogado);
-		} else if (mSession.contains("id")) {
-			Usuario usuario = new Usuario(mSession.getString("id", null), mSession.getString("senha", null),
+		} else if (mSession.contains("id") && mSession.contains("senha")) {
+			Usuario usuario = new Usuario(mSession.getString("id", null), null,
 					null, null, null, null, null, null, null, null);
+			usuario.setSenha(mSession.getString("senha", null), false);
 			this.login(usuario, callback);
 		} else {
 			callback.onError("Usuário não encontrado.");
@@ -75,8 +78,9 @@ public class UsuarioController extends Controller<Usuario> {
 					boolean success = jsonObject.getBoolean("success");
 					if (success) {
 						Usuario encontrado = mDAO.getFromJSON(jsonObject, new ArrayList<Object>());
-						mLoader.save(encontrado);
+						encontrado.setSenha(usuario.getSenha(), false);
 						login(encontrado);
+						mLoader.save(encontrado);
 						callback.onSuccess(encontrado);
 					} else {
 						callback.onError(jsonObject.getString("message"));

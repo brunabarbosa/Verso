@@ -109,7 +109,7 @@ public class Usuario extends Model {
 		return mNome;
 	}
 
-	public void setSenha(String password) throws IllegalArgumentException {
+	public void setSenha(String password, boolean encrypted) {
 		if (password != null) {
 			if (password.trim().isEmpty()) {
 				throw new IllegalArgumentException("Senha é obrigatória.");
@@ -118,10 +118,18 @@ public class Usuario extends Model {
 			} else if (password.length() > TAMANHO_MAXIMO_SENHA) {
 				throw new IllegalArgumentException("Tamanho da senha excede o limite de " + TAMANHO_MAXIMO_SENHA + " caracteres.");
 			}
-			this.mSenha = PasswordEncrypter.getEncryptedPassword(password);
+			if (encrypted) {
+				this.mSenha = PasswordEncrypter.getEncryptedPassword(password);
+			} else {
+				this.mSenha = password;
+			}
 		}
 	}
 
+	public void setSenha(String password) {
+		setSenha(password, true);
+	}
+	
 	public String getSenha() {
 		return mSenha;
 	}
