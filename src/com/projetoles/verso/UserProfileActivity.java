@@ -1,5 +1,8 @@
 package com.projetoles.verso;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
@@ -34,6 +39,9 @@ public class UserProfileActivity extends Activity {
 	private Usuario mUsuario; 
 	private Class mCallback;
 	private CameraActivityBundle mCameraBundle;
+	private ExpandableListView mExpListView;
+	private ArrayList<Poesia> mListPoesias;
+	private ExpandablePoesiaAdapter mAdapter; 
 
 	private void setUp() {
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
@@ -69,7 +77,7 @@ public class UserProfileActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_profile);
 		
-		getActionBar().hide();
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		Bundle b = getIntent().getExtras();
 		mUsuario = (Usuario) b.getParcelable("usuario");
@@ -78,6 +86,43 @@ public class UserProfileActivity extends Activity {
 		mUsuarioController = new UsuarioController(this);					
 	
 		setUp();
+		
+		mPoesiaController = new PoesiaController(this);
+		mExpListView = (ExpandableListView) findViewById(R.id.lvPoesiasDoUserExp);
+
+		// preparing list data
+		mListPoesias = new ArrayList<Poesia>();
+		mAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, mListPoesias, null);
+
+		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			int previousGroup = -1;
+
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				if (groupPosition != previousGroup)
+					mExpListView.collapseGroup(previousGroup);
+				previousGroup = groupPosition;
+			}
+		});
+
+		mExpListView.setAdapter(mAdapter);
+		for (String id : mUsuario.getPoesias().getList()) {
+			mPoesiaController.get(id, new OnRequestListener<Poesia>(this) {
+
+				@Override
+				public void onSuccess(Poesia p) {
+					mListPoesias.add(p);
+					Collections.sort(mListPoesias);
+					mAdapter.notifyDataSetChanged();
+
+				}
+
+				@Override
+				public void onError(String errorMessage) {
+					System.out.println(errorMessage);
+				}
+			});
+		}
 	}
 	
 	@Override

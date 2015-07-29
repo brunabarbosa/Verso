@@ -121,6 +121,23 @@
 	            android:textAlignment="center"
 	            android:textColorHint="#525151" />
 	    </LinearLayout>
+
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@+id/profileTabs"
+	        android:orientation="vertical" >
+	        
+	        <ExpandableListView
+                android:id="@+id/lvPoesiasDoUserExp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ExpandableListView>
+
+	    </LinearLayout>
 	     
 	</RelativeLayout>
 
