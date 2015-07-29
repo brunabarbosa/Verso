@@ -31,7 +31,7 @@ public abstract class Controller<T extends Model> {
 
 	public Controller(Activity context) {
 		this.mContext = context;
-		this.mSession = context.getSharedPreferences("com.projetoles.verso", Context.MODE_PRIVATE); 
+		this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
 		this.mEditor = mSession.edit();
 		this.mRequisitions = new HashMap<String, List<OnRequestListener<T>>>();
 	}

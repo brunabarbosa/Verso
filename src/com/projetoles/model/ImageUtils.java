@@ -1,10 +1,13 @@
 package com.projetoles.model;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -65,7 +68,22 @@ public class ImageUtils {
 	    }
 	    return ous.toByteArray();
 	}
-	 
+
+	public static byte[] getPhotoFromURL(String photo) throws IOException {
+		 URL url = new URL(photo);
+		 InputStream in = new BufferedInputStream(url.openStream());
+		 ByteArrayOutputStream out = new ByteArrayOutputStream();
+		 byte[] buf = new byte[1024];
+		 int n = 0;
+		 while (-1!=(n=in.read(buf)))
+		 {
+		    out.write(buf, 0, n); 
+		 }
+		 out.close(); 
+		 in.close();
+		 return out.toByteArray();
+	}
+	
 	public static String encode(byte[] data) {
 		return Base64.encodeToString(data, Base64.DEFAULT);
 	}

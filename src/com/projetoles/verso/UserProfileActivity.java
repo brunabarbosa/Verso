@@ -1,5 +1,8 @@
 package com.projetoles.verso;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,108 +17,39 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 
 import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
 	
-	private UsuarioController mController;
+	private UsuarioController mUsuarioController;
+	private PoesiaController mPoesiaController;
 	private ImageView mUserPicturePreview;
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario; 
-	private PoesiaController mPoesiaController;
-	private Poesia mPoesia;
 	private Class mCallback;
+	private CameraActivityBundle mCameraBundle;
+	private ExpandableListView mExpListView;
+	private ArrayList<Poesia> mListPoesias;
+	private ExpandablePoesiaAdapter mAdapter; 
+	private SeguidaController mSeguidaController;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user_profile);
-		
-		getActionBar().hide();
-		
-		
-		Bundle b = getIntent().getExtras();
-		mCallback = (Class) b.get("callback");
-		
-		
-		String poema = b.getParcelable("poema");
-		String titulo = b.getParcelable("poemaTitulo");
-		String autor = b.getParcelable("poemaAutor");
-		String tag = b.getParcelable("poemaTag");
-				
- 		mPoesiaController.pesquisar(titulo, autor, tag, poema, new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mPoesia = (Poesia) result;
-				
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-				
-			}
-		});
-
-		mController = new UsuarioController(this);
-		/*mController.getUsuario(mPoesia.getPostador(), new OnRequestListener(this) {
-			
-			@Override
-			public void onSuccess(Object result) {
-				mUsuario = (Usuario) result;
-				setUp();
-				
-			}
-			
-			@Override
-			public void onError(String errorMessage) {
-				finish();
-				
-			}
-		});*/
-						
-	}
-	
-	public Bitmap getCroppedBitmap(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	            bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	    canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	            bitmap.getWidth() / 2, paint);
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	    //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-	    //return _bmp;
-	    return output;
-	}
-	
-	
-	
 	private void setUp() {
-
-		// set userName
-		Usuario usuario = mUsuario;
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
-		usuarioName.setText(usuario.getNome());
+		usuarioName.setText(mUsuario.getNome());
 
 		// submenu
 		TextView biografia = (TextView) findViewById(R.id.otherTextBiografia);
@@ -133,21 +67,90 @@ public class UserProfileActivity extends Activity {
 		});
 
 		// set userPicture, precisa consertar nessa classe
-		mUserPicturePreview = (ImageView) findViewById(R.id.otherProfilePhoto);
-		mUserPicture = (ImageView) findViewById(R.id.otherUserPicture);
-		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhoto);
+		mUserPicturePreview = (ImageView) findViewById(R.id.otherUserPicture);
+		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
+		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
 		
-		mUserPicture.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				mProfilePhotoContent.setVisibility(View.VISIBLE);
-			}
-		});
-		
-		
+		mCameraBundle = new CameraActivityBundle(this, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
+		mCameraBundle.setFoto(mUsuario.getFoto());
 	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_user_profile);
+		
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		Bundle b = getIntent().getExtras();
+		mUsuario = (Usuario) b.getParcelable("usuario");
+		mCallback = (Class) b.get("callback");
+		
+		mUsuarioController = new UsuarioController(this);					
+		mSeguidaController = new SeguidaController(this);
+		
+		setUp();
+		
+		mPoesiaController = new PoesiaController(this);
+		mExpListView = (ExpandableListView) findViewById(R.id.lvPoesiasDoUserExp);
+
+		// preparing list data
+		mListPoesias = new ArrayList<Poesia>();
+		mAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, mListPoesias, null);
+
+		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			int previousGroup = -1;
+
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				if (groupPosition != previousGroup)
+					mExpListView.collapseGroup(previousGroup);
+				previousGroup = groupPosition;
+			}
+		});
+
+		mExpListView.setAdapter(mAdapter);
+		for (String id : mUsuario.getPoesias().getList()) {
+			mPoesiaController.get(id, new OnRequestListener<Poesia>(this) {
+
+				@Override
+				public void onSuccess(Poesia p) {
+					mListPoesias.add(p);
+					Collections.sort(mListPoesias);
+					mAdapter.notifyDataSetChanged();
+
+				}
+
+				@Override
+				public void onError(String errorMessage) {
+					System.out.println(errorMessage);
+				}
+			});
+		}
+		
+		//listener para seguir
+		Button seguir = (Button) findViewById(R.id.seguir);
+		seguir.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				mSeguidaController.post(mUsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
+
+					@Override
+					public void onSuccess(Seguida result) {
+						System.out.println(mUsuario.getSeguidores().size());
+						
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println("Deu errado");
+						
+					}
+				});
+			}
+		});
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -166,4 +169,5 @@ public class UserProfileActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }

@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.UsuarioDAO;
 import com.projetoles.model.ObjectListID;
@@ -27,22 +29,28 @@ public class UsuarioController extends Controller<Usuario> {
 	private void login(Usuario usuario) {
 		if (usuario != null) {
 			usuarioLogado = usuario;
-			mEditor.putString("id", usuario.getId()).apply();
-			mEditor.putString("senha", usuario.getSenha()).apply();
+			mEditor.putString("id", usuario.getId());
+			mEditor.commit();
+			mEditor.putString("senha", usuario.getSenha());
+			mEditor.commit();
 		}
 	}
 	 
 	public void logout() {
+		if (AccessToken.getCurrentAccessToken() != null) {
+			LoginManager.getInstance().logOut();
+		}
 		usuarioLogado = null;
-		mEditor.clear().apply();
+		mEditor.clear().commit();		
 	}
 
 	public void getUsuarioLogado(final OnRequestListener<Usuario> callback) {
 		if (usuarioLogado != null) {
 			callback.onSuccess(usuarioLogado);
-		} else if (mSession.contains("id")) {
-			Usuario usuario = new Usuario(mSession.getString("id", null), mSession.getString("senha", null),
-					null, null, null, null, null, null);
+		} else if (mSession.contains("id") && mSession.contains("senha")) {
+			Usuario usuario = new Usuario(mSession.getString("id", null), null,
+					null, null, null, null, null, null, null, null);
+			usuario.setSenha(mSession.getString("senha", null), false);
 			this.login(usuario, callback);
 		} else {
 			callback.onError("Usuário não encontrado.");
@@ -51,7 +59,8 @@ public class UsuarioController extends Controller<Usuario> {
 
 	public void login(String email, String senha, OnRequestListener<Usuario> callback) {
 		try {
-			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, new ObjectListID(), new ObjectListID(), new ObjectListID());
+			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, 
+					new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID());
 			this.login(usuario, callback);
 		} catch (Exception e) {
 			e.printStackTrace(); 
@@ -69,8 +78,9 @@ public class UsuarioController extends Controller<Usuario> {
 					boolean success = jsonObject.getBoolean("success");
 					if (success) {
 						Usuario encontrado = mDAO.getFromJSON(jsonObject, new ArrayList<Object>());
-						mLoader.save(encontrado);
+						encontrado.setSenha(usuario.getSenha(), false);
 						login(encontrado);
+						mLoader.save(encontrado);
 						callback.onSuccess(encontrado);
 					} else {
 						callback.onError(jsonObject.getString("message"));
@@ -122,7 +132,8 @@ public class UsuarioController extends Controller<Usuario> {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, new ObjectListID(), new ObjectListID(), new ObjectListID());
+				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, 
+						new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID());
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -150,7 +161,8 @@ public class UsuarioController extends Controller<Usuario> {
 				callback.onError("Senhas não coincidem.");
 			} else {
 				Usuario usuario = new Usuario(usuarioLogado.getId(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
-						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas());
+						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas(), 
+						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -196,8 +208,20 @@ public class UsuarioController extends Controller<Usuario> {
 						for (int i = 0; i < array.length(); i++) {
 							poesias.add(array.get(i).toString());
 						}
+						ArrayList<String> seguindo = new ArrayList<String>();
+						array = json.getJSONArray("followeds");
+						for (int i = 0; i < array.length(); i++) {
+							seguindo.add(array.get(i).toString());
+						}
+						ArrayList<String> seguidores = new ArrayList<String>();
+						array = json.getJSONArray("followers");
+						for (int i = 0; i < array.length(); i++) {
+							seguidores.add(array.get(i).toString());
+						}
 						object.getCurtidas().setList(likes);
 						object.getPoesias().setList(poesias);
+						object.getSeguindo().setList(seguindo);
+						object.getSeguidores().setList(seguidores);
 						callback.onSuccess(object);
 					} else {
 						callback.onError(json.getString("message"));

@@ -118,7 +118,11 @@
 
         <activity
             android:name=".UserProfileActivity"
-            android:label="@string/title_activity_user_profile" >
+            android:label="@string/title_activity_user_profile"
+            android:parentActivityName="com.projetoles.verso.MainActivity"  >
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.projetoles.verso.MainActivity" />
         </activity>
     </application>
 

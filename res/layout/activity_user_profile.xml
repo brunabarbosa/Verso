@@ -121,11 +121,28 @@
 	            android:textAlignment="center"
 	            android:textColorHint="#525151" />
 	    </LinearLayout>
+
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@+id/profileTabs"
+	        android:orientation="vertical" >
+	        
+	        <ExpandableListView
+                android:id="@+id/lvPoesiasDoUserExp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ExpandableListView>
+
+	    </LinearLayout>
 	     
 	</RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/OtherProfilePhotoContent"
+        android:id="@+id/otherProfilePhotoContent"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:background="#CC000000" 
@@ -133,20 +150,10 @@
 		android:visibility="gone" >
 		    
 	    <ImageView 
-	        android:id="@+id/OtherProfilePhoto"
+	        android:id="@+id/otherProfilePhoto"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_centerInParent="true" />
-		    
-	    <Button
-	        android:layout_below="@+id/otherProfilePhoto"
-	        android:layout_centerHorizontal="true"
-	        android:id="@+id/btnProfilePhotoEdit"
-	        android:layout_width="150dp"
-	        android:layout_height="50dp"
-	        android:layout_marginTop="10dp"
-	        android:text="Editar foto"
-	        android:background="@drawable/entrar" />
 		    
 	</RelativeLayout>
 	

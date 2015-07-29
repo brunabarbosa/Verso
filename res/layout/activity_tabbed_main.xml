@@ -38,6 +38,18 @@
 		        android:text="UserName"
 		        android:textColor="#866a3f"
 		        android:textSize="23sp" />
+		    
+		    <ImageView
+		        android:id="@+id/btnSair"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_column="2"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="right|center_vertical"
+		        android:layout_row="0"
+		        android:alpha="0.6"
+		        android:clickable="true"
+		        android:src="@drawable/sair" />
 	
 		    <ImageView
 		        android:visibility="gone"

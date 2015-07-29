@@ -1,6 +1,7 @@
 package com.projetoles.verso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -20,9 +21,9 @@ public class CurtidaActivity extends Activity {
 
 	private Poesia mPoesia;
 	private CurtidaController mCurtidaController;
-	private List<String> mListCurtidas;
+	private List<Curtida> mListCurtidas;
 	private ListView mListView;
-	private ArrayAdapter<String> mAdapter;
+	private ListCurtidaAdapter mAdapter;
 	
 	private void carregaCurtidas() {
 		for (String id : mPoesia.getCurtidas().getList()) {
@@ -30,8 +31,8 @@ public class CurtidaActivity extends Activity {
 				 
 				@Override 
 				public void onSuccess(Curtida curtida) {
-					String data = CalendarUtils.getDataFormada(curtida.getDataCriacao());
-					mListCurtidas.add(curtida.getPostador().getNome() + " curtiu isso em " + data + ".");
+					mListCurtidas.add(curtida);
+					Collections.sort(mListCurtidas);
 					mAdapter.notifyDataSetChanged();
 				}
 				
@@ -46,7 +47,7 @@ public class CurtidaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pessoas_que_curtiram);
+		setContentView(R.layout.activity_curtida);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		Bundle b = getIntent().getExtras();
@@ -55,9 +56,9 @@ public class CurtidaActivity extends Activity {
 		
 		mCurtidaController = new CurtidaController(this);
 		
-		mListCurtidas = new ArrayList<String>();
+		mListCurtidas = new ArrayList<Curtida>();
 		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
-		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListCurtidas);
+		mAdapter = new ListCurtidaAdapter(this, mListCurtidas);
 		mListView.setAdapter(mAdapter);
 		
 		carregaCurtidas(); 

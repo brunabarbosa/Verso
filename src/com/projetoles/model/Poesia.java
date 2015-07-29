@@ -144,41 +144,4 @@ public class Poesia extends TemporalModel {
 		return this.mCurtidas;
 	}
   
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((mAutor == null) ? 0 : mAutor.hashCode());
-		result = prime * result + ((mPoesia == null) ? 0 : mPoesia.hashCode());
-		result = prime * result + ((mTitulo == null) ? 0 : mTitulo.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Poesia other = (Poesia) obj;
-		if (mAutor == null) {
-			if (other.mAutor != null)
-				return false;
-		} else if (!mAutor.equals(other.mAutor))
-			return false;
-		if (mPoesia == null) {
-			if (other.mPoesia != null)
-				return false;
-		} else if (!mPoesia.equals(other.mPoesia))
-			return false;
-		if (mTitulo == null) {
-			if (other.mTitulo != null)
-				return false;
-		} else if (!mTitulo.equals(other.mTitulo))
-			return false;
-		return true;
-	}
-
 }

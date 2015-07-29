@@ -82,43 +82,6 @@ public class Comentario extends TemporalModel {
 	}
 	
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((mPostador == null) ? 0 : mPostador.hashCode());
-		result = prime * result
-				+ ((mComentario == null) ? 0 : mComentario.hashCode());
-		result = prime * result + ((mDataCriacao == null) ? 0 : mDataCriacao.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Comentario other = (Comentario) obj;
-		if (mPostador == null) {
-			if (other.mPostador != null)
-				return false;
-		} else if (!mPostador.equals(other.mPostador))
-			return false;
-		if (mComentario == null) {
-			if (other.mComentario != null)
-				return false;
-		} else if (!mComentario.equals(other.mComentario))
-			return false;
-		if (mDataCriacao == null) {
-			if (other.mDataCriacao != null)
-				return false;
-		} else if (!mDataCriacao.equals(other.mDataCriacao))
-			return false;
-		return true;
-	}
-
 	public String toString(){
 		return mComentario;
 		

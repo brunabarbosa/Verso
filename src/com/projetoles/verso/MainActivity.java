@@ -26,8 +26,10 @@ public class MainActivity extends TabActivity {
 	private TabHost mTabHost;
 	private ImageView mBtnCriarPoema;
 	private ImageView mBtnPesquisar;
+	private ImageView mBtnSair;
 	private Usuario mUsuario;
 	private View mLoading;
+	private ImageView btnSair;
 	private CameraActivityBundle mCameraBundle;
 	
 	private void setTabs() {
@@ -48,7 +50,7 @@ public class MainActivity extends TabActivity {
 		comporSpec.setContent(comporIntent);
 
 		sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
-		Intent sobreIntent = new Intent(MainActivity.this, NotificacoesTelaActivity.class);
+		Intent sobreIntent = new Intent(MainActivity.this, NotificacoesActivity.class);
 		sobreSpec.setContent(sobreIntent);
 
 		buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
@@ -64,6 +66,11 @@ public class MainActivity extends TabActivity {
 
 			@Override
 			public void onTabChanged(String arg0) {
+				if (mTabHost.getCurrentTab() == 0) {
+					mBtnSair.setVisibility(View.VISIBLE);
+				} else {
+					mBtnSair.setVisibility(View.GONE);
+				}
 				if (mTabHost.getCurrentTab() == 1) {
 					mBtnCriarPoema.setVisibility(View.VISIBLE);
 				} else {
@@ -107,6 +114,7 @@ public class MainActivity extends TabActivity {
 
 		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
 		mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
+		mBtnSair = (ImageView) findViewById(R.id.btnSair);
 		mLoading = findViewById(R.id.mainLoading);
 		
 		View profilePhotoContent = findViewById(R.id.profilePhotoContent);
@@ -132,6 +140,20 @@ public class MainActivity extends TabActivity {
 				intent.putExtra("usuario", mUsuario);
 				intent.putExtra("callback", MainActivity.class);
 				startActivity(intent);
+				finish();
+			}
+			
+			
+		});
+		
+		ImageView sair = (ImageView) MainActivity.sInstance.findViewById(R.id.btnSair);
+		mBtnSair.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mController.logout();
+				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+				MainActivity.this.startActivity(intent);
 				finish();
 			}
 		});
@@ -160,12 +182,11 @@ public class MainActivity extends TabActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
 	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
 	    mCameraBundle. onActivityResult(requestCode, resultCode, imageReturnedIntent, mLoading);
-	}
+	}	
 	
 }
