@@ -1,6 +1,5 @@
 package com.projetoles.verso;
 
-import java.text.DateFormat;
 import java.util.List;
 
 import android.content.Context;

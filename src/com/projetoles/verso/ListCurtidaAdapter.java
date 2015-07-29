@@ -1,6 +1,5 @@
 package com.projetoles.verso;
 
-import java.text.DateFormat;
 import java.util.List;
 
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Comentario;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.ImageUtils;
  

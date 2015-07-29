@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jsoup.Jsoup;
 
 /**
  * Classe responsável por realizar uma requisição HTTP do tipo GET
