@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,9 +25,11 @@ import android.widget.TextView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 
 import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
@@ -42,6 +45,7 @@ public class UserProfileActivity extends Activity {
 	private ExpandableListView mExpListView;
 	private ArrayList<Poesia> mListPoesias;
 	private ExpandablePoesiaAdapter mAdapter; 
+	private SeguidaController mSeguidaController;
 
 	private void setUp() {
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
@@ -84,7 +88,8 @@ public class UserProfileActivity extends Activity {
 		mCallback = (Class) b.get("callback");
 		
 		mUsuarioController = new UsuarioController(this);					
-	
+		mSeguidaController = new SeguidaController(this);
+		
 		setUp();
 		
 		mPoesiaController = new PoesiaController(this);
@@ -123,6 +128,27 @@ public class UserProfileActivity extends Activity {
 				}
 			});
 		}
+		
+		//listener para seguir
+		Button seguir = (Button) findViewById(R.id.seguir);
+		seguir.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				mSeguidaController.post(mUsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
+
+					@Override
+					public void onSuccess(Seguida result) {
+						System.out.println(mUsuario.getSeguidores().size());
+						
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println("Deu errado");
+						
+					}
+				});
+			}
+		});
 	}
 	
 	@Override
