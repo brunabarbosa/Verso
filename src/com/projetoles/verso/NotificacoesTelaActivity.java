@@ -25,6 +25,7 @@ public class NotificacoesTelaActivity extends Activity{
 	private int mCountCarregados;
 	
 	private void carregarNotificacoes() {
+		System.out.println("oi");
 		if (!mUsuario.usuarioLogado.getNotificacoes().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
