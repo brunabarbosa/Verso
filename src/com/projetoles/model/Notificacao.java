@@ -7,8 +7,8 @@ import android.os.Parcelable;
 
 public class Notificacao extends TemporalModel {
 	
-	private String mEnderecado;
-	private String mTitulo;
+	private Usuario mEnderecado;
+	private Usuario mTitulo;
 	private String mMensagem;
 
 	public static final Parcelable.Creator<Notificacao> CREATOR = 
@@ -24,46 +24,47 @@ public class Notificacao extends TemporalModel {
     
 	public Notificacao(Parcel in) {
 		super(in);
-		setEnderecado(in.readString());
-		setTitulo(in.readString());
+		setEnderecado((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
+		setTitulo((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
 		setMensagem(in.readString());
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		super.writeToParcel(dest, flags);		
-		dest.writeString(this.getEnderecado());
-		dest.writeString(this.getTitulo());
+		dest.writeParcelable(this.getEnderecado(), flags);
+		dest.writeParcelable(this.getTitulo(), flags);
 		dest.writeString(this.getMensagem());
 	}
 
-	public Notificacao(String id, Calendar dataCriacao, String enderecado, String titulo, String mensagem) {
+	public Notificacao(String id, Calendar dataCriacao, Usuario enderecado, Usuario titulo, 
+			String mensagem) {
 		super(id, dataCriacao);
 		setTitulo(titulo);
 		setMensagem(mensagem);
 		setEnderecado(enderecado);
 	}
 
-	private void setEnderecado(String enderecado) {
-		if (enderecado == null || enderecado.trim().isEmpty()) {
+	private void setEnderecado(Usuario enderecado) {
+		if (enderecado == null) {
 			throw new IllegalArgumentException("Enderecado é obrigatório.");
 		}
 		this.mEnderecado = enderecado;
 		
 	}
 
-	public String getEnderecado() {
+	public Usuario getEnderecado() {
 		return mEnderecado;
 	}
 	
-	public void setTitulo(String mTitulo) {
-		if (mTitulo == null || mTitulo.trim().isEmpty()) {
+	public void setTitulo(Usuario mTitulo) {
+		if (mTitulo == null) {
 			throw new IllegalArgumentException("Título é obrigatório.");
 		}
 		this.mTitulo = mTitulo;
 	}
 
-	public String getTitulo() {
+	public Usuario getTitulo() {
 		return mTitulo;
 	}
 
@@ -76,14 +77,6 @@ public class Notificacao extends TemporalModel {
 
 	public String getMensagem() {
 		return mMensagem;
-	}
-
-	@Override
-	public String toString() {
-		if ((getTitulo() != null && !getTitulo().trim().equals("")) && (getMensagem() != null && !getMensagem().trim().equals(""))) {
-			return "";
-		}
-		return getTitulo() + ": " + getMensagem();
 	}
 
 }

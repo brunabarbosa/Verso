@@ -29,12 +29,12 @@
             android:layout_row="0"
             android:layout_marginTop="5dp"
             android:layout_gravity="fill_horizontal|center_vertical"
-            android:lines="1"
-            android:maxLines="1"
-            android:singleLine="true"
             android:text="User Name"
             android:textColor="#927e58"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:ellipsize="none"
+            android:maxLines="100"
+			android:scrollHorizontally="false" />
 		
 		<TextView
             android:id="@+id/comment"

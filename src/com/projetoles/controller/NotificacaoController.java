@@ -7,6 +7,7 @@ import android.app.Activity;
 import com.projetoles.dao.NotificacaoDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.Usuario;
 
 public class NotificacaoController extends Controller<Notificacao> {
 	
@@ -24,10 +25,11 @@ public class NotificacaoController extends Controller<Notificacao> {
 		callback.onSuccess(object);
 	} 
 	
-	public void post(String enderecado, String titulo, String mensagem,
+	public void post(Usuario enderecado, Usuario titulo, String mensagem,
 			OnRequestListener<Notificacao> callback) {
 		try {
-			Notificacao c = new Notificacao(null, Calendar.getInstance(), enderecado, titulo, mensagem);
+			Notificacao c = new Notificacao(null, Calendar.getInstance(), enderecado, titulo,
+					mensagem);
 			super.post(c, callback); 
 		} catch (Exception e) {
 			callback.onError(e.getMessage());
@@ -36,6 +38,7 @@ public class NotificacaoController extends Controller<Notificacao> {
  
 	public void get(String id, OnRequestListener<Notificacao> callback) {
 		Dependencies dependencies = new Dependencies();
+		dependencies.addDependency("enderecado", new UsuarioController(callback.getContext()));
 		dependencies.addDependency("titulo", new UsuarioController(callback.getContext()));
 		super.get(id, callback, dependencies);
 	}

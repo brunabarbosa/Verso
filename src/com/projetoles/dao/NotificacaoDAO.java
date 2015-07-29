@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.Usuario;
 
 
 public class NotificacaoDAO extends DAO<Notificacao> {
@@ -24,10 +25,11 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 	@Override
 	public void post(Notificacao notificacao, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
-			.addParam("enderecado", notificacao.getEnderecado())
-			.addParam("titulo", notificacao.getTitulo())
+			.addParam("enderecado", notificacao.getEnderecado().getId())
+			.addParam("titulo", notificacao.getTitulo().getId())
 			.addParam("mensagem", notificacao.getMensagem())
 			.addParam("dataCriacao", notificacao.getStringDataCriacao())
+			.addParam("chave", "APA91bHdoJVPghKuJKKc1kgrV9eCX3YGTT1YiC_hX-8VKRdkRfj3KfS-_2duFzWrIdbOyLHwdPqyJD8GOWeQFWsJW612NtaCVgTxV7Nvq31U-Ee-3Aj54Zwh0GrhFgoS8uYDMgLt4wME")
 			.setDomain(DOMAIN)
 			.setPath("notif/post");
 		POST post = (POST) postRequest.create();
@@ -48,10 +50,9 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 	public Notificacao getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
-		String enderecado = json.getString("enderecado");
-		String titulo = json.getString("titulo");
 		String mensagem = json.getString("mensagem");
-		return new Notificacao(id, dataCriacao, enderecado, titulo, mensagem);
+		return new Notificacao(id, dataCriacao, (Usuario)params.get(0), (Usuario)params.get(1), 
+				mensagem);
 	}
 
 }

@@ -134,7 +134,6 @@ public class LoginActivity extends Activity {
 														
 														@Override
 														public void run() {
-															
 															byte[] foto = {};
 															try {
 																foto = ImageUtils.getPhotoFromURL("https://graph.facebook.com/" + id + "/picture‌​");

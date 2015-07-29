@@ -50,7 +50,7 @@ public class MainActivity extends TabActivity {
 		comporSpec.setContent(comporIntent);
 
 		sobreSpec.setIndicator("", getResources().getDrawable(R.drawable.sobre));
-		Intent sobreIntent = new Intent(MainActivity.this, NotificacoesTelaActivity.class);
+		Intent sobreIntent = new Intent(MainActivity.this, NotificacoesActivity.class);
 		sobreSpec.setContent(sobreIntent);
 
 		buscaSpec.setIndicator("", getResources().getDrawable(R.drawable.busca));
