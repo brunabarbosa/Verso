@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;

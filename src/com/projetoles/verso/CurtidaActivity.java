@@ -8,12 +8,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 
