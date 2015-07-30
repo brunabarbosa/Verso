@@ -32,7 +32,7 @@ public class UserProfileActivity extends Activity {
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
 	private Usuario mUsuario; 
-	//private Class mCallback;
+	private Class mCallback;
 	private CameraActivityBundle mCameraBundle;
 	private ExpandableListView mExpListView;
 	private ArrayList<Poesia> mListPoesias;
@@ -64,6 +64,11 @@ public class UserProfileActivity extends Activity {
 		
 		mCameraBundle = new CameraActivityBundle(this, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
 		mCameraBundle.setFoto(mUsuario.getFoto());
+		
+		TextView semPoesia = (TextView) findViewById(R.id.sem_poesia);
+		if (mUsuario.getPoesias().isEmpty()) {
+			semPoesia.setVisibility(View.VISIBLE);
+		}
 	}
 
 
@@ -76,7 +81,7 @@ public class UserProfileActivity extends Activity {
 		
 		Bundle b = getIntent().getExtras();
 		mUsuario = (Usuario) b.getParcelable("usuario");
-		//mCallback = (Class) b.get("callback");
+		mCallback = (Class) b.get("callback");
 						
 		mSeguidaController = new SeguidaController(this);
 		
