@@ -29,7 +29,7 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 			.addParam("titulo", notificacao.getTitulo().getId())
 			.addParam("mensagem", notificacao.getMensagem())
 			.addParam("dataCriacao", notificacao.getStringDataCriacao())
-			.addParam("chave", "APA91bHdoJVPghKuJKKc1kgrV9eCX3YGTT1YiC_hX-8VKRdkRfj3KfS-_2duFzWrIdbOyLHwdPqyJD8GOWeQFWsJW612NtaCVgTxV7Nvq31U-Ee-3Aj54Zwh0GrhFgoS8uYDMgLt4wME")
+			.addParam("chave", "APA91bGMpABcm-4ilpI1NltzH2DNia1qFENGiD04fsjxkd8B2A0C9OaTTUA1OVG6mWDJXd0QeadOQvCiPXWBJWKHoODGqdu5HuWQ1g0BPpP-Cjqc0LETbFgYRhWiCq6Ujz_E1FW5KJxd")
 			.setDomain(DOMAIN)
 			.setPath("notif/post");
 		POST post = (POST) postRequest.create();
