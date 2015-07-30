@@ -129,26 +129,63 @@ public class UserProfileActivity extends Activity {
 			});
 		}
 		
-		//listener para seguir
+		// listener para seguir
 		Button seguir = (Button) findViewById(R.id.seguir);
+
 		seguir.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				mSeguidaController.post(mUsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
+				final String seguidaId = mUsuarioController.usuarioLogado
+						.getSeguindo().getIntersecction(
+								mUsuario.getSeguidores());
 
-					@Override
-					public void onSuccess(Seguida result) {
-						System.out.println(mUsuario.getSeguidores().size());
-						
-					}
+				if (seguidaId != null) {
+					mSeguidaController.delete(seguidaId,
+							new OnRequestListener<String>(
+									UserProfileActivity.this) {
 
-					@Override
-					public void onError(String errorMessage) {
-						System.out.println("Deu errado");
-						
-					}
-				});
+								@Override
+								public void onSuccess(String result) {
+									mUsuario.getSeguidores().remove(seguidaId);
+									mUsuarioController.usuarioLogado
+											.getSeguindo().remove(seguidaId);
+
+									Button seguir = (Button) findViewById(R.id.seguir);
+									seguir.setVisibility(View.VISIBLE);
+
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println(errorMessage);
+
+								}
+							});
+				} else {
+					mSeguidaController.post(mUsuarioController.usuarioLogado,
+							mUsuario, new OnRequestListener<Seguida>(
+									UserProfileActivity.this) {
+
+								@Override
+								public void onSuccess(Seguida result) {
+									mUsuario.getSeguidores()
+											.add(result.getId());
+									mUsuarioController.usuarioLogado
+											.getSeguindo().add(result.getId());
+
+									Button seguir = (Button) findViewById(R.id.seguir);
+									seguir.setVisibility(View.GONE);
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println(errorMessage);
+
+								}
+							});
+				}
 			}
 		});
+
 	}
 	
 	@Override
