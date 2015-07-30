@@ -16,7 +16,13 @@
 
 package com.projetoles.verso;
 
+import java.util.Calendar;
+
+import org.json.JSONObject;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Usuario;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -66,9 +72,9 @@ public class GcmIntentService extends IntentService {
              * not interested in, or that you don't recognize.
              */
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
+                sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " + extras.toString());
+                sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
@@ -86,7 +92,7 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(extras.toString());
+                sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -97,19 +103,20 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void sendNotification(String titulo, String msg, String string, String enderecado) {
 
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
+        
+        Intent notificationIntent = new Intent(this, MainActivity.class);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, NotificacoesActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,notificationIntent , 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.like_icon)
         .setContentTitle("Ver(só)")
         .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        .bigText(titulo + msg + "\n" + string))
+        .setContentText(titulo + msg + "\n" + string);
 
         mBuilder.setContentIntent(contentIntent);
         
