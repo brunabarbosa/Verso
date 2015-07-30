@@ -152,7 +152,6 @@ public class SeguidoresActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			System.out.println("entroooooooooooooooou");
 			onBackPressed();
 			return true;
 		case R.id.action_settings:

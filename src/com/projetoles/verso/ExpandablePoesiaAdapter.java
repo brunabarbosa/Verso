@@ -105,7 +105,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				// what to do with it.
 				share.putExtra(Intent.EXTRA_SUBJECT, poesia.getTitulo().toString() + "\n" + "\n");
 				share.putExtra(Intent.EXTRA_TEXT, saida);
-				mContext.startActivity(Intent.createChooser(share, "Share link!"));
+				mContext.startActivity(Intent.createChooser(share, "Compartilhe ou salve sua poesia"));
 			}
 		});
 
