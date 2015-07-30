@@ -64,8 +64,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		final String childText = (String) getChild(groupPosition, childPosition);
 
 		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this.mContext
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater infalInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.list_item, null);
 		}
 
@@ -76,8 +75,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 		TextView tags = (TextView) convertView.findViewById(R.id.tags);
 		TextView date = (TextView) convertView.findViewById(R.id.date);
-		btnCompartilharFacebook = (Button) convertView
-				.findViewById(R.id.btnCompartilharFacebook);
+		btnCompartilharFacebook = (Button) convertView.findViewById(R.id.btnCompartilharFacebook);
 		if (poesia.getTags().trim().isEmpty()) {
 			tags.setVisibility(View.GONE);
 		} else {
@@ -88,9 +86,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			}
 			tags.setText(poesiasTagss);
 		}
-		date.setText("Postado em "
-				+ CalendarUtils.getDataFormada(poesia.getDataCriacao())
-				+ " por " + poesia.getPostador().getNome());
+		date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por " + poesia.getPostador().getNome());
 		date.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -113,11 +109,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 				// Add data to the intent, the receiving app will decide
 				// what to do with it.
-				share.putExtra(Intent.EXTRA_SUBJECT, poesia.getTitulo()
-						.toString() + "\n" + "\n");
+				share.putExtra(Intent.EXTRA_SUBJECT, poesia.getTitulo().toString() + "\n" + "\n");
 				share.putExtra(Intent.EXTRA_TEXT, saida);
-				mContext.startActivity(Intent.createChooser(share,
-						"Share link!"));
+				mContext.startActivity(Intent.createChooser(share, "Share link!"));
 			}
 		});
 
@@ -146,27 +140,22 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
+	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		String headerTitle = (String) getGroup(groupPosition);
 		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this.mContext
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater infalInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.list_group, null);
 		}
 
-		TextView lblListHeader = (TextView) convertView
-				.findViewById(R.id.lblListHeader);
+		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
 
 		final Poesia poesia = mListPoesias.get(groupPosition);
 
 		final TextView autor = (TextView) convertView.findViewById(R.id.author);
 		autor.setText(poesia.getAutor());
-		final TextView numLikes = (TextView) convertView
-				.findViewById(R.id.num_likes);
+		final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
 		numLikes.setText(String.valueOf(poesia.getCurtidas().size()));
-		final TextView numComments = (TextView) convertView
-				.findViewById(R.id.num_comments);
+		final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
 		numComments.setText(String.valueOf(poesia.getComentarios().size()));
 
 		// Botão tela de curtidas
@@ -182,8 +171,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		});
 
 		// Botao tela de comentarios
-		ImageView btnComment = (ImageView) convertView
-				.findViewById(R.id.commentIcon);
+		ImageView btnComment = (ImageView) convertView.findViewById(R.id.commentIcon);
 		btnComment.setTag(poesia);
 		btnComment.setOnClickListener(new OnClickListener() {
 
@@ -214,54 +202,41 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				if (v.isClickable()) {
 					final Poesia clicada = (Poesia) v.getTag();
 					v.setClickable(false);
-					String curtidaId = mUsuario.getCurtidas().getIntersecction(
-							clicada.getCurtidas());
+					String curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
 					if (curtidaId != null) {
-						mCurtidaController.delete(curtidaId,
-								new OnRequestListener<String>(mContext) {
+						mCurtidaController.delete(curtidaId, new OnRequestListener<String>(mContext) {
+							@Override
+							public void onSuccess(String id) {
+								mUsuario.getCurtidas().remove(id);
+								clicada.getCurtidas().remove(id);
+								((ImageView) v).setImageResource(R.drawable.like_icon);
+								numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+								v.setClickable(true);
+							}
 
-									@Override
-									public void onSuccess(String id) {
-										mUsuario.getCurtidas().remove(id);
-										clicada.getCurtidas().remove(id);
-										((ImageView) v)
-												.setImageResource(R.drawable.like_icon);
-										numLikes.setText(String.valueOf(clicada
-												.getCurtidas().size()));
-										v.setClickable(true);
-									}
-
-									@Override
-									public void onError(String errorMessage) {
-										System.out.println("ERROR descurtir: "
-												+ errorMessage);
-										v.setClickable(true);
-									}
-								});
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println("ERROR descurtir: " + errorMessage);
+								v.setClickable(true);
+							}
+						});
 					} else {
-						mCurtidaController.post(mUsuario, poesia,
-								new OnRequestListener<Curtida>(mContext) {
+						mCurtidaController.post(mUsuario, poesia, new OnRequestListener<Curtida>(mContext) {
+							@Override
+							public void onSuccess(Curtida curtida) {
+								mUsuario.getCurtidas().add(curtida.getId());
+								clicada.getCurtidas().add(curtida.getId());
+								((ImageView) v).setImageResource(R.drawable.like_icon_ativo);
+								numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+								v.setClickable(true);
+							}
 
-									@Override
-									public void onSuccess(Curtida curtida) {
-										mUsuario.getCurtidas().add(
-												curtida.getId());
-										clicada.getCurtidas().add(
-												curtida.getId());
-										((ImageView) v)
-												.setImageResource(R.drawable.like_icon_ativo);
-										numLikes.setText(String.valueOf(clicada
-												.getCurtidas().size()));
-										v.setClickable(true);
-									}
-
-									@Override
-									public void onError(String errorMessage) {
-										System.out.println("ERROR curtir: "
-												+ errorMessage);
-										v.setClickable(true);
-									}
-								});
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println("ERROR curtir: " + errorMessage);
+								v.setClickable(true);
+							}
+						});
 					}
 				}
 			}

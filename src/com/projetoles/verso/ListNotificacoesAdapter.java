@@ -1,9 +1,6 @@
 package com.projetoles.verso;
 
-import java.text.DateFormat;
 import java.util.List;
-
-import com.projetoles.model.Notificacao;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Notificacao;
 
 public class ListNotificacoesAdapter extends BaseAdapter {
 
@@ -24,19 +24,16 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.mListNotificacoes.size();
 	}
 
 	@Override
-	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object getItem(int position) {
+		return this.mListNotificacoes.get(position);
 	}
 
 	@Override
 	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -48,10 +45,10 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 		}
 		Notificacao n = this.mListNotificacoes.get(position);
 		if (n != null) {
-			TextView nome = (TextView) convertView.findViewById(R.id.userName);
+			TextView nome = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
-			nome.setText(n.getTitulo() + " " + n.getMensagem());
-			data.setText("Postado em " + DateFormat.getDateInstance(DateFormat.SHORT).format(n.getDataCriacao().getTime()));
+			nome.setText(n.getTitulo().getNome() + " " + n.getMensagem());
+			data.setText("Em " + CalendarUtils.getDataFormada(n.getDataCriacao()));
 		}
 		return convertView;
 	}

@@ -152,6 +152,8 @@ public class MainActivity extends TabActivity {
 				finish();
 			}
 		});
+		
+		System.out.println(mUsuario.getNotificacoes().getList());
 	}
 	
 	@Override
