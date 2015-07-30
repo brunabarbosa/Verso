@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,6 +106,7 @@ public class SeguidoresActivity extends Activity {
 		mCallback = (Class) b.get("callback");
 		mUsuario = (Usuario) b.getParcelable("usuario");
 		mSeguindo = b.getBoolean("seguindo");
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		mSeguidaController = new SeguidaController(this);
 
@@ -132,16 +136,29 @@ public class SeguidoresActivity extends Activity {
 		getMenuInflater().inflate(R.menu.seguidores, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Intent i = new Intent(SeguidoresActivity.this, mCallback);
+		i.putExtra("usuario", mUsuario);
+		startActivity(i);
+		finish();
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			System.out.println("entroooooooooooooooou");
+			onBackPressed();
 			return true;
+		case R.id.action_settings:
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 }
