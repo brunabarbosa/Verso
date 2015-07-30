@@ -46,6 +46,16 @@ public class ComentarioDAO extends DAO<Comentario> {
 	}
 
 	@Override
+	public void delete(String id, OnRequestListener<String> callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("id", id)
+			.setDomain(DOMAIN)
+			.setPath("comment/delete");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
+	@Override
 	public Comentario getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));

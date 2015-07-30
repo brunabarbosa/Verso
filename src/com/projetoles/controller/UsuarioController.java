@@ -239,4 +239,8 @@ public class UsuarioController extends Controller<Usuario> {
 		});
 	}
 
+	public void save(Usuario result) {
+		mLoader.save(result);
+	}
+
 }

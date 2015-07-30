@@ -55,6 +55,7 @@ public class ListComentarioAdapter extends BaseAdapter  {
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
 			if (c.getPostador().equals(UsuarioController.usuarioLogado)) {
+				excluir.setVisibility(View.VISIBLE);
 				excluir.setOnClickListener(new OnClickListener() {
 					
 					@Override

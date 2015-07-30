@@ -35,10 +35,9 @@ public class SeguidaController extends Controller<Seguida> {
 			super.post(seguida, new OnRequestListener<Seguida>(callback.getContext()) {
 
 				@Override
-				public void onSuccess(Seguida result) {
-					if (!seguidor.equals(UsuarioController.usuarioLogado)) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-						seguidor, seguindo, " seguiu seu perfil."), 
+				public void onSuccess(final Seguida seguidaResult) {
+					if (!seguindo.equals(UsuarioController.usuarioLogado)) {
+						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), seguindo, seguidor, " seguiu seu perfil."), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override
@@ -52,7 +51,7 @@ public class SeguidaController extends Controller<Seguida> {
 								}
 							});
 					}
-					callback.onSuccess(result);
+					callback.onSuccess(seguidaResult);
 				}
 
 				@Override
