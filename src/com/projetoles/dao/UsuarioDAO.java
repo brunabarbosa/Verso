@@ -25,10 +25,11 @@ public class UsuarioDAO extends DAO<Usuario> {
 		return sInstance;
 	}
 
-	public void login(Usuario usuario, OnRequestListener<String> callback) {
+	public void login(Usuario usuario, String regId, OnRequestListener<String> callback) {
 		GET.Builder getRequest = (GET.Builder) new GET.Builder()
 			.addParam("email", usuario.getId())
 			.addParam("password", usuario.getSenha())
+			.addParam("regid", regId)
 			.setDomain(DOMAIN)
 			.setPath("user/get");
 		GET get = (GET) getRequest.create();

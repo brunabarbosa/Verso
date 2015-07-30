@@ -44,32 +44,32 @@ public class UsuarioController extends Controller<Usuario> {
 		mEditor.clear().commit();		
 	}
 
-	public void getUsuarioLogado(final OnRequestListener<Usuario> callback) {
+	public void getUsuarioLogado(final OnRequestListener<Usuario> callback, final String regId) {
 		if (usuarioLogado != null) {
 			callback.onSuccess(usuarioLogado);
 		} else if (mSession.contains("id") && mSession.contains("senha")) {
 			Usuario usuario = new Usuario(mSession.getString("id", null), null,
 					null, null, null, null, null, null, null, null);
 			usuario.setSenha(mSession.getString("senha", null), false);
-			this.login(usuario, callback);
+			this.login(usuario, regId, callback);
 		} else {
 			callback.onError("Usuário não encontrado.");
 		} 
 	}
 
-	public void login(String email, String senha, OnRequestListener<Usuario> callback) {
+	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
 			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, 
 					new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID());
-			this.login(usuario, callback);
+			this.login(usuario, regId, callback);
 		} catch (Exception e) {
 			e.printStackTrace(); 
 			callback.onError(e.getMessage());
 		}
 	}
 	
-	private void login(final Usuario usuario, final OnRequestListener<Usuario> callback) {
-		((UsuarioDAO)mDAO).login(usuario, new OnRequestListener<String>(callback.getContext()) {
+	private void login(final Usuario usuario, final String regId, final OnRequestListener<Usuario> callback) {
+		((UsuarioDAO)mDAO).login(usuario, regId, new OnRequestListener<String>(callback.getContext()) {
 			
 			@Override
 			public void onSuccess(String jsonResult) {
