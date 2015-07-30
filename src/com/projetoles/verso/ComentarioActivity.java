@@ -106,7 +106,7 @@ public class ComentarioActivity extends Activity {
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		mCallback = (Class) b.get("callback");
 		mBundle = b.getBundle("bundle");
-		getActionBar().setTitle(mPoesia.getTitulo());
+		getActionBar().setTitle(mPoesia.getTitulo() + " - Comentários");
 
 		mComentarioController = new ComentarioController(this);
 

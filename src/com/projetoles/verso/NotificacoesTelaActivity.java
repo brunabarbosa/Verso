@@ -33,18 +33,17 @@ public class NotificacoesTelaActivity extends Activity {
 
 				@Override
 				public void onSuccess(Notificacao notificacao) {
-					System.out.println("Notificação carregada: " + notificacao);
 					mListNotificacoes.add(notificacao);
 					Collections.sort(mListNotificacoes);
 					mListAdapter.notifyDataSetChanged();
 					mCountCarregados++;
-					/*runOnUiThread(new Runnable() {
+					runOnUiThread(new Runnable() {
 						public void run() {
 							if (mCountCarregados == UsuarioController.usuarioLogado.getNotificacoes().size()) {
 								mLoading.setVisibility(View.GONE);
 							}
 						}
-					});*/
+					});
 				}
 
 				@Override
