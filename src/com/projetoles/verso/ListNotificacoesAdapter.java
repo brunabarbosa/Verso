@@ -1,16 +1,18 @@
 package com.projetoles.verso;
 
-import java.text.DateFormat;
 import java.util.List;
 
-import com.projetoles.model.Notificacao;
-
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Notificacao;
 
 public class ListNotificacoesAdapter extends BaseAdapter {
 
@@ -24,19 +26,16 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return this.mListNotificacoes.size();
 	}
 
 	@Override
-	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
-		return this.mListNotificacoes.get(arg0);
+	public Object getItem(int position) {
+		return this.mListNotificacoes.get(position);
 	}
 
 	@Override
 	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -46,12 +45,21 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_notificacao, parent, false);
 		}
-		Notificacao n = this.mListNotificacoes.get(position);
+		final Notificacao n = this.mListNotificacoes.get(position);
 		if (n != null) {
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
-			nome.setText(n.getTitulo() + " " + n.getMensagem());
-			data.setText("Postado em " + DateFormat.getDateInstance(DateFormat.SHORT).format(n.getDataCriacao().getTime()));
+			nome.setText(n.getTitulo().getNome() + " " + n.getMensagem());
+			data.setText("Em " + CalendarUtils.getDataFormada(n.getDataCriacao()));
+			nome.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(mContext, UserProfileActivity.class);
+					intent.putExtra("usuario", n.getTitulo());
+					mContext.startActivity(intent);
+				}
+			});
 		}
 		return convertView;
 	}

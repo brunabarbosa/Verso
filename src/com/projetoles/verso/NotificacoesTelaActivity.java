@@ -1,6 +1,7 @@
 package com.projetoles.verso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -13,11 +14,10 @@ import com.projetoles.controller.NotificacaoController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
-import com.projetoles.model.Usuario;
 
-public class NotificacoesTelaActivity extends Activity{
+public class NotificacoesTelaActivity extends Activity {
+	
 	private NotificacaoController mNotificacaoController;
-	private UsuarioController mUsuario;
 	private ListNotificacoesAdapter mListAdapter;
 	private ListView mListView;
 	private List<Notificacao> mListNotificacoes;
@@ -25,25 +25,26 @@ public class NotificacoesTelaActivity extends Activity{
 	private int mCountCarregados;
 	
 	private void carregarNotificacoes() {
-		System.out.println("oi");
-		if (!mUsuario.usuarioLogado.getNotificacoes().isEmpty()) {
+		if (!UsuarioController.usuarioLogado.getNotificacoes().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (String notificacao : mUsuario.usuarioLogado.getNotificacoes().getList()) {
-			mNotificacaoController.get(notificacao, new OnRequestListener<Notificacao>(this) {
+		for (String id : UsuarioController.usuarioLogado.getNotificacoes().getList()) {
+			mNotificacaoController.get(id, new OnRequestListener<Notificacao>(this) {
 
 				@Override
 				public void onSuccess(Notificacao notificacao) {
+					System.out.println("Notificação carregada: " + notificacao);
 					mListNotificacoes.add(notificacao);
+					Collections.sort(mListNotificacoes);
+					mListAdapter.notifyDataSetChanged();
 					mCountCarregados++;
-					runOnUiThread(new Runnable() {
+					/*runOnUiThread(new Runnable() {
 						public void run() {
-							if (mCountCarregados == mUsuario.usuarioLogado.getNotificacoes().size()) {
+							if (mCountCarregados == UsuarioController.usuarioLogado.getNotificacoes().size()) {
 								mLoading.setVisibility(View.GONE);
 							}
-							mListAdapter.notifyDataSetChanged();
 						}
-					});
+					});*/
 				}
 
 				@Override
@@ -73,4 +74,5 @@ public class NotificacoesTelaActivity extends Activity{
 
 		carregarNotificacoes();
 	}
+	
 }

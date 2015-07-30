@@ -37,7 +37,6 @@ public class ComentarioController extends Controller<Comentario> {
  
 								@Override
 								public void onSuccess(Notificacao result) {
-									System.out.println("Notificação: " + result.getId());
 									poesia.getPostador().getNotificacoes().add(result.getId());
 									callback.onSuccess(comentarioResult);
 								}

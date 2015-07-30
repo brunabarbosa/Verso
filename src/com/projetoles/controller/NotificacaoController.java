@@ -28,8 +28,7 @@ public class NotificacaoController extends Controller<Notificacao> {
 	public void post(Usuario enderecado, Usuario titulo, String mensagem,
 			OnRequestListener<Notificacao> callback) {
 		try {
-			Notificacao c = new Notificacao(null, Calendar.getInstance(), enderecado, titulo,
-					mensagem);
+			Notificacao c = new Notificacao(null, Calendar.getInstance(), enderecado, titulo, mensagem);
 			super.post(c, callback); 
 		} catch (Exception e) {
 			callback.onError(e.getMessage());
