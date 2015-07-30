@@ -40,6 +40,7 @@ public class PesquisarActivity extends Activity {
 				((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.VISIBLE);
 				if (titulo.trim().isEmpty() && autor.trim().isEmpty() && tag.trim().isEmpty() && trecho.trim().isEmpty()) {
 					ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", "É preciso informar pelo menos um campo.", null);
+					((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 				} else {
 					mController.pesquisar(titulo, autor, tag, trecho, new OnRequestListener<ArrayList<String>>(PesquisarActivity.this) {
 						
@@ -53,6 +54,7 @@ public class PesquisarActivity extends Activity {
 						
 						@Override
 						public void onError(String errorMessage) {
+							((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 							ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", errorMessage, null);
 						}
 					});
