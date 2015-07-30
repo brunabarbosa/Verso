@@ -46,7 +46,7 @@ public class ListComentarioAdapter extends BaseAdapter  {
 		final Comentario c = this.mListComentarios.get(position);
 		if (c != null) {
 			ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
-			TextView nome = (TextView) convertView.findViewById(R.id.userName);
+			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			nome.setText(c.getPostador().getNome() + " diz:");

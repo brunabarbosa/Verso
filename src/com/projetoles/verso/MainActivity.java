@@ -126,7 +126,7 @@ public class MainActivity extends TabActivity {
 		mCameraBundle.editarFoto(btnEditPhoto);
 		
 		//set userName
-		TextView usuarioName = (TextView) findViewById(R.id.userName);
+		TextView usuarioName = (TextView) findViewById(R.id.mensagem);
 		usuarioName.setText(mUsuario.getNome());
 		
 		// submenu

@@ -25,13 +25,13 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.mListNotificacoes.size();
 	}
 
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.mListNotificacoes.get(arg0);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 		}
 		Notificacao n = this.mListNotificacoes.get(position);
 		if (n != null) {
-			TextView nome = (TextView) convertView.findViewById(R.id.userName);
+			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			nome.setText(n.getTitulo() + " " + n.getMensagem());
 			data.setText("Postado em " + DateFormat.getDateInstance(DateFormat.SHORT).format(n.getDataCriacao().getTime()));
