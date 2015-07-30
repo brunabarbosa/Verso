@@ -65,7 +65,12 @@ public class ListSeguidoresAdapter extends BaseAdapter  {
 				@Override
 				public void onClick(View arg0) {
 					Intent intent = new Intent(mContext, UserProfileActivity.class);
-					intent.putExtra("usuario", s.getSeguidor());
+					if(SeguidoresActivity.mSeguindo){
+						intent.putExtra("usuario", s.getSeguido());
+					}else{
+						intent.putExtra("usuario", s.getSeguidor());
+					}
+					
 					mContext.startActivity(intent);
 				}
 			};

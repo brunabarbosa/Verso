@@ -13,9 +13,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.projetoles.controller.SeguidaController;
-import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poesia;
 import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
@@ -31,7 +29,7 @@ public class SeguidoresActivity extends Activity {
 	private Class mCallback;
 	private Usuario mUsuario;
 	protected static boolean mSeguindo;
-	
+
 	private void carregarSeguidores() {
 		if (!mUsuario.getSeguidores().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
@@ -47,7 +45,8 @@ public class SeguidoresActivity extends Activity {
 					mCountCarregadosSeguidores++;
 					runOnUiThread(new Runnable() {
 						public void run() {
-							if (mCountCarregadosSeguidores == mUsuario.getSeguidores().size()) {
+							if (mCountCarregadosSeguidores == mUsuario
+									.getSeguidores().size()) {
 								mLoading.setVisibility(View.GONE);
 							}
 						}
@@ -62,7 +61,7 @@ public class SeguidoresActivity extends Activity {
 			});
 		}
 	}
-	
+
 	private void carregarSeguindo() {
 		if (!mUsuario.getSeguindo().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
@@ -78,7 +77,8 @@ public class SeguidoresActivity extends Activity {
 					mCountCarregadosSeguindo++;
 					runOnUiThread(new Runnable() {
 						public void run() {
-							if (mCountCarregadosSeguindo == mUsuario.getSeguindo().size()) {
+							if (mCountCarregadosSeguindo == mUsuario
+									.getSeguindo().size()) {
 								mLoading.setVisibility(View.GONE);
 							}
 						}
@@ -93,38 +93,37 @@ public class SeguidoresActivity extends Activity {
 			});
 		}
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_seguidores);
-		
+
 		Bundle b = getIntent().getExtras();
 		mCallback = (Class) b.get("callback");
 		mUsuario = (Usuario) b.getParcelable("usuario");
 		mSeguindo = b.getBoolean("seguindo");
-		
-		
-		
-		
+
 		mSeguidaController = new SeguidaController(this);
 
 		// Get widgets from layout
 		mListView = (ListView) findViewById(R.id.lvExpSeguidores);
 		mLoading = (RelativeLayout) findViewById(R.id.loadSeguidores);
-		
+
 		// Preparing list view
 		mListSeguidas = new ArrayList<Seguida>();
-		mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this, mListSeguidas);
+		mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this,
+				mListSeguidas);
 		mListView.setAdapter(mListAdapter);
-		
-		if(mSeguindo){
+
+		if (mSeguindo) {
 			getActionBar().setTitle(mUsuario.getNome() + " está Seguindo:");
 			carregarSeguindo();
-		}else{
-			getActionBar().setTitle("Seguidores de " + mUsuario.getNome()+":");
+		} else {
+			getActionBar()
+					.setTitle("Seguidores de " + mUsuario.getNome() + ":");
 			carregarSeguidores();
-		}		
+		}
 	}
 
 	@Override
