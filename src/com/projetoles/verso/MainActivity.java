@@ -109,6 +109,35 @@ public class MainActivity extends TabActivity {
 		mController = new UsuarioController(this);
 		mUsuario = UsuarioController.usuarioLogado;
 		
+		TextView seguindo = (TextView) findViewById(R.id.txtNumSeguindo);
+		TextView seguidores = (TextView) findViewById(R.id.txtNumSeguidores);
+		
+		seguindo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
+				intent.putExtra("usuario", mUsuario);
+				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("seguindo", true);
+				startActivity(intent);
+				finish();
+			}
+		});
+		
+		seguidores.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
+				intent.putExtra("usuario", mUsuario);
+				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("seguindo", false);
+				startActivity(intent);
+				finish();
+			}
+		});
+		
 		setTabs();
 
 		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);

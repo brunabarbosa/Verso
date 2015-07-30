@@ -51,7 +51,12 @@ public class ListSeguidaAdapter extends BaseAdapter  {
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
 			excluir.setVisibility(View.GONE);
-			nome.setText(s.getSeguidor().getNome() + " esta lhe seguindo.");
+			if(SeguidoresActivity.mSeguindo){
+				nome.setText( s.getSeguido().getNome());
+			}else{
+				nome.setText(s.getSeguidor().getNome());
+			}	
+			
 			comentario.setVisibility(View.GONE);
 			data.setText("Seguiu em " + CalendarUtils.getDataFormada(s.getDataCriacao()));
 			setPhoto(foto, s.getSeguidor().getFoto());

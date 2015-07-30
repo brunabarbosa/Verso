@@ -60,6 +60,35 @@ public class UserProfileActivity extends Activity {
 				finish();
 			}
 		});
+		
+		TextView seguindo = (TextView) findViewById(R.id.txtOtherNumSeguindo);
+		TextView seguidores = (TextView) findViewById(R.id.txtOtherNumSeguidores);
+		
+		seguindo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(UserProfileActivity.this, SeguidoresActivity.class);
+				intent.putExtra("usuario", mUsuario);
+				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("seguindo", true);
+				startActivity(intent);
+				finish();
+			}
+		});
+		
+		seguidores.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(UserProfileActivity.this, SeguidoresActivity.class);
+				intent.putExtra("usuario", mUsuario);
+				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("seguindo", false);
+				startActivity(intent);
+				finish();
+			}
+		});
 
 		// set userPicture, precisa consertar nessa classe
 		mUserPicturePreview = (ImageView) findViewById(R.id.otherUserPicture);
