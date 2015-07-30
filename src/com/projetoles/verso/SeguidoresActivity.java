@@ -133,13 +133,13 @@ public class SeguidoresActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.seguidores, menu);
+		//getMenuInflater().inflate(R.menu.seguidores, menu);
 		return true;
 	}
 	
 	@Override
 	public void onBackPressed() {
-		Intent i = new Intent(SeguidoresActivity.this, mCallback);
+		Intent i = new Intent(SeguidoresActivity.this, MainActivity.class);
 		i.putExtra("usuario", mUsuario);
 		startActivity(i);
 		finish();
