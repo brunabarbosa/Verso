@@ -2,6 +2,7 @@ package com.projetoles.verso;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,16 +15,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.projetoles.controller.ComentarioController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Comentario;
 import com.projetoles.model.ImageUtils;
  
 public class ListComentarioAdapter extends BaseAdapter  {
  
-    private Context mContext;
+    private Activity mContext;
     private List<Comentario> mListComentarios;
  
-    public ListComentarioAdapter(Context context, List<Comentario> listComentarios) {
+    public ListComentarioAdapter(Activity context, List<Comentario> listComentarios) {
     	this.mContext = context;
         this.mListComentarios = listComentarios;
     }
@@ -49,6 +53,32 @@ public class ListComentarioAdapter extends BaseAdapter  {
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
+			ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
+			if (c.getPostador().equals(UsuarioController.usuarioLogado)) {
+				excluir.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						v.setVisibility(View.GONE);
+						ComentarioController controller = new ComentarioController(mContext);
+						controller.delete(c.getId(), new OnRequestListener<String>(mContext) {
+							
+							@Override
+							public void onSuccess(String result) {
+								mListComentarios.remove(c);
+								notifyDataSetChanged();
+							}
+							
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println(errorMessage);
+							}
+						});
+					}
+				});
+			} else {
+				excluir.setVisibility(View.GONE);
+			}
 			nome.setText(c.getPostador().getNome() + " diz:");
 			comentario.setText(c.getComentario());
 			data.setText("Postado em " + CalendarUtils.getDataFormada(c.getDataCriacao()));

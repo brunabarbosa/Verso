@@ -49,6 +49,8 @@ public class ListCurtidaAdapter extends BaseAdapter  {
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
+			ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
+			excluir.setVisibility(View.GONE);
 			nome.setText(c.getPostador().getNome() + " curtiu esta poesia.");
 			comentario.setVisibility(View.GONE);
 			data.setText("Curtido em " + CalendarUtils.getDataFormada(c.getDataCriacao()));

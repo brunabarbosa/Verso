@@ -115,4 +115,5 @@ public class ResultadoPesquisaActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }

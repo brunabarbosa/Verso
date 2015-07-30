@@ -128,6 +128,15 @@ public class MainActivity extends TabActivity {
 		//set userName
 		TextView usuarioName = (TextView) findViewById(R.id.mensagem);
 		usuarioName.setText(mUsuario.getNome());
+		usuarioName.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+				intent.putExtra("usuario", UsuarioController.usuarioLogado);
+				startActivity(intent);
+			}
+		});
 		
 		// submenu
 		TextView biografia = (TextView) findViewById(R.id.textBiografia);
@@ -152,8 +161,6 @@ public class MainActivity extends TabActivity {
 				finish();
 			}
 		});
-		
-		System.out.println(mUsuario.getNotificacoes().getList());
 	}
 	
 	@Override
