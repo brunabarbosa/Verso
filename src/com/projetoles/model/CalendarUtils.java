@@ -1,6 +1,5 @@
 package com.projetoles.model;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
 public class CalendarUtils {
@@ -20,7 +19,8 @@ public class CalendarUtils {
 	}
 
 	public static String getDataFormada(Calendar dataCriacao) {
-		return DateFormat.getDateInstance(DateFormat.SHORT).format(dataCriacao.getTime());
+		return dataCriacao.get(Calendar.DAY_OF_MONTH) + "/" + dataCriacao.get(Calendar.MONTH) + "/" + dataCriacao.get(Calendar.YEAR) 
+				+ " às " + dataCriacao.get(Calendar.HOUR_OF_DAY) + ":" + dataCriacao.get(Calendar.MINUTE);//DateFormat.getDateInstance(DateFormat.SHORT).format(dataCriacao.getTime());
 	}
 
 }
