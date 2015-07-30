@@ -53,7 +53,6 @@ public class SeguidaController extends Controller<Seguida> {
 							});
 					}
 					callback.onSuccess(result);
-					
 				}
 
 				@Override

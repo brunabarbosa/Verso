@@ -101,7 +101,7 @@ public class EditarPerfilActivity extends Activity {
 	public void onBackPressed() {
 		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);
 		i.putExtra("usuario", UsuarioController.usuarioLogado);
-		i.putExtra("callback", MainActivity.class);
+		//i.putExtra("callback", MainActivity.class);
 		startActivity(i);
 		finish();
 	}

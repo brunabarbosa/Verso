@@ -137,7 +137,7 @@ public class MainActivity extends TabActivity {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
 				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", MainActivity.class);
+				//intent.putExtra("callback", MainActivity.class);
 				startActivity(intent);
 				finish();
 			}
