@@ -3,8 +3,10 @@ package com.projetoles.verso;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
@@ -43,12 +45,21 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_notificacao, parent, false);
 		}
-		Notificacao n = this.mListNotificacoes.get(position);
+		final Notificacao n = this.mListNotificacoes.get(position);
 		if (n != null) {
 			TextView nome = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			nome.setText(n.getTitulo().getNome() + " " + n.getMensagem());
 			data.setText("Em " + CalendarUtils.getDataFormada(n.getDataCriacao()));
+			nome.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(mContext, UserProfileActivity.class);
+					intent.putExtra("usuario", n.getTitulo());
+					mContext.startActivity(intent);
+				}
+			});
 		}
 		return convertView;
 	}
