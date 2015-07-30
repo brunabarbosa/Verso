@@ -35,17 +35,17 @@ public class ComentarioController extends Controller<Comentario> {
 						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), poesia.getPostador(), postador, " comentou sua poesia."), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
-								@Override
-								public void onSuccess(Notificacao result) {
-									poesia.getPostador().getNotificacoes().add(result.getId());
-									callback.onSuccess(comentarioResult);
-								}
+							@Override
+							public void onSuccess(Notificacao result) {
+								poesia.getPostador().getNotificacoes().add(result.getId());
+								callback.onSuccess(comentarioResult);
+							}
 
-								@Override
-								public void onError(String errorMessage) {
-									System.out.println(errorMessage);
-								}
-							});
+							@Override
+							public void onError(String errorMessage) {
+								System.out.println(errorMessage);
+							}
+						});
 					}
 					callback.onSuccess(comentarioResult);
 				}
