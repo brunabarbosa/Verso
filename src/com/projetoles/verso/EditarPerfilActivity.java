@@ -19,6 +19,7 @@ import com.projetoles.model.Usuario;
 
 public class EditarPerfilActivity extends Activity {
 	
+	private Class mCallback;
 	private UsuarioController mController;
 	private EditText etNome;
 	private EditText etBiografia;
@@ -67,6 +68,9 @@ public class EditarPerfilActivity extends Activity {
 		setContentView(R.layout.activity_editar_perfil);
 		FacebookSdk.sdkInitialize(this);   
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		Bundle b = getIntent().getExtras();
+		mCallback = (Class) b.get("callback");
 		
 		mController = new UsuarioController(this);
 		
@@ -101,7 +105,7 @@ public class EditarPerfilActivity extends Activity {
 	public void onBackPressed() {
 		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);
 		i.putExtra("usuario", UsuarioController.usuarioLogado);
-		//i.putExtra("callback", MainActivity.class);
+		i.putExtra("callback", mCallback);
 		startActivity(i);
 		finish();
 	}

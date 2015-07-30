@@ -49,12 +49,11 @@ public class UserProfileActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(UserProfileActivity.this,
-						BiografiaActivity.class);
+				Intent intent = new Intent(UserProfileActivity.this, BiografiaActivity.class);
 				intent.putExtra("usuario", mUsuario);
-				//intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("callback", UserProfileActivity.class);
 				startActivity(intent);
-				//finish();
+				finish();
 			}
 		});
 

@@ -16,6 +16,7 @@ import com.projetoles.model.Usuario;
 
 public class BiografiaActivity extends Activity {
 	 
+	private Class mCallback;
 	private Usuario mUsuario;
 	private Button btnEditarPerfil;
 	
@@ -25,6 +26,7 @@ public class BiografiaActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
+				i.putExtra("callback", mCallback);
 				startActivity(i);
 				finish();
 			}
@@ -36,8 +38,9 @@ public class BiografiaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_biografia);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+		 
 		Bundle b = getIntent().getExtras();
+		mCallback = (Class) b.get("callback");
 		mUsuario = (Usuario) b.getParcelable("usuario");
 		TextView editBio = (TextView) findViewById(R.id.biografia);
 		if (mUsuario.getBiografia() == null || mUsuario.getBiografia().trim().equals("")) {
@@ -62,8 +65,9 @@ public class BiografiaActivity extends Activity {
 	
 	@Override
 	public void onBackPressed() {
-		//Intent i = new Intent(BiografiaActivity.this, mCallback);
-		//startActivity(i);
+		Intent i = new Intent(BiografiaActivity.this, mCallback);
+		i.putExtra("usuario", mUsuario);
+		startActivity(i);
 		finish();
 	}
 	
