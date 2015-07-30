@@ -29,15 +29,14 @@
         android:layout_width="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
-        android:paddingTop="5dp" />
+        android:paddingTop="5dp"
+        android:textAppearance="@android:style/TextAppearance.WindowTitle"/>
     
     <Button 
 		android:id="@+id/btnCompartilharFacebook"
 		android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/compartilhar_facebook"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-		android:paddingRight="5dp"
-        android:paddingTop="5dp" />
+        android:layout_gravity="center_horizontal" />
     
 </LinearLayout>

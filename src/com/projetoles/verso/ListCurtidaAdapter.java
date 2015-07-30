@@ -53,7 +53,7 @@ public class ListCurtidaAdapter extends BaseAdapter  {
 			comentario.setVisibility(View.GONE);
 			data.setText("Curtido em " + CalendarUtils.getDataFormada(c.getDataCriacao()));
 			setPhoto(foto, c.getPostador().getFoto());
-			nome.setOnClickListener(new OnClickListener() {
+			OnClickListener clicaUsuario = new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
@@ -61,7 +61,9 @@ public class ListCurtidaAdapter extends BaseAdapter  {
 					intent.putExtra("usuario", c.getPostador());
 					mContext.startActivity(intent);
 				}
-			});
+			};
+			nome.setOnClickListener(clicaUsuario);
+			foto.setOnClickListener(clicaUsuario);
 		}
 		return convertView;
 	}

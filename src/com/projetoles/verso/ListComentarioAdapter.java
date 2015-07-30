@@ -53,7 +53,7 @@ public class ListComentarioAdapter extends BaseAdapter  {
 			comentario.setText(c.getComentario());
 			data.setText("Postado em " + CalendarUtils.getDataFormada(c.getDataCriacao()));
 			setPhoto(foto, c.getPostador().getFoto());
-			nome.setOnClickListener(new OnClickListener() {
+			OnClickListener clicaUsuario = new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
@@ -61,7 +61,9 @@ public class ListComentarioAdapter extends BaseAdapter  {
 					intent.putExtra("usuario", c.getPostador());
 					mContext.startActivity(intent);
 				}
-			});
+			};
+			nome.setOnClickListener(clicaUsuario);
+			foto.setOnClickListener(clicaUsuario);
 		}
 		return convertView;
 	}
