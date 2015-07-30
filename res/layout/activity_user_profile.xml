@@ -73,7 +73,8 @@
 		        android:layout_row="0"
 		        android:background="@drawable/seguir"
 		        android:text="Seguir"
-		        android:textColor="#866a3f" />
+		        android:textColor="#866a3f" 
+		        android:paddingRight="20dp"/>
 		    
 		</GridLayout>
 

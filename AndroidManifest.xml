@@ -124,6 +124,10 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.projetoles.verso.MainActivity" />
         </activity>
+        
+        <provider android:authorities="com.facebook.app.FacebookContentProviderl.facebook_app_id"
+          android:name="com.facebook.FacebookContentProvider"
+          android:exported="true"/>
     </application>
 
 </manifest>
