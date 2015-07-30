@@ -22,7 +22,7 @@ import com.projetoles.model.Usuario;
 public class SeguidoresActivity extends Activity {
 
 	private SeguidaController mSeguidaController;
-	private ListSeguidaAdapter mListAdapter;
+	private ListSeguidoresAdapter mListAdapter;
 	private ListView mListView;
 	private List<Seguida> mListSeguidas;
 	private RelativeLayout mLoading;
@@ -115,7 +115,7 @@ public class SeguidoresActivity extends Activity {
 		
 		// Preparing list view
 		mListSeguidas = new ArrayList<Seguida>();
-		mListAdapter = new ListSeguidaAdapter(SeguidoresActivity.this, mListSeguidas);
+		mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this, mListSeguidas);
 		mListView.setAdapter(mListAdapter);
 		
 		if(mSeguindo){

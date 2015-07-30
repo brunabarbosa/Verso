@@ -18,12 +18,12 @@ import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Seguida;
  
-public class ListSeguidaAdapter extends BaseAdapter  {
+public class ListSeguidoresAdapter extends BaseAdapter  {
  
     private Context mContext;
     private List<Seguida> mListSeguidas;
  
-    public ListSeguidaAdapter(Context context, List<Seguida> listCurtidas) {
+    public ListSeguidoresAdapter(Context context, List<Seguida> listCurtidas) {
     	this.mContext = context;
         this.mListSeguidas = listCurtidas;
     }
