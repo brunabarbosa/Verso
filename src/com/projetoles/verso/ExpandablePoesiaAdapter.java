@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
-import com.facebook.share.widget.ShareDialog;
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
@@ -35,11 +33,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private Usuario mUsuario;
 	private Button btnCompartilharFacebook;
 
-	private CallbackManager callbackManager;
-	private ShareDialog shareDialog;
-
-	public ExpandablePoesiaAdapter(Activity context, List<Poesia> listPoesias,
-			Bundle bundle) {
+	public ExpandablePoesiaAdapter(Activity context, List<Poesia> listPoesias, Bundle bundle) {
 		this.mContext = context;
 		this.mListPoesias = listPoesias;
 		this.mCurtidaController = new CurtidaController(context);
