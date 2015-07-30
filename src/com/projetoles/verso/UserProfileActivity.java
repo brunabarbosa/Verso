@@ -16,6 +16,7 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.SeguidaController;
@@ -28,18 +29,21 @@ import com.projetoles.model.Usuario;
 public class UserProfileActivity extends Activity {
 	
 	private PoesiaController mPoesiaController;
+	private SeguidaController mSeguidaController;
+	private UsuarioController mUsuarioController;
+	private Class mCallback;
+	private Usuario mUsuario; 
 	private ImageView mUserPicturePreview;
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
-	private Usuario mUsuario; 
-	private Class mCallback;
 	private CameraActivityBundle mCameraBundle;
 	private ExpandableListView mExpListView;
 	private ArrayList<Poesia> mListPoesias;
-	private ExpandablePoesiaAdapter mAdapter; 
-	private SeguidaController mSeguidaController;
+	private ExpandablePoesiaAdapter mAdapter;
 
 	private void setUp() {
+		setContentView(R.layout.activity_user_profile);
+		
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
 		usuarioName.setText(mUsuario.getNome());
 
@@ -69,25 +73,7 @@ public class UserProfileActivity extends Activity {
 		if (mUsuario.getPoesias().isEmpty()) {
 			semPoesia.setVisibility(View.VISIBLE);
 		}
-	}
-
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user_profile);
 		
-	    getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		Bundle b = getIntent().getExtras();
-		mUsuario = (Usuario) b.getParcelable("usuario");
-		mCallback = (Class) b.get("callback");
-						
-		mSeguidaController = new SeguidaController(this);
-		
-		setUp();
-		
-		mPoesiaController = new PoesiaController(this);
 		mExpListView = (ExpandableListView) findViewById(R.id.lvPoesiasDoUserExp);
 
 		// preparing list data
@@ -114,7 +100,6 @@ public class UserProfileActivity extends Activity {
 					mListPoesias.add(p);
 					Collections.sort(mListPoesias);
 					mAdapter.notifyDataSetChanged();
-
 				}
 
 				@Override
@@ -124,48 +109,94 @@ public class UserProfileActivity extends Activity {
 			});
 		}
 		
-		// listener para seguir
-		Button seguir = (Button) findViewById(R.id.seguir);
+		final Button seguir = (Button) findViewById(R.id.seguir);
+		if (UsuarioController.usuarioLogado.equals(mUsuario)) {
+			seguir.setVisibility(View.GONE);
+		}
 
-		seguir.setOnClickListener(new Button.OnClickListener() {
+		String seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
+		if (seguidaId != null) {
+			seguir.setText("Seguindo");
+			seguir.setBackgroundResource(R.drawable.seguir_ativo);
+		}
+		
+		// listener para seguir
+		seguir.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
-				final String seguidaId = UsuarioController.usuarioLogado.getSeguindo().getIntersecction(mUsuario.getSeguidores());
+				String seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
 				if (seguidaId != null) {
 					mSeguidaController.delete(seguidaId, new OnRequestListener<String>(UserProfileActivity.this) {
 						@Override
 						public void onSuccess(String result) {
-							mUsuario.getSeguidores().remove(seguidaId);
-							UsuarioController.usuarioLogado.getSeguindo().remove(seguidaId);
-							Button seguir = (Button) findViewById(R.id.seguir);
-							seguir.setVisibility(View.VISIBLE);
+							UsuarioController.usuarioLogado.getSeguindo().remove(result);
+							mUsuario.getSeguidores().remove(result);
+							//mUsuarioController.save(mUsuario);
+							seguir.setText("Seguir");
+							seguir.setBackgroundResource(R.drawable.seguir);
 						}
 
 						@Override
 						public void onError(String errorMessage) {
 							System.out.println(errorMessage);
-
 						}
 					});
 				} else {
 					mSeguidaController.post(UsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
 						@Override
 						public void onSuccess(Seguida result) {
-							mUsuario.getSeguidores().add(result.getId());
 							UsuarioController.usuarioLogado.getSeguindo().add(result.getId());
-							Button seguir = (Button) findViewById(R.id.seguir);
-							seguir.setVisibility(View.GONE);
+							mUsuario.getSeguidores().add(result.getId());
+							//mUsuarioController.save(mUsuario);
+							seguir.setText("Seguindo");
+							seguir.setBackgroundResource(R.drawable.seguir_ativo);
 						}
 
 						@Override
 						public void onError(String errorMessage) {
 							System.out.println(errorMessage);
-
 						}
 					});
 				}
 			}
 		});
+	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		Bundle b = getIntent().getExtras();
+		mUsuario = (Usuario) b.getParcelable("usuario");
+		mCallback = (Class) b.get("callback");
+						
+		mSeguidaController = new SeguidaController(this);
+		mUsuarioController = new UsuarioController(this);
+		mPoesiaController = new PoesiaController(this);
+		
+		mUsuarioController.update(mUsuario, new OnRequestListener<Usuario>(this) {
+
+			@Override
+			public void onSuccess(Usuario result) {
+				mUsuario = result;
+				mUsuarioController.save(result);
+				
+				setUp();
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						finish();
+					}
+				});
+			}
+		});
 	}
 
 	@Override

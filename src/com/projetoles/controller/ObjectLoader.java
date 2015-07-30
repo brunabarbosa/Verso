@@ -22,7 +22,7 @@ public class ObjectLoader<T extends Model> {
 		mLoaded.put(object.getId(), object);
 		mPriorityQueue.add(0, object.getId());
 	}
-	
+	 
 	public boolean contains(String id) {
 		return mLoaded.containsKey(id);
 	}

@@ -69,6 +69,7 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
 			TextView data = (TextView) convertView.findViewById(R.id.date);
 			ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
+			excluir.setVisibility(View.VISIBLE);
 			excluir.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -94,7 +95,7 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			comentario.setVisibility(View.GONE);
 			data.setText("Em " + CalendarUtils.getDataFormada(n.getDataCriacao()));
 			setPhoto(foto, n.getTitulo().getFoto());
-			nome.setOnClickListener(new OnClickListener() {
+			OnClickListener clicaUsuario = new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
@@ -102,7 +103,9 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 					intent.putExtra("usuario", n.getTitulo());
 					mContext.startActivity(intent);
 				}
-			});
+			};
+			nome.setOnClickListener(clicaUsuario);
+			foto.setOnClickListener(clicaUsuario);
 		}
 		return convertView;
 	}

@@ -47,6 +47,16 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 	}
 
 	@Override
+	public void delete(String id, OnRequestListener<String> callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("id", id)
+			.setDomain(DOMAIN)
+			.setPath("notif/delete");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
+	@Override
 	public Notificacao getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
