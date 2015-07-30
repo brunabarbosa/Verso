@@ -10,45 +10,23 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 
 import com.projetoles.controller.PoesiaController;
-import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;
-import com.projetoles.model.Seguida;
 
 public class PerfilActivity extends Activity {
 
 	private PoesiaController mPoesiaController;
-	private SeguidaController mSeguidaController;
 	private ExpandablePoesiaAdapter mAdapter;
 	private ExpandableListView mExpListView;
 	private List<Poesia> mListPoesias;
 
-	private void getId(String id) {
-		mPoesiaController.get(id, new OnRequestListener<Poesia>(this) {
-
-			@Override
-			public void onSuccess(Poesia p) {
-				mListPoesias.add(p);
-				Collections.sort(mListPoesias);
-				mAdapter.notifyDataSetChanged();
-
-			}
-
-			@Override
-			public void onError(String errorMessage) {
-				System.out.println(errorMessage);
-			}
-		});
-	}
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_perfil);
 
 		mPoesiaController = new PoesiaController(this);
-		mSeguidaController = new SeguidaController(this);
 		mExpListView = (ExpandableListView) findViewById(R.id.lvExp);
 
 		// preparing list data
@@ -68,16 +46,14 @@ public class PerfilActivity extends Activity {
 
 		mExpListView.setAdapter(mAdapter);
 		for (String id : UsuarioController.usuarioLogado.getPoesias().getList()) {
-			getId(id);
-		}
-		for (String seguidaId : UsuarioController.usuarioLogado.getSeguindo().getList()) {
-			mSeguidaController.get(seguidaId, new OnRequestListener<Seguida>(this) {
+			mPoesiaController.get(id, new OnRequestListener<Poesia>(this) {
 
 				@Override
-				public void onSuccess(Seguida seguida) {
-					for (String poesiaId : seguida.getSeguido().getPoesias().getList()) {
-						getId(poesiaId);
-					}
+				public void onSuccess(Poesia p) {
+					mListPoesias.add(p);
+					Collections.sort(mListPoesias);
+					mAdapter.notifyDataSetChanged();
+
 				}
 
 				@Override

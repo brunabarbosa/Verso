@@ -119,10 +119,14 @@
         <activity
             android:name=".UserProfileActivity"
             android:label="@string/title_activity_user_profile"
-            android:parentActivityName="com.projetoles.verso.MainActivity"  >
+            android:parentActivityName=".MainActivity" >
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.projetoles.verso.MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.projetoles.verso.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SeguidoresActivity"
+            android:label="@string/title_activity_seguidores" >
         </activity>
         
         <provider android:authorities="com.facebook.app.FacebookContentProviderl.facebook_app_id"
