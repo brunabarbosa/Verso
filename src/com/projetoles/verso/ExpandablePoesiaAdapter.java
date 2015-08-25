@@ -94,18 +94,17 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		btnCompartilharFacebook.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent share = new Intent(android.content.Intent.ACTION_SEND);
-				share.setType("text/plain");
+				Intent share = new Intent(mContext, SharingActivity.class);
 
 				String saida = poesia.getTitulo().toString() + "\n" + "\n"
 						+ poesia.getPoesia().toString() + "\n" + "\n"
 						+ poesia.getAutor() + "\n" + "\n" + "#appVer(Só)";
 
-				// Add data to the intent, the receiving app will decide
-				// what to do with it.
-				share.putExtra(Intent.EXTRA_SUBJECT, poesia.getTitulo().toString() + "\n" + "\n");
-				share.putExtra(Intent.EXTRA_TEXT, saida);
-				mContext.startActivity(Intent.createChooser(share, "Compartilhe ou salve sua poesia"));
+				share.putExtra("titulo", poesia.getTitulo().toString() + "\n" + "\n");
+				share.putExtra("texto", saida);
+				
+				mContext.startActivity(share);
+				
 			}
 		});
 

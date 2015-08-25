@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
@@ -32,7 +33,7 @@ public class PerfilActivity extends Activity {
 		// preparing list data
 		mListPoesias = new ArrayList<Poesia>();
 		mAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, mListPoesias, null);
-
+		
 		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 			int previousGroup = -1;
 
@@ -52,8 +53,8 @@ public class PerfilActivity extends Activity {
 				public void onSuccess(Poesia p) {
 					mListPoesias.add(p);
 					Collections.sort(mListPoesias);
-					mAdapter.notifyDataSetChanged();
-
+					mAdapter.notifyDataSetChanged();		
+					
 				}
 
 				@Override
