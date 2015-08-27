@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.projetoles.adapter.ListComentarioAdapter;
 import com.projetoles.controller.ComentarioController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;

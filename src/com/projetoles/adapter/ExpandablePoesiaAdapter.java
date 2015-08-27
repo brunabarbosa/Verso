@@ -1,4 +1,4 @@
-package com.projetoles.verso;
+package com.projetoles.adapter;
 
 import java.util.List;
 
@@ -23,6 +23,14 @@ import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
+import com.projetoles.verso.ComentarioActivity;
+import com.projetoles.verso.CurtidaActivity;
+import com.projetoles.verso.R;
+import com.projetoles.verso.SharingActivity;
+import com.projetoles.verso.UserProfileActivity;
+import com.projetoles.verso.R.drawable;
+import com.projetoles.verso.R.id;
+import com.projetoles.verso.R.layout;
 
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 

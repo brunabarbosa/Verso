@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.projetoles.adapter.ListSeguidoresAdapter;
+import com.projetoles.controller.SeguidaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Seguida;
+import com.projetoles.model.Usuario;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.projetoles.controller.SeguidaController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Seguida;
-import com.projetoles.model.Usuario;
 
 public class SeguidoresActivity extends Activity {
 
@@ -33,11 +33,11 @@ public class SeguidoresActivity extends Activity {
 	private Usuario mUsuario;
 	protected static boolean mSeguindo;
 
-	private void carregarSeguidores() {
+	private void carregaSeguidas(List<String> seguidas) {
 		if (!mUsuario.getSeguidores().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (String id : mUsuario.getSeguidores().getList()) {
+		for (String id : seguidas) {
 			mSeguidaController.get(id, new OnRequestListener<Seguida>(this) {
 
 				@Override
@@ -65,38 +65,6 @@ public class SeguidoresActivity extends Activity {
 		}
 	}
 
-	private void carregarSeguindo() {
-		if (!mUsuario.getSeguindo().isEmpty()) {
-			mLoading.setVisibility(View.VISIBLE);
-		}
-		for (String id : mUsuario.getSeguindo().getList()) {
-			mSeguidaController.get(id, new OnRequestListener<Seguida>(this) {
-
-				@Override
-				public void onSuccess(Seguida result) {
-					mListSeguidas.add(result);
-					Collections.sort(mListSeguidas);
-					mListAdapter.notifyDataSetChanged();
-					mCountCarregadosSeguindo++;
-					runOnUiThread(new Runnable() {
-						public void run() {
-							if (mCountCarregadosSeguindo == mUsuario
-									.getSeguindo().size()) {
-								mLoading.setVisibility(View.GONE);
-							}
-						}
-					});
-				}
-
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-					mCountCarregadosSeguindo++;
-				}
-			});
-		}
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,17 +84,25 @@ public class SeguidoresActivity extends Activity {
 
 		// Preparing list view
 		mListSeguidas = new ArrayList<Seguida>();
-		mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this,
-				mListSeguidas);
+		mListAdapter = new ListSeguidoresAdapter(this, mListSeguidas, mSeguindo);
 		mListView.setAdapter(mListAdapter);
 
-		if (mSeguindo) {
-			getActionBar().setTitle(mUsuario.getNome() + " está Seguindo:");
-			carregarSeguindo();
+		if (mUsuario.equals(UsuarioController.usuarioLogado)) { 
+			if (mSeguindo) {
+				getActionBar().setTitle("Pessoas que eu sigo");
+				carregaSeguidas(mUsuario.getSeguindo().getList());
+			} else {
+				getActionBar().setTitle("Meus seguidores");
+				carregaSeguidas(mUsuario.getSeguidores().getList());
+			}
 		} else {
-			getActionBar()
-					.setTitle("Seguidores de " + mUsuario.getNome() + ":");
-			carregarSeguidores();
+			if (mSeguindo) {
+				getActionBar().setTitle("Pessoas que " + mUsuario.getNome() + " segue");
+				carregaSeguidas(mUsuario.getSeguindo().getList());
+			} else {
+				getActionBar().setTitle("Seguidores de " + mUsuario.getNome());
+				carregaSeguidas(mUsuario.getSeguidores().getList());
+			}
 		}
 	}
 

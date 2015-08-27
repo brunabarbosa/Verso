@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;

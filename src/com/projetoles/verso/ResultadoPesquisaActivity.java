@@ -13,6 +13,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.TextView;
 
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Poesia;

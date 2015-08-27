@@ -1,4 +1,4 @@
-package com.projetoles.verso;
+package com.projetoles.adapter;
 
 import java.util.List;
 
@@ -20,6 +20,11 @@ import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
+import com.projetoles.verso.R;
+import com.projetoles.verso.UserProfileActivity;
+import com.projetoles.verso.R.drawable;
+import com.projetoles.verso.R.id;
+import com.projetoles.verso.R.layout;
 
 public class ListNotificacoesAdapter extends BaseAdapter {
 

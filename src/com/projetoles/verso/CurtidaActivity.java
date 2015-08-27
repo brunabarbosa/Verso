@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.projetoles.adapter.ListCurtidaAdapter;
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Curtida;

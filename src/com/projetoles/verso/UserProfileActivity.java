@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
