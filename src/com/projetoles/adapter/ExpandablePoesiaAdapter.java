@@ -2,8 +2,25 @@ package com.projetoles.adapter;
 
 import java.util.List;
 
+import com.projetoles.controller.CurtidaController;
+import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.Poesia;
+import com.projetoles.model.Usuario;
+import com.projetoles.verso.ActivityUtils;
+import com.projetoles.verso.ComentarioActivity;
+import com.projetoles.verso.CurtidaActivity;
+import com.projetoles.verso.R;
+import com.projetoles.verso.SharingActivity;
+import com.projetoles.verso.UserProfileActivity;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,27 +33,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.projetoles.controller.CurtidaController;
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Curtida;
-import com.projetoles.model.Poesia;
-import com.projetoles.model.Usuario;
-import com.projetoles.verso.ComentarioActivity;
-import com.projetoles.verso.CurtidaActivity;
-import com.projetoles.verso.R;
-import com.projetoles.verso.SharingActivity;
-import com.projetoles.verso.UserProfileActivity;
-import com.projetoles.verso.R.drawable;
-import com.projetoles.verso.R.id;
-import com.projetoles.verso.R.layout;
-
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 	private Activity mContext;
 	private List<Poesia> mListPoesias;
 	private CurtidaController mCurtidaController;
+	private PoesiaController mPoesiaController;
 	private Bundle mBundle;
 	private Usuario mUsuario;
 	private Button btnCompartilharFacebook;
@@ -45,6 +47,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		this.mContext = context;
 		this.mListPoesias = listPoesias;
 		this.mCurtidaController = new CurtidaController(context);
+		this.mPoesiaController = new PoesiaController(context);
 		this.mBundle = bundle;
 		this.mUsuario = UsuarioController.usuarioLogado;
 	}
@@ -158,7 +161,50 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		numLikes.setText(String.valueOf(poesia.getCurtidas().size()));
 		final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
 		numComments.setText(String.valueOf(poesia.getComentarios().size()));
+		final ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
+		final ImageView edit = (ImageView) convertView.findViewById(R.id.edit);
+		
+		if (!poesia.getPostador().equals(UsuarioController.usuarioLogado)) {
+			delete.setVisibility(View.GONE);
+			edit.setVisibility(View.GONE);
+		} else {
+			delete.setVisibility(View.VISIBLE);
+			edit.setVisibility(View.VISIBLE);
+		}
+		
+		// Excluir poesia
+		delete.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new AlertDialog.Builder(mContext)
+					.setTitle("Você realmente deseja excluir essa poesia?")
+					.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							mPoesiaController.delete(poesia.getId(), new OnRequestListener<String>(mContext) {
 
+								@Override
+								public void onSuccess(String result) {
+									mListPoesias.remove(poesia);
+									notifyDataSetChanged();
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", "Não foi possível excluir esta poesia. Tente novamente", null);
+								}
+							});
+							
+						}
+					})
+					.setNegativeButton("Não", null)
+					.create()
+					.show();
+			}
+		});
+		
 		// Botão tela de curtidas
 		numLikes.setTag(poesia);
 		numLikes.setOnClickListener(new OnClickListener() {

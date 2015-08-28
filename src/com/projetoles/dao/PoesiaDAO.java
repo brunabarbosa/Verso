@@ -40,6 +40,16 @@ public class PoesiaDAO extends DAO<Poesia> {
 		post.execute(callback);
 	}
 	
+	@Override
+	public void delete(String id, OnRequestListener<String> callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("id", id)
+			.setDomain(DOMAIN)
+			.setPath("poetry/delete");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
 	@Override 
 	public void get(String id, OnRequestListener<String> callback) {
 		GET.Builder getRequest = (GET.Builder) new GET.Builder()
