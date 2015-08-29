@@ -22,8 +22,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -91,9 +95,11 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			}
 			tags.setText(poesiasTagss);
 		}
-		date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por " + poesia.getPostador().getNome());
+		
+		Spannable dateSpan = new SpannableString("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por " + poesia.getPostador().getNome());
+		dateSpan.setSpan(new ForegroundColorSpan(Color.BLUE), (dateSpan.length() - poesia.getPostador().getNome().length()), dateSpan.length() , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		date.setText(dateSpan);
 		date.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(mContext, UserProfileActivity.class);
