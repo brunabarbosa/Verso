@@ -16,13 +16,7 @@
 
 package com.projetoles.verso;
 
-import java.util.Calendar;
-
-import org.json.JSONObject;
-
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Usuario;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -112,7 +106,7 @@ public class GcmIntentService extends IntentService {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,notificationIntent , 0);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.like_icon)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.logo_notificacao)
         .setContentTitle("Ver(só)")
         .setStyle(new NotificationCompat.BigTextStyle()
         .bigText(titulo + msg + "\n" + string))

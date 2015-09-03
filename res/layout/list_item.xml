@@ -13,30 +13,43 @@
         android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:textSize="17dip" />
-    
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/tags"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
         android:paddingTop="5dp" />
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/date"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
         android:paddingTop="5dp" />
-    
-    <Button 
-		android:id="@+id/btnCompartilharFacebook"
-		android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_margin="5dp"
-        android:background="@drawable/compartilhar_facebook"
-        android:layout_gravity="center_horizontal" />
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="bottom|center|top" >
+
+        <Button
+            android:id="@+id/btnCompartilharFacebook"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/compartilhar_facebook" />
+
+        <Button
+            android:id="@+id/btnCompartilharApp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/share_app" />
+
+    </LinearLayout>
+
 </LinearLayout>

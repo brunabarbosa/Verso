@@ -11,6 +11,8 @@ import android.app.Activity;
 
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
@@ -18,11 +20,13 @@ import com.projetoles.model.Usuario;
 public class PoesiaController extends Controller<Poesia> {
 	
 	private static ObjectLoader<Poesia> sLoader = new ObjectLoader<Poesia>();
+	private NotificacaoController mNotificacao;
 	
 	public PoesiaController(Activity context) {
 		super(context);
 		mDAO = new PoesiaDAO();
 		mLoader = sLoader;
+		mNotificacao = new NotificacaoController(context);
 	}
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
@@ -57,12 +61,41 @@ public class PoesiaController extends Controller<Poesia> {
 		});
 	}
  
-	public void post(String titulo, String autor, Usuario postador,
+	public void post(String titulo, String autor, final Usuario postador,
 			String poesia, Calendar dataCriacao, String tags,
-			OnRequestListener<Poesia> callback) {
+			final OnRequestListener<Poesia> callback) {
 		try { 
 			Poesia p = new Poesia(null, dataCriacao, titulo, postador, autor, poesia, tags, new ObjectListID(), new ObjectListID());
-			super.post(p, callback);
+			super.post(p, new OnRequestListener<Poesia>(callback.getContext()) {
+				
+				@Override
+				public void onSuccess(Poesia result) {
+					if (!postador.equals(UsuarioController.usuarioLogado)) {
+						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
+						postador, UsuarioController.usuarioLogado, " compartilhou sua poesia."), 
+							new OnRequestListener<Notificacao>(callback.getContext()) {
+ 
+								@Override
+								public void onSuccess(Notificacao result) {
+									postador.getNotificacoes().add(result.getId());
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println(errorMessage);
+								}
+							});
+					}
+					callback.onSuccess(result);
+					
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					System.out.println(errorMessage);
+					
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 			callback.onError(e.getMessage());
