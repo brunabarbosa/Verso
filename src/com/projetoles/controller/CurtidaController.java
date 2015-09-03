@@ -39,7 +39,7 @@ public class CurtidaController extends Controller<Curtida> {
 				public void onSuccess(Curtida result) {
 					if (!postador.equals(poesia.getPostador())) {
 						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-						poesia.getPostador(), postador, " curtiu sua poesia."), 
+						poesia.getPostador(), postador, " curtiu a poesia " + poesia.getTitulo()), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override
