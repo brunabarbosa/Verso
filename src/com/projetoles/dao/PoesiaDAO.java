@@ -39,7 +39,21 @@ public class PoesiaDAO extends DAO<Poesia> {
 		POST post = (POST) postRequest.create();
 		post.execute(callback);
 	}
-	
+
+	@Override
+	public void put(Poesia poesia, OnRequestListener<String> callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("id", poesia.getId())
+			.addParam("title", poesia.getTitulo())
+			.addParam("author", poesia.getAutor())
+			.addParam("tags", poesia.getTags())
+			.addParam("poetry", poesia.getPoesia())
+			.setDomain(DOMAIN)
+			.setPath("poetry/put");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+
 	@Override
 	public void delete(String id, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
