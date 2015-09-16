@@ -102,15 +102,15 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, NotificacoesTelaActivity.class);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,notificationIntent , 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.logo_notificacao)
         .setContentTitle("Ver(só)")
         .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(titulo + msg + "\n" + string))
-        .setContentText(titulo + msg + "\n" + string);
+        .bigText(titulo + msg))
+        .setContentText(titulo + msg);
 
         mBuilder.setContentIntent(contentIntent);
         
