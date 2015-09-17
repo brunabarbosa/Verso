@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
 
@@ -30,6 +31,8 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 			.addParam("mensagem", notificacao.getMensagem())
 			.addParam("dataCriacao", notificacao.getStringDataCriacao())
 			.addParam("chave", "APA91bGMpABcm-4ilpI1NltzH2DNia1qFENGiD04fsjxkd8B2A0C9OaTTUA1OVG6mWDJXd0QeadOQvCiPXWBJWKHoODGqdu5HuWQ1g0BPpP-Cjqc0LETbFgYRhWiCq6Ujz_E1FW5KJxd")
+			.addParam("poesia", notificacao.getPoesia().getId())
+			.addParam("tipo", notificacao.getTipo())
 			.setDomain(DOMAIN)
 			.setPath("notif/post");
 		POST post = (POST) postRequest.create();
@@ -61,8 +64,9 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 		String id = json.getString("id");
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
 		String mensagem = json.getString("mensagem");
+		String tipo = json.getString("tipo");
 		return new Notificacao(id, dataCriacao, (Usuario)params.get(0), (Usuario)params.get(1), 
-				mensagem);
+				mensagem, (Poesia) params.get(2), tipo);
 	}
 
 }

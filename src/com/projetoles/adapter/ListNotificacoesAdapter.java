@@ -20,6 +20,8 @@ import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.Poesia;
+import com.projetoles.verso.ComentarioActivity;
 import com.projetoles.verso.R;
 import com.projetoles.verso.UserProfileActivity;
 import com.projetoles.verso.R.drawable;
@@ -104,9 +106,17 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 				
 				@Override
 				public void onClick(View arg0) {
-					Intent intent = new Intent(mContext, UserProfileActivity.class);
-					intent.putExtra("usuario", n.getTitulo());
-					mContext.startActivity(intent);
+					if(n.getTipo().equals("usuario")){
+						Intent intent = new Intent(mContext, UserProfileActivity.class);
+						intent.putExtra("usuario", n.getTitulo());
+						mContext.startActivity(intent);
+					}else{
+						Intent intent = new Intent(mContext, ComentarioActivity.class);
+						intent.putExtra("poesia", (Poesia) n.getPoesia());
+						intent.putExtra("callback", mContext.getClass());
+						mContext.startActivity(intent);
+					}
+					
 				}
 			};
 			nome.setOnClickListener(clicaUsuario);

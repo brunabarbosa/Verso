@@ -17,6 +17,8 @@
 package com.projetoles.verso;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.projetoles.verso.R;
+import com.projetoles.verso.R.drawable;
 
 import android.app.IntentService;
 import android.app.Notification;

@@ -66,7 +66,11 @@ public class Poesia extends TemporalModel {
 		setComentarios(comentarios);
 		setCurtidas(curtidas);
 	}
-	
+
+	public Poesia() {
+		super();
+	}
+
 	public void setTitulo(String titulo) {
 		if (titulo == null || titulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("Título é obrigatório.");

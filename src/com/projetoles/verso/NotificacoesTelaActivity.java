@@ -15,6 +15,9 @@ import com.projetoles.controller.NotificacaoController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
+import com.projetoles.verso.R;
+import com.projetoles.verso.R.id;
+import com.projetoles.verso.R.layout;
 
 public class NotificacoesTelaActivity extends Activity {
 	

@@ -72,7 +72,7 @@ public class PoesiaController extends Controller<Poesia> {
 				public void onSuccess(Poesia result) {
 					if (!postador.equals(UsuarioController.usuarioLogado)) {
 						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-						postador, UsuarioController.usuarioLogado, " compartilhou sua poesia."), 
+						postador, UsuarioController.usuarioLogado, " compartilhou sua poesia.", result, "poesia"), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override

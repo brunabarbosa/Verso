@@ -24,6 +24,10 @@ public abstract class TemporalModel extends Model implements Comparable<Temporal
 		setDataCriacao(dataCriacao);
 	}
 	
+	public TemporalModel() {
+		super("");
+	}
+
 	public void setDataCriacao(Calendar dataCriacao) {
 		this.mDataCriacao = dataCriacao;
 	}

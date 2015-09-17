@@ -10,6 +10,8 @@ public class Notificacao extends TemporalModel {
 	private Usuario mEnderecado;
 	private Usuario mTitulo;
 	private String mMensagem;
+	private Poesia mPoesia;
+	private String mTipo;
 
 	public static final Parcelable.Creator<Notificacao> CREATOR = 
 			new Parcelable.Creator<Notificacao>() {
@@ -27,6 +29,8 @@ public class Notificacao extends TemporalModel {
 		setEnderecado((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
 		setTitulo((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
 		setMensagem(in.readString());
+		setPoesia((Poesia)in.readParcelable(Usuario.class.getClassLoader()));
+		setTipo(in.readString());
 	}
 
 	@Override
@@ -35,14 +39,18 @@ public class Notificacao extends TemporalModel {
 		dest.writeParcelable(this.getEnderecado(), flags);
 		dest.writeParcelable(this.getTitulo(), flags);
 		dest.writeString(this.getMensagem());
+		dest.writeParcelable(this.getPoesia(), flags);
+		dest.writeString(this.getTipo());
 	}
 
 	public Notificacao(String id, Calendar dataCriacao, Usuario enderecado, Usuario titulo, 
-			String mensagem) {
+			String mensagem, Poesia poesia, String tipo) {
 		super(id, dataCriacao);
 		setTitulo(titulo);
 		setMensagem(mensagem);
 		setEnderecado(enderecado);
+		setPoesia(poesia);
+		setTipo(tipo);
 	}
 
 	private void setEnderecado(Usuario enderecado) {
@@ -77,6 +85,28 @@ public class Notificacao extends TemporalModel {
 
 	public String getMensagem() {
 		return mMensagem;
+	}
+
+	public Poesia getPoesia() {
+		return mPoesia;
+	}
+
+	public void setPoesia(Poesia mPoesia) {
+		if (mPoesia == null) {
+			throw new IllegalArgumentException("Poesia é obrigatória.");
+		}
+		this.mPoesia = mPoesia;
+	}
+	
+	public void setTipo(String tipo) {
+		if (tipo == null || tipo.trim().isEmpty()) {
+			throw new IllegalArgumentException("Tipo é obrigatório.");
+		}
+		this.mTipo = tipo;
+	}
+
+	public String getTipo() {
+		return mTipo;
 	}
 
 }

@@ -32,7 +32,7 @@ public class ComentarioController extends Controller<Comentario> {
 				@Override
 				public void onSuccess(final Comentario comentarioResult) {
 					if (!postador.equals(poesia.getPostador())) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), poesia.getPostador(), postador, " comentou a poesia " + poesia.getTitulo()), 
+						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), poesia.getPostador(), postador, " comentou a poesia " + poesia.getTitulo(), poesia, "poesia"), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 							@Override

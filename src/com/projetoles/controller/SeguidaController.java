@@ -7,6 +7,7 @@ import android.app.Activity;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.SeguidaDAO;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.Poesia;
 import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
@@ -37,7 +38,7 @@ public class SeguidaController extends Controller<Seguida> {
 				@Override
 				public void onSuccess(final Seguida seguidaResult) {
 					if (!seguindo.equals(UsuarioController.usuarioLogado)) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), seguindo, seguidor, " seguiu seu perfil."), 
+						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), seguindo, seguidor, " seguiu seu perfil.", new Poesia(), "usuario"), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override
