@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
+import com.projetoles.adapter.ListComentarioAdapter;
+import com.projetoles.controller.ComentarioController;
+import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Comentario;
+import com.projetoles.model.Poesia;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,17 +23,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.projetoles.adapter.ListComentarioAdapter;
-import com.projetoles.controller.ComentarioController;
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Comentario;
-import com.projetoles.model.Poesia;
+import android.widget.TextView;
 
 public class ComentarioActivity extends Activity {
 
 	private ComentarioController mComentarioController;
+	private PoesiaController mPoesiaController;
 	private Poesia mPoesia;
 	private ListComentarioAdapter mListAdapter;
 	private ListView mListView;
@@ -110,6 +114,7 @@ public class ComentarioActivity extends Activity {
 		getActionBar().setTitle(mPoesia.getTitulo() + " - Comentários");
 
 		mComentarioController = new ComentarioController(this);
+		mPoesiaController = new PoesiaController(this);
 
 		// Get widgets from layout
 		mListView = (ListView) findViewById(R.id.lvExpComentario);
@@ -122,6 +127,15 @@ public class ComentarioActivity extends Activity {
 		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mListComentarios);
 		mListView.setAdapter(mListAdapter);
 
+		TextView poesiaTitulo = (TextView) findViewById(R.id.poesiaTitulo);
+		poesiaTitulo.setText(mPoesia.getTitulo());
+		TextView poesiaConteudo = (TextView) findViewById(R.id.poesia);
+		poesiaConteudo.setText(mPoesia.getPoesia());
+		TextView poesiaTags = (TextView) findViewById(R.id.poesiaTags); 
+		ExpandablePoesiaAdapter.setPoesiaTags(poesiaTags, mPoesia, mPoesiaController, this);
+		TextView poesiaData = (TextView) findViewById(R.id.poesiaData);
+		ExpandablePoesiaAdapter.setPoesiaData(poesiaData, mPoesia, this);
+		
 		carregarComentarios();
 		criarComentario();
 	}
