@@ -41,7 +41,7 @@
                 android:id="@+id/poemaTags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tags (separadas por , )"
+                android:hint="Tags (separadas por espaço)"
                 android:background="@drawable/white"
                 android:padding="10dp"
                 android:singleLine="true"

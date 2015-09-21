@@ -1,5 +1,6 @@
 package com.projetoles.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.projetoles.controller.CurtidaController;
@@ -15,7 +16,9 @@ import com.projetoles.verso.ActivityUtils;
 import com.projetoles.verso.ComentarioActivity;
 import com.projetoles.verso.CurtidaActivity;
 import com.projetoles.verso.MainActivity;
+import com.projetoles.verso.PesquisarActivity;
 import com.projetoles.verso.R;
+import com.projetoles.verso.ResultadoPesquisaActivity;
 import com.projetoles.verso.SharingActivity;
 import com.projetoles.verso.UserProfileActivity;
 
@@ -24,12 +27,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
+import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,6 +44,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
@@ -71,6 +77,33 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	public long getChildId(int groupPosition, int childPosition) {
 		return childPosition;
 	}
+	
+	private static class ClickableString extends ClickableSpan {  
+	    private View.OnClickListener mListener;          
+	    public ClickableString(View.OnClickListener listener) {              
+	        mListener = listener;  
+	    }          
+	    @Override  
+	    public void onClick(View v) {  
+	        mListener.onClick(v);  
+	    }        
+	}
+	
+	private SpannableString makeLinkSpan(CharSequence text, View.OnClickListener listener) {
+	    SpannableString link = new SpannableString(text);
+	    link.setSpan(new ClickableString(listener), 0, text.length(), 
+	        SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+	    return link;
+	}
+	
+	private void makeLinksFocusable(TextView tv) {
+	    MovementMethod m = tv.getMovementMethod();  
+	    if ((m == null) || !(m instanceof LinkMovementMethod)) {  
+	        if (tv.getLinksClickable()) {  
+	            tv.setMovementMethod(LinkMovementMethod.getInstance());  
+	        }  
+	    }  
+	}
 
 	@Override
 	public View getChildView(int groupPosition, final int childPosition,
@@ -94,18 +127,56 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		if (poesia.getTags().trim().isEmpty()) {
 			tags.setVisibility(View.GONE);
 		} else {
-			String poesiasTagss = "";
-			String[] poesiasTags = poesia.getTags().split(",");
-			for (String tag : poesiasTags) {
-				poesiasTagss += "#" + tag;
+			tags.setText("");
+			String[] poesiasTags = poesia.getTags().split(" ");
+			for (int i = 0; i < poesiasTags.length; i++) {
+				final String poesiaTag = poesiasTags[i];
+				poesiasTags[i] = "#" + poesiasTags[i];
+				SpannableString link = makeLinkSpan(poesiasTags[i], new View.OnClickListener() {
+					private String tag = poesiaTag;
+					@Override
+					public void onClick(View arg0) {
+						mPoesiaController.pesquisar("", "", tag, "", new OnRequestListener<ArrayList<String>>(mContext) {
+							
+							@Override
+							public void onSuccess(ArrayList<String> resultados) {
+								((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
+								Intent i = new Intent(mContext, ResultadoPesquisaActivity.class);
+								i.putStringArrayListExtra("resultados", resultados);
+								mContext.startActivity(i);
+							}
+							
+							@Override
+							public void onError(String errorMessage) {
+								((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
+								ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, null);
+							}
+						});
+					}
+				});
+				tags.append(link);
+				tags.append(" ");
 			}
-			tags.setText(poesiasTagss);
+			makeLinksFocusable(tags);
 		}
 
-		Spannable dateSpan = new SpannableString("Postado em "
+		date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por ");
+		SpannableString link = makeLinkSpan(poesia.getPostador().getNome(), new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, UserProfileActivity.class);
+				intent.putExtra("usuario", poesia.getPostador());
+				mContext.startActivity(intent);
+			}
+		});
+		date.append(link);
+		date.append(".");
+		makeLinksFocusable(date);
+		/*Spannable dateSpan = new SpannableString("Postado em "
 				+ CalendarUtils.getDataFormada(poesia.getDataCriacao())
 				+ " por " + poesia.getPostador().getNome());
-		dateSpan.setSpan(new ForegroundColorSpan(Color.BLUE),
+		dateSpan.setSpan(new UnderlineSpan(),
 				(dateSpan.length() - poesia.getPostador().getNome().length()),
 				dateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		date.setText(dateSpan);
@@ -116,7 +187,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				intent.putExtra("usuario", poesia.getPostador());
 				mContext.startActivity(intent);
 			}
-		});
+		});*/
 
 		btnCompartilharFacebook = (Button) convertView.findViewById(R.id.btnCompartilharFacebook);
 
