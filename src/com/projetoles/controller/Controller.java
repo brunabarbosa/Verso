@@ -40,14 +40,6 @@ public abstract class Controller<T extends Model> {
 		return mContext;
 	}
 	
-	// check network connection
-    public boolean isConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager) 
-        		mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
-    }
- 
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private void load(final Dependencies dependencies, final List<Object> loaded, final JSONObject json,
     		final OnRequestListener<List<Object>> callback) {
