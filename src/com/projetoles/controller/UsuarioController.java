@@ -49,7 +49,7 @@ public class UsuarioController extends Controller<Usuario> {
 			callback.onSuccess(usuarioLogado);
 		} else if (mSession.contains("id") && mSession.contains("senha")) {
 			Usuario usuario = new Usuario(mSession.getString("id", null), null,
-					null, null, null, null, null, null, null, null);
+					null, null, null, null, null, null, null, null, false);
 			usuario.setSenha(mSession.getString("senha", null), false);
 			this.login(usuario, regId, callback);
 		} else {
@@ -60,7 +60,7 @@ public class UsuarioController extends Controller<Usuario> {
 	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
 			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, 
-					new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID());
+					new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), false);
 			this.login(usuario, regId, callback);
 		} catch (Exception e) {
 			e.printStackTrace(); 
@@ -133,7 +133,7 @@ public class UsuarioController extends Controller<Usuario> {
 				callback.onError("Senhas não coincidem.");
 			} else {
 				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, 
-						new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID());
+						new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), false);
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -162,7 +162,7 @@ public class UsuarioController extends Controller<Usuario> {
 			} else {
 				Usuario usuario = new Usuario(usuarioLogado.getId(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
 						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas(), 
-						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores());
+						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores(), usuarioLogado.getNotificacoesHabilitadas());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -243,4 +243,19 @@ public class UsuarioController extends Controller<Usuario> {
 		mLoader.save(result);
 	}
 
+	public void setNotificacoesHabilitadas(boolean notificacoes, final OnRequestListener<Void> callback) {
+		((UsuarioDAO)mDAO).setNotificacoes(usuarioLogado, notificacoes, new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				callback.onSuccess(null);
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
+	}
+	
 }

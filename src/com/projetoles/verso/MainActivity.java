@@ -206,7 +206,8 @@ public class MainActivity extends TabActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			return true;
+			Intent i = new Intent(this, ConfiguracoesActivity.class);
+			startActivity(i);
 		} else if (id == R.id.action_logout) {
 			mController.logout();
 			Intent i = new Intent(this, LoginActivity.class);

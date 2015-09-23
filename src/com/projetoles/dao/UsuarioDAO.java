@@ -98,6 +98,16 @@ public class UsuarioDAO extends DAO<Usuario> {
 		get.execute(callback);
 	}
 	
+	public void setNotificacoes(Usuario usuario, boolean notificacoes, OnRequestListener<String> callback) {
+		POST.Builder postRequest = (POST.Builder) new POST.Builder()
+			.addParam("email", usuario.getId())
+			.addParam("notifications", notificacoes ? "1" : "0")
+			.setDomain(DOMAIN)
+			.setPath("user/notifications");
+		POST post = (POST) postRequest.create();
+		post.execute(callback);
+	}
+	
 	@Override
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {
 		String email = obj.getString("email");
@@ -115,7 +125,8 @@ public class UsuarioDAO extends DAO<Usuario> {
 		ObjectListID curtidas = new ObjectListID(obj.getJSONArray("likes"));
 		ObjectListID seguindo = new ObjectListID(obj.getJSONArray("followeds"));
 		ObjectListID seguidores = new ObjectListID(obj.getJSONArray("followers"));
-		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores);
+		boolean notificacoesHabilitadas = obj.getBoolean("enable_notifications");
+		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
 	}
 
 }

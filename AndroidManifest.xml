@@ -73,6 +73,11 @@
         </activity>
         <activity android:name=".NotificacoesTelaActivity" >
         </activity>
+        <activity 
+            android:name=".ConfiguracoesActivity"
+            android:label="Configurações"
+            android:parentActivityName=".MainActivity" >
+        </activity>
         <activity android:name=".SharingActivity" >
         </activity>
         <activity

@@ -22,6 +22,7 @@ public class Usuario extends Model {
 	private ObjectListID mCurtidas;
 	private ObjectListID mSeguindo;
 	private ObjectListID mSeguidores;
+	private boolean mNotificacoesHabilitadas;
 
 	public static final Parcelable.Creator<Usuario> CREATOR = 
 			new Parcelable.Creator<Usuario>() {
@@ -65,7 +66,7 @@ public class Usuario extends Model {
 	
 	public Usuario(String email, String senha, String nome, String biografia, byte[] foto, 
 			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
-			ObjectListID seguindo, ObjectListID seguidores) {
+			ObjectListID seguindo, ObjectListID seguidores, boolean notificacoesHabilitadas) {
 		super(email);
 		setSenha(senha);
 		setNome(nome);
@@ -76,12 +77,13 @@ public class Usuario extends Model {
 		setCurtidas(curtidas);
 		setSeguindo(seguindo);
 		setSeguidores(seguidores);
+		setNotificacoesHabilitadas(notificacoesHabilitadas);
 	}
 
 	public Usuario(String email, String nome, String biografia, byte[] foto,
 			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
-			ObjectListID seguindo, ObjectListID seguidores) {
-		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores);
+			ObjectListID seguindo, ObjectListID seguidores, boolean notificacoesHabilitadas) {
+		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
 	}
 
 	@Override
@@ -191,6 +193,14 @@ public class Usuario extends Model {
 	
 	public ObjectListID getSeguidores() {
 		return this.mSeguidores;
+	}
+	
+	public boolean getNotificacoesHabilitadas() {
+		return this.mNotificacoesHabilitadas;
+	}
+	
+	public void setNotificacoesHabilitadas(boolean notificacoesHabilitadas) {
+		this.mNotificacoesHabilitadas = notificacoesHabilitadas;
 	}
 	
 	@Override
