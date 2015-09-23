@@ -118,7 +118,7 @@ public class MainActivity extends TabActivity {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
 				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("callback", MainActivity.class);
 				intent.putExtra("seguindo", true);
 				startActivity(intent);
 				finish();
@@ -131,7 +131,7 @@ public class MainActivity extends TabActivity {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
 				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", UserProfileActivity.class);
+				intent.putExtra("callback", MainActivity.class);
 				intent.putExtra("seguindo", false);
 				startActivity(intent);
 				finish();

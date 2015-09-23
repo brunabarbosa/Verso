@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
+	    <item name="android:fullBright">#FFFF00</item>
+	    <item name="android:fullDark">#FF00FF</item>
+	</style>
+	<style name="MyTheme">
+	    <item name="android:alertDialogStyle">@style/CustomDialogTheme</item>
+	</style>
+</resources>

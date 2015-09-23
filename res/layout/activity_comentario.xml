@@ -60,6 +60,7 @@
 		            android:ellipsize="none"
 	                android:maxLines="2"
 					android:scrollHorizontally="false"
+					android:textSize="12sp"
 		            android:text="Postado em xxx por ..." />
 		        
 		    </LinearLayout>

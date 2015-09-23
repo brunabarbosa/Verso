@@ -115,7 +115,7 @@ public class SeguidoresActivity extends Activity {
 	
 	@Override
 	public void onBackPressed() {
-		Intent i = new Intent(SeguidoresActivity.this, MainActivity.class);
+		Intent i = new Intent(SeguidoresActivity.this, mCallback);
 		i.putExtra("usuario", mUsuario);
 		startActivity(i);
 		finish();
