@@ -1,23 +1,24 @@
 package com.projetoles.dao;
 
-import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
 
 /**
  * Listener genérico que possuí uma chamada para falha e outra para sucesso
  */
 public abstract class OnRequestListener<T> {
 
-	private Activity mContext;
+	private Context mContext;
 	
-	public OnRequestListener(Activity context) {
+	public OnRequestListener(Context context) {
 		this.mContext = context;
 	}
 	
-	public Activity getContext() {
+	public Context getContext() {
 		return mContext;
 	}
 	
-	public void setContext(Activity newContext) {
+	public void setContext(Context newContext) {
 		mContext = newContext;
 	}
 	
@@ -34,5 +35,10 @@ public abstract class OnRequestListener<T> {
 	 * 		Causa da falha
 	 */
 	public abstract void onError(String errorMessage);
+	
+	public void runOnUiThread(Runnable runnable) {
+		Handler handler = new Handler(mContext.getMainLooper());
+		handler.post(runnable);
+	}
 	
 }

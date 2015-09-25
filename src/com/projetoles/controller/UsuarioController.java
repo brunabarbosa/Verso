@@ -6,8 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.projetoles.dao.OnRequestListener;
@@ -15,12 +13,14 @@ import com.projetoles.dao.UsuarioDAO;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Usuario;
 
+import android.content.Context;
+
 public class UsuarioController extends Controller<Usuario> {
  
 	private static ObjectLoader<Usuario> sLoader = new ObjectLoader<Usuario>();
 	public static Usuario usuarioLogado;
 	
-	public UsuarioController(Activity context) {
+	public UsuarioController(Context context) {
 		super(context);
 		mDAO = new UsuarioDAO();
 		mLoader = sLoader;

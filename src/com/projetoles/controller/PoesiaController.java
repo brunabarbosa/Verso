@@ -7,22 +7,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
-import com.projetoles.model.Curtida;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
+
+import android.content.Context;
 
 public class PoesiaController extends Controller<Poesia> {
 	
 	private static ObjectLoader<Poesia> sLoader = new ObjectLoader<Poesia>();
 	private NotificacaoController mNotificacao;
 	
-	public PoesiaController(Activity context) {
+	public PoesiaController(Context context) {
 		super(context);
 		mDAO = new PoesiaDAO();
 		mLoader = sLoader;

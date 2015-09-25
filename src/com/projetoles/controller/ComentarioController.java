@@ -2,8 +2,6 @@ package com.projetoles.controller;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-
 import com.projetoles.dao.ComentarioDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
@@ -11,12 +9,14 @@ import com.projetoles.model.Notificacao;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
+import android.content.Context;
+
 public class ComentarioController extends Controller<Comentario> {
 
 	private static ObjectLoader<Comentario> sLoader = new ObjectLoader<Comentario>();
 	private NotificacaoController mNotificacao;
 	
-	public ComentarioController(Activity context) {
+	public ComentarioController(Context context) {
 		super(context);
 		mDAO = new ComentarioDAO();
 		mLoader = sLoader;

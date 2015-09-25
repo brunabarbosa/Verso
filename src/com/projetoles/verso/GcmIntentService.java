@@ -17,8 +17,9 @@
 package com.projetoles.verso;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.projetoles.verso.R;
-import com.projetoles.verso.R.drawable;
+import com.projetoles.controller.NotificacaoController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Notificacao;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -33,6 +34,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -44,13 +46,16 @@ import android.util.Log;
 public class GcmIntentService extends IntentService {
 
     public static final int NOTIFICATION_ID = 1;
+    public static final String TAG = "GCM Demo";
+ 
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
-
+    private NotificationCompat.Builder builder;
+    private NotificacaoController mController;
+    
     public GcmIntentService() {
         super("GcmIntentService");
+        this.mController = new NotificacaoController(this);
     }
-    public static final String TAG = "GCM Demo";
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -67,6 +72,21 @@ public class GcmIntentService extends IntentService {
              * extended in the future with new message types, just ignore any message types you're
              * not interested in, or that you don't recognize.
              */
+        	
+        	mController.get(extras.getString("_id"), new OnRequestListener<Notificacao>(this) {
+				
+				@Override
+				public void onSuccess(Notificacao result) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onError(String errorMessage) {
+					Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
+				}
+			});
+        	
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
