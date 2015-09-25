@@ -19,16 +19,15 @@ import com.projetoles.verso.R;
 
 public class NotificacoesTelaActivity extends Activity {
 	
-	private static NotificacaoController mNotificacaoController;
-	private static ListNotificacoesAdapter mListAdapter;
+	private NotificacaoController mNotificacaoController;
+	private ListNotificacoesAdapter mListAdapter;
 	private ListView mListView;
 	private static List<Notificacao> mListNotificacoes;
 	private RelativeLayout mLoading;
 	private int mCountCarregados;
-	private static Activity callback;
 	
-	public static void criarNotificacaoTela(String nId){
-		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(callback) {
+	protected void criarNotificacaoTela(String nId){
+		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(NotificacoesTelaActivity.this) {
 
 			@Override
 			public void onSuccess(Notificacao result) {
@@ -106,8 +105,7 @@ public class NotificacoesTelaActivity extends Activity {
 		
 		// Preparing list view
 		mListNotificacoes = new ArrayList<Notificacao>();
-		callback = NotificacoesTelaActivity.this;
-		mListAdapter = new ListNotificacoesAdapter(callback, mListNotificacoes);
+		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mListNotificacoes);
 		mListView.setAdapter(mListAdapter);
 
 		carregarNotificacoes();

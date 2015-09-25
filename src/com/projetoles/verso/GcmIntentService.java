@@ -61,7 +61,7 @@ public class GcmIntentService extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
         
-        NotificacoesTelaActivity.criarNotificacaoTela(extras.getString("_id"));
+        
         
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
@@ -91,6 +91,8 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
+                NotificacoesTelaActivity nta = new NotificacoesTelaActivity();
+                nta.criarNotificacaoTela(extras.getString("_id"));
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
