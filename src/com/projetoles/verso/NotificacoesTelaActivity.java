@@ -16,17 +16,51 @@ import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
 import com.projetoles.verso.R;
-import com.projetoles.verso.R.id;
-import com.projetoles.verso.R.layout;
 
 public class NotificacoesTelaActivity extends Activity {
 	
-	private NotificacaoController mNotificacaoController;
-	private ListNotificacoesAdapter mListAdapter;
+	private static NotificacaoController mNotificacaoController;
+	private static ListNotificacoesAdapter mListAdapter;
 	private ListView mListView;
-	private List<Notificacao> mListNotificacoes;
+	private static List<Notificacao> mListNotificacoes;
 	private RelativeLayout mLoading;
 	private int mCountCarregados;
+	private static Activity callback;
+	
+	public static void criarNotificacaoTela(String nId){
+		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(callback) {
+
+			@Override
+			public void onSuccess(Notificacao result) {
+				mListNotificacoes.add(result);
+				Collections.sort(mListNotificacoes);
+				mListAdapter.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				System.out.println(errorMessage);
+			}
+		});
+		
+		
+	}
+	
+	/*public static void criarNotificacoes(final Usuario enderecado, Usuario postador, String mensagem, Poesia poesia, String tipo, Activity a){
+		mNotificacaoController.post(new Notificacao(null, Calendar.getInstance(), enderecado, postador, mensagem, poesia, tipo), 
+				new OnRequestListener<Notificacao>(a) {
+
+					@Override
+					public void onSuccess(Notificacao result) {
+						enderecado.getNotificacoes().add(result.getId());
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						System.out.println(errorMessage);
+					}
+				});
+	}*/
 	
 	private void carregarNotificacoes() {
 		if (!UsuarioController.usuarioLogado.getNotificacoes().isEmpty()) {
@@ -72,7 +106,8 @@ public class NotificacoesTelaActivity extends Activity {
 		
 		// Preparing list view
 		mListNotificacoes = new ArrayList<Notificacao>();
-		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mListNotificacoes);
+		callback = NotificacoesTelaActivity.this;
+		mListAdapter = new ListNotificacoesAdapter(callback, mListNotificacoes);
 		mListView.setAdapter(mListAdapter);
 
 		carregarNotificacoes();
