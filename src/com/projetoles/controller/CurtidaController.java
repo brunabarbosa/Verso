@@ -2,8 +2,6 @@ package com.projetoles.controller;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-
 import com.projetoles.dao.CurtidaDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Curtida;
@@ -11,12 +9,14 @@ import com.projetoles.model.Notificacao;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
+import android.content.Context;
+
 public class CurtidaController extends Controller<Curtida> {
 
 	private static ObjectLoader<Curtida> sLoader = new ObjectLoader<Curtida>();
 	private NotificacaoController mNotificacao;
 	
-	public CurtidaController(Activity context) {
+	public CurtidaController(Context context) {
 		super(context);
 		mDAO = new CurtidaDAO();
 		mLoader = sLoader;

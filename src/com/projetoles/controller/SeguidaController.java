@@ -2,8 +2,6 @@ package com.projetoles.controller;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.SeguidaDAO;
 import com.projetoles.model.Notificacao;
@@ -11,12 +9,14 @@ import com.projetoles.model.Poesia;
 import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
+import android.content.Context;
+
 public class SeguidaController extends Controller<Seguida> {
 
 	private static ObjectLoader<Seguida> sLoader = new ObjectLoader<Seguida>();
 	private NotificacaoController mNotificacao;
 	
-	public SeguidaController(Activity context) {
+	public SeguidaController(Context context) {
 		super(context);
 		mDAO = new SeguidaDAO();
 		mLoader = sLoader;

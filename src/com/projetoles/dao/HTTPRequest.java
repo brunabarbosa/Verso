@@ -57,7 +57,7 @@ public abstract class HTTPRequest {
 					SLEEPING_THREADS.remove(t);
 					t.start(); 
 				}
-				listener.getContext().runOnUiThread(new Runnable() {
+				listener.runOnUiThread(new Runnable() {
 					
 					@Override
 					public void run() {

@@ -2,19 +2,19 @@ package com.projetoles.controller;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-
 import com.projetoles.dao.NotificacaoDAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
 
+import android.content.Context;
+
 public class NotificacaoController extends Controller<Notificacao> {
 	
 	private static ObjectLoader<Notificacao> sLoader = new ObjectLoader<Notificacao>();
 	
-	public NotificacaoController(Activity context) {
+	public NotificacaoController(Context context) {
 		super(context);
 		mDAO = new NotificacaoDAO();
 		mLoader = sLoader;

@@ -8,35 +8,32 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Pair;
-
 import com.projetoles.dao.DAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Pair;
+
 public abstract class Controller<T extends Model> {
 
-	protected Activity mContext;
+	protected Context mContext;
 	protected SharedPreferences mSession;
 	protected Editor mEditor;
 	protected Map<String, List<OnRequestListener<T>>> mRequisitions;
 	protected ObjectLoader<T> mLoader;
 	protected DAO<T> mDAO;
 
-	public Controller(Activity context) {
+	public Controller(Context context) {
 		this.mContext = context;
 		this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
 		this.mEditor = mSession.edit();
 		this.mRequisitions = new HashMap<String, List<OnRequestListener<T>>>();
 	}
 
-	public Activity getContext() {
+	public Context getContext() {
 		return mContext;
 	}
 	
@@ -106,7 +103,7 @@ public abstract class Controller<T extends Model> {
 											final T object = mDAO.getFromJSON(jsonObject, result);
 											mLoader.save(object);
 											for (final OnRequestListener<T> listener : mRequisitions.get(id)) {
-												listener.getContext().runOnUiThread(new Runnable() {
+												listener.runOnUiThread(new Runnable() {
 													
 													@Override
 													public void run() {
@@ -157,7 +154,7 @@ public abstract class Controller<T extends Model> {
 						String id = json.getString("id");
 						object.setId(id);
 						mLoader.save(object);
-						callback.getContext().runOnUiThread(new Runnable() {
+						callback.runOnUiThread(new Runnable() {
 							
 							@Override
 							public void run() {
@@ -189,7 +186,7 @@ public abstract class Controller<T extends Model> {
                     boolean success = json.getBoolean("success");
                     if (success) {
                     	mLoader.remove(id);
-                    	callback.getContext().runOnUiThread(new Runnable() {
+                    	callback.runOnUiThread(new Runnable() {
 							
 							@Override
 							public void run() {
@@ -221,7 +218,7 @@ public abstract class Controller<T extends Model> {
 					JSONObject json = new JSONObject(jsonResult.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
-						callback.getContext().runOnUiThread(new Runnable() {
+						callback.runOnUiThread(new Runnable() {
 							
 							@Override
 							public void run() {
