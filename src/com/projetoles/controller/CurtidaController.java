@@ -44,7 +44,7 @@ public class CurtidaController extends Controller<Curtida> {
  
 								@Override
 								public void onSuccess(Notificacao result) {
-									poesia.getPostador().getNotificacoes().add(result.getId());
+									poesia.getPostador().getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
 								}
 
 								@Override

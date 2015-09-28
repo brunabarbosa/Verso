@@ -9,9 +9,12 @@ import org.json.JSONObject;
 
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.PoesiaDAO;
+import com.projetoles.model.Comentario;
+import com.projetoles.model.Curtida;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.Usuario;
 
 import android.content.Context;
@@ -29,7 +32,7 @@ public class PoesiaController extends Controller<Poesia> {
 	}
 
 	public void pesquisar(final String titulo, final String autor, final String tag,
-			final String trecho, final OnRequestListener<ArrayList<String>> callback) {
+			final String trecho, final OnRequestListener<ObjectListID<Poesia>> callback) {
 		((PoesiaDAO)mDAO).pesquisar(titulo, autor, tag, trecho, new OnRequestListener<String>(callback.getContext()) {
 			
 			@Override
@@ -38,13 +41,9 @@ public class PoesiaController extends Controller<Poesia> {
 					JSONObject json = new JSONObject(jsonResult.toString());
 					boolean success = json.getBoolean("success");
 					if (success) {
-						ArrayList<String> ids = new ArrayList<String>();
-						JSONArray array = json.getJSONArray("poetries");
-						for (int i = 0; i < array.length(); i++) {
-							ids.add(array.get(i).toString());
-						}
+						ObjectListID<Poesia> ids = new ObjectListID<Poesia>(json.getJSONArray("poetries"));
 						callback.onSuccess(ids);
-					} else {
+					} else { 
 						callback.onError(json.getString("message"));
 					}
 				} catch (JSONException e) {
@@ -64,7 +63,7 @@ public class PoesiaController extends Controller<Poesia> {
 			String poesia, Calendar dataCriacao, String tags,
 			final OnRequestListener<Poesia> callback) {
 		try { 
-			Poesia p = new Poesia(null, dataCriacao, titulo, postador, autor, poesia, tags, new ObjectListID(), new ObjectListID());
+			Poesia p = new Poesia(null, dataCriacao, titulo, postador, autor, poesia, tags, new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
 			super.post(p, new OnRequestListener<Poesia>(callback.getContext()) {
 				
 				@Override
@@ -76,7 +75,7 @@ public class PoesiaController extends Controller<Poesia> {
  
 								@Override
 								public void onSuccess(Notificacao result) {
-									postador.getNotificacoes().add(result.getId());
+									postador.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
 								}
 
 								@Override
@@ -101,6 +100,7 @@ public class PoesiaController extends Controller<Poesia> {
 		}
 	}
 
+	@Override
 	public void get(String id, OnRequestListener<Poesia> callback) {
 		Dependencies dependencies = new Dependencies();
 		dependencies.addDependency("poster", new UsuarioController(callback.getContext()));
@@ -117,15 +117,19 @@ public class PoesiaController extends Controller<Poesia> {
 					JSONObject json = new JSONObject(jsonResult);
 					boolean success = json.getBoolean("success");
 					if (success) {
-						ArrayList<String> likes = new ArrayList<String>();
+						ArrayList<PreloadedObject<Curtida>> likes = new ArrayList<PreloadedObject<Curtida>>();
 						JSONArray array = json.getJSONArray("likes");
 						for (int i = 0; i < array.length(); i++) {
-							likes.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							likes.add(new PreloadedObject<Curtida>(time, id));
 						}
-						ArrayList<String> comments = new ArrayList<String>();
+						ArrayList<PreloadedObject<Comentario>> comments = new ArrayList<PreloadedObject<Comentario>>();
 						array = json.getJSONArray("comments");
 						for (int i = 0; i < array.length(); i++) {
-							comments.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							comments.add(new PreloadedObject<Comentario>(time, id));
 						}
 						object.getCurtidas().setList(likes);
 						object.getComentarios().setList(comments);

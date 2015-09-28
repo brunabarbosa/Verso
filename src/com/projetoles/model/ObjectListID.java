@@ -10,9 +10,9 @@ import org.json.JSONException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ObjectListID implements Parcelable {
+public class ObjectListID<T extends TemporalModel> implements Parcelable {
 
-	private List<String> mList = new ArrayList<String>();
+	private List<PreloadedObject<T> > mList = new ArrayList<PreloadedObject<T> >();
 
 	public static final Parcelable.Creator<ObjectListID> CREATOR = 
 			new Parcelable.Creator<ObjectListID>() {
@@ -33,7 +33,7 @@ public class ObjectListID implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeStringList(mList);
+		dest.writeList(mList);
 	}
 	
 	public ObjectListID() {
@@ -41,19 +41,32 @@ public class ObjectListID implements Parcelable {
 	}
 	
 	public ObjectListID(Parcel in) {
-		in.readStringList(mList);
+		mList = in.readArrayList(PreloadedObject.class.getClassLoader());
 	}
 	
 	public ObjectListID(JSONArray array) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
-			this.mList.add(array.get(i).toString());
+			String id = array.getJSONObject(i).getString("id");
+			long date = Long.valueOf(array.getJSONObject(i).getString("date"));
+			this.mList.add(new PreloadedObject<T>(date, id));
 		}
 	}
 	
-	public void add(String id) {
-		if (!this.mList.contains(id)) {
-			this.mList.add(id);
+	public void add(String id, long date) {
+		PreloadedObject<T> obj = new PreloadedObject<T>(date, id);
+		if (!this.mList.contains(obj)) {
+			this.mList.add(obj);
 		}
+	}
+	
+	public void add(PreloadedObject<T> obj) {
+		if (!this.mList.contains(obj)) {
+			this.mList.add(obj);
+		}
+	}
+	
+	public PreloadedObject<T> get(int index) {
+		return mList.get(index);
 	}
 
 	public boolean remove(String id) {
@@ -72,9 +85,9 @@ public class ObjectListID implements Parcelable {
 		return this.mList.contains(id);
 	}
 		
-	public String getIntersecction(ObjectListID b) {
-		for (String i : this.mList) {
-			for (String j : b.mList) {
+	public PreloadedObject<T> getIntersecction(ObjectListID<T> b) {
+		for (PreloadedObject<T> i : this.mList) {
+			for (PreloadedObject<T> j : b.mList) {
 				if (i.equals(j))
 					return i;
 			}
@@ -82,12 +95,16 @@ public class ObjectListID implements Parcelable {
 		return null;
 	}
 	
-	public List<String> getList() {
+	public List<PreloadedObject<T> > getList() {
 		return Collections.unmodifiableList(this.mList);
 	}
 
-	public void setList(List<String> list) {
+	public void setList(List<PreloadedObject<T> > list) {
 		this.mList = list;
+	}
+	
+	public void sort() {
+		Collections.sort(this.mList);
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.projetoles.dao.DAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Model;
+import com.projetoles.model.Poesia;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,6 +68,8 @@ public abstract class Controller<T extends Model> {
     }
     
     public abstract void update(final T object, final OnRequestListener<T> callback);
+    
+    public abstract void get(String id, OnRequestListener<T> callback);
     
 	public void get(final String id, final OnRequestListener<T> callback, final Dependencies dependencies) {
 		if (mLoader.contains(id)) {

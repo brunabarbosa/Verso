@@ -43,7 +43,7 @@ public class SeguidaController extends Controller<Seguida> {
  
 								@Override
 								public void onSuccess(Notificacao result) {
-									seguindo.getNotificacoes().add(result.getId());
+									seguindo.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
 								}
 
 								@Override

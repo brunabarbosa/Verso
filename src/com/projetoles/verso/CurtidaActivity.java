@@ -15,6 +15,7 @@ import com.projetoles.controller.CurtidaController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 
 public class CurtidaActivity extends Activity {
 
@@ -25,8 +26,8 @@ public class CurtidaActivity extends Activity {
 	private ListCurtidaAdapter mAdapter;
 	
 	private void carregaCurtidas() {
-		for (String id : mPoesia.getCurtidas().getList()) {
-			mCurtidaController.get(id, new OnRequestListener<Curtida>(this) {
+		for (PreloadedObject<Curtida> id : mPoesia.getCurtidas().getList()) {
+			mCurtidaController.get(id.getId(), new OnRequestListener<Curtida>(this) {
 				 
 				@Override 
 				public void onSuccess(Curtida curtida) {

@@ -1,8 +1,8 @@
 package com.projetoles.verso;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
+import com.projetoles.model.ObjectListID;
+import com.projetoles.model.Poesia;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,22 +13,32 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.TextView;
 
-import com.projetoles.adapter.ExpandablePoesiaAdapter;
-import com.projetoles.controller.PoesiaController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poesia;
-
 public class ResultadoPesquisaActivity extends Activity {
 
-	private PoesiaController mPoemaController;
 	private ExpandablePoesiaAdapter mAdapter;
 	private ExpandableListView mExpListView;
 	private View mLoading;
 	private TextView tvNenhumResultado;
-	private List<Poesia> mListPoesias;
+	private ObjectListID<Poesia> mListPoesias;
 	private Bundle mBundle;
-	private int countCarregados;
 
+	private void fillPoesias() {
+
+		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			int previousGroup = -1;
+
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				if (groupPosition != previousGroup)
+					mExpListView.collapseGroup(previousGroup);
+				previousGroup = groupPosition;
+			}
+		});
+		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, mBundle, mLoading);
+
+		mExpListView.setAdapter(mAdapter);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,54 +51,20 @@ public class ResultadoPesquisaActivity extends Activity {
 		}
 		mBundle = b;
 
-		mPoemaController = new PoesiaController(this);
 		mExpListView = (ExpandableListView) findViewById(R.id.lvExpPesquisa);
-
-		mListPoesias = new ArrayList<Poesia>();
-		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mListPoesias, mBundle);
-
-		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
-			int previousGroup = -1;
-
-			@Override
-			public void onGroupExpand(int groupPosition) {
-				if (groupPosition != previousGroup)
-					mExpListView.collapseGroup(previousGroup);
-				previousGroup = groupPosition;
-			}
-		});
-
-		mExpListView.setAdapter(mAdapter);
-		mAdapter.notifyDataSetChanged();
-
 		mLoading = findViewById(R.id.load);
 		tvNenhumResultado = (TextView) findViewById(R.id.nenhum_resultado_encontrado);
 		
-		final List<String> resultados = b.getStringArrayList("resultados");
-		if (resultados.isEmpty()) {
-			mLoading.setVisibility(View.GONE);
+		mLoading.setVisibility(View.GONE);
+		
+		mListPoesias = (ObjectListID)b.getParcelable("resultados");
+		
+		fillPoesias();
+		
+		if (mListPoesias.isEmpty()) {
+			tvNenhumResultado.setVisibility(View.VISIBLE);
 		} else {
 			tvNenhumResultado.setVisibility(View.GONE);
-			for (String id : resultados) {
-				mPoemaController.get(id, new OnRequestListener<Poesia>(this) {
-
-					@Override
-					public void onSuccess(Poesia p) {
-						mListPoesias.add(p);
-						Collections.sort(mListPoesias);
-						mAdapter.notifyDataSetChanged();
-						countCarregados++;
-						if (countCarregados == resultados.size()) {
-							mLoading.setVisibility(View.GONE);
-						}
-					}
-
-					@Override
-					public void onError(String errorMessage) {
-						System.out.println(errorMessage);
-					}
-				});
-			}
 		}
 	}
 

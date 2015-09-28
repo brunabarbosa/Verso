@@ -17,11 +17,11 @@ public class Usuario extends Model {
 	private String mSenha;
 	private byte[] mFoto;
 	private String mBiografia;
-	private ObjectListID mPoesias;
-	private ObjectListID mNotificacoes;
-	private ObjectListID mCurtidas;
-	private ObjectListID mSeguindo;
-	private ObjectListID mSeguidores;
+	private ObjectListID<Poesia> mPoesias;
+	private ObjectListID<Notificacao> mNotificacoes;
+	private ObjectListID<Curtida> mCurtidas;
+	private ObjectListID<Seguida> mSeguindo;
+	private ObjectListID<Seguida> mSeguidores;
 	private boolean mNotificacoesHabilitadas;
 
 	public static final Parcelable.Creator<Usuario> CREATOR = 
@@ -65,8 +65,8 @@ public class Usuario extends Model {
 	}
 	
 	public Usuario(String email, String senha, String nome, String biografia, byte[] foto, 
-			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
-			ObjectListID seguindo, ObjectListID seguidores, boolean notificacoesHabilitadas) {
+			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
+			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
 		super(email);
 		setSenha(senha);
 		setNome(nome);
@@ -81,8 +81,8 @@ public class Usuario extends Model {
 	}
 
 	public Usuario(String email, String nome, String biografia, byte[] foto,
-			ObjectListID poesias, ObjectListID notificacoes, ObjectListID curtidas,
-			ObjectListID seguindo, ObjectListID seguidores, boolean notificacoesHabilitadas) {
+			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
+			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
 		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
 	}
 
@@ -155,43 +155,43 @@ public class Usuario extends Model {
 		return this.mBiografia;
 	}
 	
-	public void setPoesias(ObjectListID poesias) {
+	public void setPoesias(ObjectListID<Poesia> poesias) {
 		this.mPoesias = poesias;
 	}
 	 
-	public ObjectListID getPoesias() {
+	public ObjectListID<Poesia> getPoesias() {
 		return this.mPoesias;
 	}
 	
-	public void setNotificacoes(ObjectListID notificacoes) {
+	public void setNotificacoes(ObjectListID<Notificacao> notificacoes) {
 		this.mNotificacoes = notificacoes;
 	}
 	
-	public ObjectListID getNotificacoes() {
+	public ObjectListID<Notificacao> getNotificacoes() {
 		return this.mNotificacoes;
 	}
 	
-	public void setCurtidas(ObjectListID curtidas) {
+	public void setCurtidas(ObjectListID<Curtida> curtidas) {
 		this.mCurtidas = curtidas;
 	}
 	
-	public ObjectListID getCurtidas() {
+	public ObjectListID<Curtida> getCurtidas() {
 		return this.mCurtidas;
 	}
 	
-	public void setSeguindo(ObjectListID seguindo) {
+	public void setSeguindo(ObjectListID<Seguida> seguindo) {
 		this.mSeguindo = seguindo;
 	}
 	
-	public ObjectListID getSeguindo() {
+	public ObjectListID<Seguida> getSeguindo() {
 		return this.mSeguindo;
 	}
 	
-	public void setSeguidores(ObjectListID seguidores) {
+	public void setSeguidores(ObjectListID<Seguida> seguidores) {
 		this.mSeguidores = seguidores;
 	}
 	
-	public ObjectListID getSeguidores() {
+	public ObjectListID<Seguida> getSeguidores() {
 		return this.mSeguidores;
 	}
 	

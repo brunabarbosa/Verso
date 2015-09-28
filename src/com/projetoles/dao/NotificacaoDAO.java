@@ -62,7 +62,7 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 	@Override
 	public Notificacao getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
-		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("dataCriacao"));
+		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));
 		String mensagem = json.getString("mensagem");
 		String tipo = json.getString("tipo");
 		return new Notificacao(id, dataCriacao, (Usuario)params.get(0), (Usuario)params.get(1), 

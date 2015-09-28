@@ -1,7 +1,14 @@
 package com.projetoles.verso;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.projetoles.adapter.ExpandablePoesiaAdapter;
+import com.projetoles.controller.SeguidaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ObjectListID;
+import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
+import com.projetoles.model.Seguida;
+import com.projetoles.model.Usuario;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,20 +23,9 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.projetoles.adapter.ExpandablePoesiaAdapter;
-import com.projetoles.controller.PoesiaController;
-import com.projetoles.controller.SeguidaController;
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poesia;
-import com.projetoles.model.Seguida;
-import com.projetoles.model.Usuario;
 
 public class UserProfileActivity extends Activity {
 	
-	private PoesiaController mPoesiaController;
 	private SeguidaController mSeguidaController;
 	private UsuarioController mUsuarioController;
 	private Class mCallback;
@@ -39,11 +35,30 @@ public class UserProfileActivity extends Activity {
 	private RelativeLayout mProfilePhotoContent;
 	private CameraActivityBundle mCameraBundle;
 	private ExpandableListView mExpListView;
-	private ArrayList<Poesia> mListPoesias;
+	private ObjectListID<Poesia> mListPoesias;
 	private ExpandablePoesiaAdapter mAdapter;
+	private View mLoading;
 
+	private void fillPoesias() {
+		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			int previousGroup = -1;
+
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				if (groupPosition != previousGroup)
+					mExpListView.collapseGroup(previousGroup);
+				previousGroup = groupPosition;
+			}
+		});
+		
+		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, null, mLoading);
+
+		mExpListView.setAdapter(mAdapter);
+	}
+	
 	private void setUp() {
 		setContentView(R.layout.activity_user_profile);
+		getActionBar().setTitle("Perfil de " + mUsuario.getNome());
 		
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
 		usuarioName.setText(mUsuario.getNome());
@@ -95,7 +110,8 @@ public class UserProfileActivity extends Activity {
 		mUserPicturePreview = (ImageView) findViewById(R.id.otherUserPicture);
 		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
 		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
-		
+		mLoading = findViewById(R.id.loading);
+
 		mCameraBundle = new CameraActivityBundle(this, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
 		mCameraBundle.setFoto(mUsuario.getFoto());
 		
@@ -107,44 +123,20 @@ public class UserProfileActivity extends Activity {
 		mExpListView = (ExpandableListView) findViewById(R.id.lvPoesiasDoUserExp);
 
 		// preparing list data
-		mListPoesias = new ArrayList<Poesia>();
-		mAdapter = new ExpandablePoesiaAdapter(this, mListPoesias, null);
-
-		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
-			int previousGroup = -1;
-
-			@Override
-			public void onGroupExpand(int groupPosition) {
-				if (groupPosition != previousGroup)
-					mExpListView.collapseGroup(previousGroup);
-				previousGroup = groupPosition;
-			}
-		});
-
-		mExpListView.setAdapter(mAdapter);
-		for (String id : mUsuario.getPoesias().getList()) {
-			mPoesiaController.get(id, new OnRequestListener<Poesia>(this) {
-
-				@Override
-				public void onSuccess(Poesia p) {
-					mListPoesias.add(p);
-					Collections.sort(mListPoesias);
-					mAdapter.notifyDataSetChanged();
-				}
-
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-				}
-			});
+		mListPoesias = new ObjectListID<Poesia>();
+		
+		for (PreloadedObject<Poesia> id : mUsuario.getPoesias().getList()) {
+			mListPoesias.add(id);
 		}
+		
+		fillPoesias();
 		
 		final Button seguir = (Button) findViewById(R.id.seguir);
 		if (UsuarioController.usuarioLogado.equals(mUsuario)) {
 			seguir.setVisibility(View.GONE);
 		}
 
-		String seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
+		PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
 		if (seguidaId != null) {
 			seguir.setText("Seguindo");
 			seguir.setBackgroundResource(R.drawable.seguir_ativo);
@@ -154,9 +146,9 @@ public class UserProfileActivity extends Activity {
 		seguir.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
+				PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
 				if (seguidaId != null) {
-					mSeguidaController.delete(seguidaId, new OnRequestListener<String>(UserProfileActivity.this) {
+					mSeguidaController.delete(seguidaId.getId(), new OnRequestListener<String>(UserProfileActivity.this) {
 						@Override
 						public void onSuccess(String result) {
 							UsuarioController.usuarioLogado.getSeguindo().remove(result);
@@ -175,8 +167,8 @@ public class UserProfileActivity extends Activity {
 					mSeguidaController.post(UsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
 						@Override
 						public void onSuccess(Seguida result) {
-							UsuarioController.usuarioLogado.getSeguindo().add(result.getId());
-							mUsuario.getSeguidores().add(result.getId());
+							UsuarioController.usuarioLogado.getSeguindo().add(result.getId(), result.getDataCriacao().getTimeInMillis());
+							mUsuario.getSeguidores().add(result.getId(), result.getDataCriacao().getTimeInMillis());
 							//mUsuarioController.save(mUsuario);
 							seguir.setText("Seguindo");
 							seguir.setBackgroundResource(R.drawable.seguir_ativo);
@@ -204,7 +196,6 @@ public class UserProfileActivity extends Activity {
 						
 		mSeguidaController = new SeguidaController(this);
 		mUsuarioController = new UsuarioController(this);
-		mPoesiaController = new PoesiaController(this);
 		
 		mUsuarioController.update(mUsuario, new OnRequestListener<Usuario>(this) {
 

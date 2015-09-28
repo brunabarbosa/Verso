@@ -12,6 +12,7 @@ import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -51,7 +52,7 @@ public class ComentarioActivity extends Activity {
  
 					@Override
 					public void onSuccess(Comentario comentario) {
-						mPoesia.getComentarios().add(comentario.getId());
+						mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
 						mListComentarios.add(comentario);
 						Collections.sort(mListComentarios);
 						mListAdapter.notifyDataSetChanged();
@@ -73,8 +74,8 @@ public class ComentarioActivity extends Activity {
 		if (!mPoesia.getComentarios().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (String comentario : mPoesia.getComentarios().getList()) {
-			mComentarioController.get(comentario, new OnRequestListener<Comentario>(this) {
+		for (PreloadedObject<Comentario> comentario : mPoesia.getComentarios().getList()) {
+			mComentarioController.get(comentario.getId(), new OnRequestListener<Comentario>(this) {
 
 				@Override
 				public void onSuccess(Comentario comentario) {
