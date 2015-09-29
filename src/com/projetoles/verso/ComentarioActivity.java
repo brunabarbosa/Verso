@@ -40,32 +40,41 @@ public class ComentarioActivity extends Activity {
 	private Bundle mBundle;
 	private RelativeLayout mLoading;
 	private int mCountCarregados;
+	private boolean mPosting;
 	
 	private void criarComentario() {
 		btnCriaComentario.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				final String comentario = etComentario.getText().toString();
-				mLoading.setVisibility(View.VISIBLE);
-				mComentarioController.post(UsuarioController.usuarioLogado, mPoesia, comentario, new OnRequestListener<Comentario>(ComentarioActivity.this) {
- 
-					@Override
-					public void onSuccess(Comentario comentario) {
-						mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
-						mListComentarios.add(comentario);
-						Collections.sort(mListComentarios);
-						mListAdapter.notifyDataSetChanged();
-						mLoading.setVisibility(View.GONE);
-						etComentario.setText("");
-					}
+				if (!mPosting) {
+					mPosting = true;
+					final String comentario = etComentario.getText().toString();
+					mLoading.setVisibility(View.VISIBLE);
+					mComentarioController.post(UsuarioController.usuarioLogado, mPoesia, comentario, new OnRequestListener<Comentario>(ComentarioActivity.this) {
+	 
+						@Override
+						public void onSuccess(Comentario comentario) {
+							if (!mListComentarios.contains(comentario)) {
+								mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
+								mListComentarios.add(comentario);
+								Collections.sort(mListComentarios);
+								mListAdapter.notifyDataSetChanged();
+								mLoading.setVisibility(View.GONE);
+								etComentario.setText("");
+							}
+							mPosting = false;
+						}
 
-					@Override
-					public void onError(String errorMessage) {
-						System.out.println(errorMessage);
-						ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
-					}
-				});
+						@Override
+						public void onError(String errorMessage) {
+							mPosting = false;
+							System.out.println(errorMessage);
+							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+						}
+					});
+				}
+				
 			}
 		});
 	}

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.projetoles.dao.DAO;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Model;
-import com.projetoles.model.Poesia;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -115,7 +114,7 @@ public abstract class Controller<T extends Model> {
 												});
 											}
 											mRequisitions.remove(id);
-										} catch (JSONException e) {
+										} catch (Exception e) {
 											e.printStackTrace();
 											callback.onError(e.getMessage());
 										}

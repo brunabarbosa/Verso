@@ -30,6 +30,7 @@ public class UserProfileActivity extends Activity {
 	private UsuarioController mUsuarioController;
 	private Class mCallback;
 	private Usuario mUsuario; 
+	private Bundle mBundle;
 	private ImageView mUserPicturePreview;
 	private ImageView mUserPicture;
 	private RelativeLayout mProfilePhotoContent;
@@ -51,7 +52,7 @@ public class UserProfileActivity extends Activity {
 			}
 		});
 		
-		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, null, mLoading);
+		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading);
 
 		mExpListView.setAdapter(mAdapter);
 	}
@@ -192,7 +193,12 @@ public class UserProfileActivity extends Activity {
 		
 		Bundle b = getIntent().getExtras();
 		mUsuario = (Usuario) b.getParcelable("usuario");
+		if (mUsuario == null) {
+			b = b.getBundle("bundle");
+			mUsuario = (Usuario) b.getParcelable("usuario");
+		}
 		mCallback = (Class) b.get("callback");
+		mBundle = b;
 						
 		mSeguidaController = new SeguidaController(this);
 		mUsuarioController = new UsuarioController(this);

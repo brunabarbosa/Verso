@@ -55,7 +55,7 @@ public class ObjectListID<T extends TemporalModel> implements Parcelable {
 	public void add(String id, long date) {
 		PreloadedObject<T> obj = new PreloadedObject<T>(date, id);
 		if (!this.mList.contains(obj)) {
-			this.mList.add(obj);
+			this.mList.add(0, obj);
 		}
 	}
 	
