@@ -20,7 +20,7 @@ import com.projetoles.verso.R;
 import com.projetoles.verso.ResultadoPesquisaActivity;
 import com.projetoles.verso.SharingActivity;
 import com.projetoles.verso.UserProfileActivity;
-
+ 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -415,9 +415,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				if (v.isClickable()) {
 					final Poesia clicada = (Poesia) v.getTag();
 					v.setClickable(false);
-					String curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas()).getId();
+					PreloadedObject<Curtida> curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
 					if (curtidaId != null) {
-						mCurtidaController.delete(curtidaId,
+						mCurtidaController.delete(curtidaId.getId(),
 							new OnRequestListener<String>(mContext) {
 								@Override
 								public void onSuccess(String id) {

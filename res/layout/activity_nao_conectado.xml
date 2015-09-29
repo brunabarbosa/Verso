@@ -16,7 +16,6 @@
         android:layout_centerInParent="true"
         android:textSize="20sp"
         android:textStyle="italic|bold"
-        android:textAlignment="center"
         android:text="Você não está conectado" />
     
     <ImageView
