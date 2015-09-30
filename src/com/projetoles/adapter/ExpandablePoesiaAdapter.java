@@ -329,6 +329,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							System.out.println("OI!");
 							mPoesiaController.delete(poesia.getId(), new OnRequestListener<String>(mContext) {
 
 								@Override

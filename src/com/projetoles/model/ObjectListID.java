@@ -55,7 +55,7 @@ public class ObjectListID<T extends TemporalModel> implements Parcelable {
 	public void add(String id, long date) {
 		PreloadedObject<T> obj = new PreloadedObject<T>(date, id);
 		if (!this.mList.contains(obj)) {
-			this.mList.add(0, obj);
+			this.mList.add(obj);
 		}
 	}
 	
@@ -70,7 +70,14 @@ public class ObjectListID<T extends TemporalModel> implements Parcelable {
 	}
 
 	public boolean remove(String id) {
-		return this.mList.remove(id);
+		PreloadedObject<T> obj = null;
+		for (PreloadedObject<T> t : mList) {
+			if (t.getId().equals(id)) {
+				obj = t;
+			}
+		}
+		if (obj == null) return false;
+		return this.mList.remove(obj);
 	}
 
 	public boolean isEmpty() {
