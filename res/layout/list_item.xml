@@ -33,23 +33,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="bottom|center|top" >
-
-        <Button
-            android:id="@+id/btnCompartilharFacebook"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="20dp"
-            android:background="@drawable/compartilhar_facebook" />
+        android:gravity="center|top">
 
         <Button
             android:id="@+id/btnCompartilharApp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_margin="20dp"
             android:background="@drawable/share_app" />
 
+        <Button
+            android:id="@+id/btnCompartilharFacebook"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/share_facebook" />
+
+        <Button
+            android:id="@+id/btnCompartilharInstragam"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/share_instagram" />
     </LinearLayout>
 
 </LinearLayout>
