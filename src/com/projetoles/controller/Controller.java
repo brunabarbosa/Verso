@@ -28,8 +28,10 @@ public abstract class Controller<T extends Model> {
 
 	public Controller(Context context) {
 		this.mContext = context;
-		this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
-		this.mEditor = mSession.edit();
+		try {
+			this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
+			this.mEditor = mSession.edit();
+		} catch (Exception e) { }
 		this.mRequisitions = new HashMap<String, List<OnRequestListener<T>>>();
 	}
 

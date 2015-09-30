@@ -113,7 +113,7 @@ public class UserProfileActivity extends Activity {
 		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
 		mLoading = findViewById(R.id.loading);
 
-		mCameraBundle = new CameraActivityBundle(this, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
+		mCameraBundle = new CameraActivityBundle(this, mUsuario, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
 		mCameraBundle.setFoto(mUsuario.getFoto());
 		
 		TextView semPoesia = (TextView) findViewById(R.id.sem_poesia);

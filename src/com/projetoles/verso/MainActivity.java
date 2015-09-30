@@ -150,7 +150,7 @@ public class MainActivity extends TabActivity {
 		ImageView fotoFull = (ImageView) findViewById(R.id.profilePhoto);
 		ImageView fotoPreview = (ImageView) findViewById(R.id.userPicture);
 		
-		mCameraBundle = new CameraActivityBundle(this, fotoPreview, fotoFull, profilePhotoContent);
+		mCameraBundle = new CameraActivityBundle(this, UsuarioController.usuarioLogado, fotoPreview, fotoFull, profilePhotoContent);
 		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
 		mCameraBundle.editarFoto(btnEditPhoto);
 		
