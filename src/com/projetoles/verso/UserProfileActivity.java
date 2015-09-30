@@ -39,6 +39,7 @@ public class UserProfileActivity extends Activity {
 	private ObjectListID<Poesia> mListPoesias;
 	private ExpandablePoesiaAdapter mAdapter;
 	private View mLoading;
+	private ImageView mGoBack;
 
 	private void fillPoesias() {
 		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
@@ -60,7 +61,8 @@ public class UserProfileActivity extends Activity {
 	private void setUp() {
 		setContentView(R.layout.activity_user_profile);
 		getActionBar().setTitle("Perfil de " + mUsuario.getNome());
-		
+		getActionBar().hide(); 
+
 		TextView usuarioName = (TextView) findViewById(R.id.otherUserName);
 		usuarioName.setText(mUsuario.getNome());
 
@@ -107,6 +109,15 @@ public class UserProfileActivity extends Activity {
 			}
 		});
 
+		mGoBack = (ImageView) findViewById(R.id.otherUseGoBack);
+		mGoBack.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onBackPressed(); 
+			}
+		});
+		
 		// set userPicture, precisa consertar nessa classe
 		mUserPicturePreview = (ImageView) findViewById(R.id.otherUserPicture);
 		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
@@ -190,6 +201,7 @@ public class UserProfileActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	    getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().hide(); 
 		
 		Bundle b = getIntent().getExtras();
 		mUsuario = (Usuario) b.getParcelable("usuario");
