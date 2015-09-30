@@ -59,7 +59,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private ExpandableListView mExpListView;
 
 	private int mPreviousTotalItemCount = 0;
-	private boolean mLoadingPoesias = true;
+	private boolean mLoadingPoesias = false;
 	private int mAlreadyLoaded;
 	private int mExpectedLoaded;
 	
@@ -132,6 +132,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				}
 				if (mExpectedLoaded > 0) {
 					mLoading.setVisibility(View.VISIBLE);
+					mLoadingPoesias = true;
+				} else {
+					mLoading.setVisibility(View.GONE);
 					mLoadingPoesias = false;
 				}
 			}
