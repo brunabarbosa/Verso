@@ -17,14 +17,24 @@
 		    android:layout_alignParentTop="true"
 		    android:background="@drawable/barra_user"
 		    android:padding="5dp"
-		    android:columnCount="3" >
+		    android:columnCount="4" >
+		
+		    <ImageView
+		        android:id="@+id/otherUseGoBack"
+		        android:layout_width="25dp"
+		        android:layout_height="25dp"
+		        android:layout_column="0"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="left|center_vertical"
+		        android:layout_row="0"
+		        android:clickable="true"
+		        android:src="@drawable/ic_keyboard_arrow_left_black_24dp" />
 		
 		    <ImageView
 		        android:id="@+id/otherUserPicture"
 		        android:layout_width="50dp"
 		        android:layout_height="50dp"
-		        android:layout_column="0"
-		        android:layout_marginRight="10dp"
+		        android:layout_column="1"
 		        android:layout_gravity="left|top"
 		        android:layout_row="0"
 		        android:clickable="true"
@@ -32,7 +42,7 @@
 		
 		    <TextView
 		        android:id="@+id/otherUserName"
-		        android:layout_column="1"
+		        android:layout_column="2"
 		        android:layout_row="0"
 		        android:layout_gravity="left|center_vertical"
 		        android:text="UserName"
@@ -44,7 +54,7 @@
 		        android:id="@+id/btnCriarPoema"
 		        android:layout_width="30dp"
 		        android:layout_height="30dp"
-		        android:layout_column="2"
+		        android:layout_column="3"
 		        android:layout_marginRight="10dp"
 		        android:layout_gravity="right|center_vertical"
 		        android:layout_row="0"
@@ -57,7 +67,7 @@
 		        android:id="@+id/btnPesquisar"
 		        android:layout_width="30dp"
 		        android:layout_height="30dp"
-		        android:layout_column="2"
+		        android:layout_column="3"
 		        android:layout_marginRight="10dp"
 		        android:layout_gravity="right|center_vertical"
 		        android:layout_row="0"
@@ -68,7 +78,7 @@
 		        android:id="@+id/seguir"
 		        android:layout_width="107dp"
 		        android:layout_height="match_parent"
-		        android:layout_column="2"
+		        android:layout_column="3"
 		        android:layout_gravity="right"
 		        android:layout_row="0"
 		        android:background="@drawable/seguir_ativo"
@@ -182,4 +192,17 @@
       android:visibility="gone"
       android:text="Este usuário não possui poesias criadas." />
       
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" >
+  	
+      <ProgressBar
+          android:id="@+id/loading"
+          style="?android:attr/progressBarStyleLarge"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true" />
+          
+  </RelativeLayout>
+  
 </FrameLayout>

@@ -1,28 +1,26 @@
 package com.projetoles.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Comentario;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.Usuario;
 import com.projetoles.verso.ActivityUtils;
 import com.projetoles.verso.ClickableString;
 import com.projetoles.verso.ComentarioActivity;
 import com.projetoles.verso.CurtidaActivity;
 import com.projetoles.verso.MainActivity;
-import com.projetoles.verso.PesquisarActivity;
 import com.projetoles.verso.R;
 import com.projetoles.verso.ResultadoPesquisaActivity;
 import com.projetoles.verso.SharingActivity;
 import com.projetoles.verso.UserProfileActivity;
-
+ 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,27 +28,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
-import android.text.method.MovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
+	private static final int NUMBERS_TO_LOAD = 10;
+	private static final int VISIBLE_THRESHOLD = 3;
+	
 	private Activity mContext;
-	private List<Poesia> mListPoesias;
+	private ObjectListID<Poesia> mListPoesias;
 	private CurtidaController mCurtidaController;
 	private PoesiaController mPoesiaController;
 	private Bundle mBundle;
@@ -58,20 +56,94 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private View mLoading;
 	private Button btnCompartilharFacebook;
 	private Button btnCompartilharApp;
+	private ExpandableListView mExpListView;
 
-	public ExpandablePoesiaAdapter(Activity context, List<Poesia> listPoesias,
-			Bundle bundle) {
+	private int mPreviousTotalItemCount = 0;
+	private boolean mLoadingPoesias = false;
+	private int mAlreadyLoaded;
+	private int mExpectedLoaded;
+	
+	public ExpandablePoesiaAdapter(Activity context, ExpandableListView expListView, 
+			ObjectListID<Poesia> listPoesias, Bundle bundle, View loading) {
 		this.mContext = context;
+		this.mExpListView = expListView;
 		this.mListPoesias = listPoesias;
 		this.mCurtidaController = new CurtidaController(context);
 		this.mPoesiaController = new PoesiaController(context);
 		this.mBundle = bundle;
 		this.mUsuario = UsuarioController.usuarioLogado;
+		this.mLoading = loading;
+		this.mListPoesias.sort();
+		loadNextPage(NUMBERS_TO_LOAD);
+		mExpListView.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (totalItemCount < mPreviousTotalItemCount) {
+					mPreviousTotalItemCount = totalItemCount;
+					if (totalItemCount == 0) mLoadingPoesias = true;
+				}
+				if (!mLoadingPoesias) {
+					mLoading.setVisibility(View.GONE);
+				}
+				if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
+				}
+			}
+		});
+	}
+
+	private void loadNextPage(int itemsToLoad) {
+		if (mPreviousTotalItemCount >= mListPoesias.size()) {
+			mLoadingPoesias = false;
+		} else {
+			mAlreadyLoaded = 0;
+			mExpectedLoaded = 0;
+			mLoadingPoesias = true;
+			for (int i = 0; i < Math.min(mListPoesias.size(), itemsToLoad); i++) {
+				if (!mListPoesias.get(i).isLoaded()) {
+					mExpectedLoaded++;
+					mListPoesias.get(i).load(mPoesiaController, new OnRequestListener<Poesia>(mContext) {
+
+						@Override
+						public void onSuccess(Poesia result) {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingPoesias = false;
+							}
+							notifyDataSetChanged();
+						}
+
+						@Override
+						public void onError(String errorMessage) {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingPoesias = false;
+							}
+						}
+					});
+				}
+				if (mExpectedLoaded > 0) {
+					mLoading.setVisibility(View.VISIBLE);
+					mLoadingPoesias = true;
+				} else {
+					mLoading.setVisibility(View.GONE);
+					mLoadingPoesias = false;
+				}
+			}
+		}
 	}
 
 	@Override
 	public Object getChild(int groupPosition, int childPosititon) {
-		return this.mListPoesias.get(groupPosition).getPoesia();
+		return this.mListPoesias.get(groupPosition).getLoadedObj().getPoesia();
 	}
 
 	@Override
@@ -99,6 +171,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		if (poesia.getTags().trim().isEmpty()) {
 			tags.setVisibility(View.GONE);
 		} else {
+			tags.setVisibility(View.VISIBLE);
 			tags.setText("");
 			String[] poesiasTags = poesia.getTags().replaceAll("  ", " ").split(" ");
 			for (int i = 0; i < poesiasTags.length; i++) {
@@ -108,13 +181,13 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 					private String tag = poesiaTag;
 					@Override
 					public void onClick(View arg0) {
-						controller.pesquisar("", "", tag, "", new OnRequestListener<ArrayList<String>>(context) {
+						controller.pesquisar("", "", tag, "", new OnRequestListener<ObjectListID<Poesia>>(context) {
 							
 							@Override
-							public void onSuccess(ArrayList<String> resultados) {
+							public void onSuccess(ObjectListID<Poesia> resultados) {
 								((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 								Intent i = new Intent(context, ResultadoPesquisaActivity.class);
-								i.putStringArrayListExtra("resultados", resultados);
+								i.putExtra("resultados", resultados);
 								context.startActivity(i);
 							}
 							
@@ -146,12 +219,11 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
 
-		final Poesia poesia = mListPoesias.get(groupPosition);
+		final Poesia poesia = mListPoesias.get(groupPosition).getLoadedObj();
 
 		TextView tags = (TextView) convertView.findViewById(R.id.tags);
 		TextView date = (TextView) convertView.findViewById(R.id.date);
-		mLoading = MainActivity.sInstance.findViewById(R.id.mainLoading);
-
+		
 		setPoesiaTags(tags, poesia, mPoesiaController, mContext);
 
 		setPoesiaData(date, poesia, mContext);
@@ -200,7 +272,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 						@Override
 						public void onSuccess(Poesia poesia) {
 							if (!mUsuario.getPoesias().contains(poesia.getId())) {
-								mUsuario.getPoesias().add(poesia.getId());
+								mUsuario.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
 							} else {
 								ActivityUtils.showMessageDialog(mContext,
 										"Um erro ocorreu", "t", mLoading);
@@ -227,12 +299,17 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		return this.mListPoesias.get(groupPosition).getTitulo();
+		return this.mListPoesias.get(groupPosition).getLoadedObj().getTitulo();
 	}
 
 	@Override
 	public int getGroupCount() {
-		return this.mListPoesias.size();
+		int count = 0;
+		for (PreloadedObject<Poesia> p : mListPoesias.getList()) {
+			if (!p.isLoaded()) break;
+			count++;
+		}
+		return count;
 	}
 
 	@Override
@@ -252,11 +329,12 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							System.out.println("OI!");
 							mPoesiaController.delete(poesia.getId(), new OnRequestListener<String>(mContext) {
 
 								@Override
 								public void onSuccess(String result) {
-									mListPoesias.remove(poesia);
+									mListPoesias.remove(poesia.getId());
 									notifyDataSetChanged();
 								}
 
@@ -299,7 +377,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								novaPoesia = new Poesia(poesia.getId(), poesia.getDataCriacao(), 
 										alertTitulo.getText().toString(), poesia.getPostador(), 
 										alertAutor.getText().toString(), alertPoesia.getText().toString(), 
-										alertTags.getText().toString(), new ObjectListID(), new ObjectListID());
+										alertTags.getText().toString(), new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
 								mPoesiaController.put(novaPoesia, new OnRequestListener<Poesia>(mContext) {
 
 									@Override
@@ -341,9 +419,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				if (v.isClickable()) {
 					final Poesia clicada = (Poesia) v.getTag();
 					v.setClickable(false);
-					String curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
+					PreloadedObject<Curtida> curtidaId = mUsuario.getCurtidas().getIntersecction(clicada.getCurtidas());
 					if (curtidaId != null) {
-						mCurtidaController.delete(curtidaId,
+						mCurtidaController.delete(curtidaId.getId(),
 							new OnRequestListener<String>(mContext) {
 								@Override
 								public void onSuccess(String id) {
@@ -365,8 +443,8 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 							new OnRequestListener<Curtida>(mContext) {
 								@Override
 								public void onSuccess(Curtida curtida) {
-									mUsuario.getCurtidas().add(curtida.getId());
-									clicada.getCurtidas().add(curtida.getId());
+									mUsuario.getCurtidas().add(curtida.getId(), curtida.getDataCriacao().getTimeInMillis());
+									clicada.getCurtidas().add(curtida.getId(), curtida.getDataCriacao().getTimeInMillis());
 									((ImageView) v).setImageResource(R.drawable.like_icon_ativo);
 									numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
 									v.setClickable(true);
@@ -387,6 +465,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
+		
 		String headerTitle = (String) getGroup(groupPosition);
 		if (convertView == null) {
 			LayoutInflater infalInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -395,7 +474,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
 
-		final Poesia poesia = mListPoesias.get(groupPosition);
+		final Poesia poesia = mListPoesias.get(groupPosition).getLoadedObj();
 
 		final TextView autor = (TextView) convertView.findViewById(R.id.author);
 		autor.setText(poesia.getAutor());

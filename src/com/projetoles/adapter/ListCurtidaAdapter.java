@@ -2,6 +2,12 @@ package com.projetoles.adapter;
 
 import java.util.List;
 
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.ImageUtils;
+import com.projetoles.verso.R;
+import com.projetoles.verso.UserProfileActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,15 +19,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Curtida;
-import com.projetoles.model.ImageUtils;
-import com.projetoles.verso.R;
-import com.projetoles.verso.UserProfileActivity;
-import com.projetoles.verso.R.drawable;
-import com.projetoles.verso.R.id;
-import com.projetoles.verso.R.layout;
  
 public class ListCurtidaAdapter extends BaseAdapter  {
  

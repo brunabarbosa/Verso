@@ -2,6 +2,18 @@ package com.projetoles.adapter;
 
 import java.util.List;
 
+import com.projetoles.controller.NotificacaoController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.ImageUtils;
+import com.projetoles.model.Notificacao;
+import com.projetoles.model.Poesia;
+import com.projetoles.verso.ComentarioActivity;
+import com.projetoles.verso.MainActivity;
+import com.projetoles.verso.R;
+import com.projetoles.verso.UserProfileActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,19 +26,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.projetoles.controller.NotificacaoController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.ImageUtils;
-import com.projetoles.model.Notificacao;
-import com.projetoles.model.Poesia;
-import com.projetoles.verso.ComentarioActivity;
-import com.projetoles.verso.R;
-import com.projetoles.verso.UserProfileActivity;
-import com.projetoles.verso.R.drawable;
-import com.projetoles.verso.R.id;
-import com.projetoles.verso.R.layout;
 
 public class ListNotificacoesAdapter extends BaseAdapter {
 
@@ -110,13 +109,14 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 						Intent intent = new Intent(mContext, UserProfileActivity.class);
 						intent.putExtra("usuario", n.getTitulo());
 						mContext.startActivity(intent);
-					}else{
+					} else {
 						Intent intent = new Intent(mContext, ComentarioActivity.class);
 						intent.putExtra("poesia", (Poesia) n.getPoesia());
-						intent.putExtra("callback", mContext.getClass());
+						intent.putExtra("usuario", UsuarioController.usuarioLogado);
+						intent.putExtra("callback", MainActivity.class);
 						mContext.startActivity(intent);
-					}
-					
+						mContext.finish();
+					}	
 				}
 			};
 			nome.setOnClickListener(clicaUsuario);

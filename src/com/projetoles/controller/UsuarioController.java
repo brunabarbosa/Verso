@@ -10,7 +10,12 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.UsuarioDAO;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
+import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
+import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
 import android.content.Context;
@@ -60,7 +65,7 @@ public class UsuarioController extends Controller<Usuario> {
 	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
 			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, 
-					new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), false);
+					new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
 			this.login(usuario, regId, callback);
 		} catch (Exception e) {
 			e.printStackTrace(); 
@@ -133,7 +138,7 @@ public class UsuarioController extends Controller<Usuario> {
 				callback.onError("Senhas não coincidem.");
 			} else {
 				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, 
-						new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), new ObjectListID(), false);
+						new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -198,25 +203,33 @@ public class UsuarioController extends Controller<Usuario> {
 					JSONObject json = new JSONObject(jsonResult);
 					boolean success = json.getBoolean("success");
 					if (success) {
-						ArrayList<String> likes = new ArrayList<String>();
+						ArrayList<PreloadedObject<Curtida>> likes = new ArrayList<PreloadedObject<Curtida>>();
 						JSONArray array = json.getJSONArray("likes");
 						for (int i = 0; i < array.length(); i++) {
-							likes.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							likes.add(new PreloadedObject<Curtida>(time, id));
 						}
-						ArrayList<String> poesias = new ArrayList<String>();
+						ArrayList<PreloadedObject<Poesia>> poesias = new ArrayList<PreloadedObject<Poesia>>();
 						array = json.getJSONArray("poetries");
 						for (int i = 0; i < array.length(); i++) {
-							poesias.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							poesias.add(new PreloadedObject<Poesia>(time, id));
 						}
-						ArrayList<String> seguindo = new ArrayList<String>();
+						ArrayList<PreloadedObject<Seguida>> seguindo = new ArrayList<PreloadedObject<Seguida>>();
 						array = json.getJSONArray("followeds");
 						for (int i = 0; i < array.length(); i++) {
-							seguindo.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							seguindo.add(new PreloadedObject<Seguida>(time, id));
 						}
-						ArrayList<String> seguidores = new ArrayList<String>();
+						ArrayList<PreloadedObject<Seguida>> seguidores = new ArrayList<PreloadedObject<Seguida>>();
 						array = json.getJSONArray("followers");
 						for (int i = 0; i < array.length(); i++) {
-							seguidores.add(array.get(i).toString());
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							seguidores.add(new PreloadedObject<Seguida>(time, id));
 						}
 						object.getCurtidas().setList(likes);
 						object.getPoesias().setList(poesias);
@@ -256,6 +269,11 @@ public class UsuarioController extends Controller<Usuario> {
 				callback.onError(errorMessage);
 			}
 		});
+	}
+
+	@Override
+	public void get(String id, OnRequestListener<Usuario> callback) {
+		throw new UnsupportedOperationException();
 	}
 	
 }

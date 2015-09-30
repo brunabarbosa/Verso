@@ -52,7 +52,7 @@ public class BiografiaActivity extends Activity {
  		ImageView fotoPreview = (ImageView) findViewById(R.id.biografiaFoto);
  		View loading = (View) findViewById(R.id.biografiaPhotoContent);
  		
- 		CameraActivityBundle cameraBundle = new CameraActivityBundle(this, fotoPreview, fotoFull, loading);
+ 		CameraActivityBundle cameraBundle = new CameraActivityBundle(this, mUsuario, fotoPreview, fotoFull, loading);
  		cameraBundle.setFoto(mUsuario.getFoto());
  		
 		btnEditarPerfil = (Button) findViewById(R.id.btnEditarPerfil);

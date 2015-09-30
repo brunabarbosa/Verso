@@ -2,6 +2,15 @@ package com.projetoles.adapter;
 
 import java.util.List;
 
+import com.projetoles.controller.ComentarioController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Comentario;
+import com.projetoles.model.ImageUtils;
+import com.projetoles.verso.R;
+import com.projetoles.verso.UserProfileActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +23,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.projetoles.controller.ComentarioController;
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Comentario;
-import com.projetoles.model.ImageUtils;
-import com.projetoles.verso.R;
-import com.projetoles.verso.UserProfileActivity;
-import com.projetoles.verso.R.drawable;
-import com.projetoles.verso.R.id;
-import com.projetoles.verso.R.layout;
  
 public class ListComentarioAdapter extends BaseAdapter  {
  

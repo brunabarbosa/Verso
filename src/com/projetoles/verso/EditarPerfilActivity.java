@@ -29,7 +29,7 @@ public class EditarPerfilActivity extends Activity {
 	private View mLoading;
 	private CameraActivityBundle mCameraBundle;
 
-	private void salvarPerfil() {
+	private void salvarPerfil(Usuario usuario) {
 		btnSalvarPerfil.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -57,9 +57,9 @@ public class EditarPerfilActivity extends Activity {
 		});
 	}
 	
-	private void preencheCampos() {
-		etNome.setText(UsuarioController.usuarioLogado.getNome());
-		etBiografia.setText(UsuarioController.usuarioLogado.getBiografia());
+	private void preencheCampos(Usuario usuario) {
+		etNome.setText(usuario.getNome());
+		etBiografia.setText(usuario.getBiografia());
 	}
 	
 	@Override
@@ -74,10 +74,10 @@ public class EditarPerfilActivity extends Activity {
 		
 		mController = new UsuarioController(this);
 		
-		ImageView foto = (ImageView) findViewById(R.id.showPhoto);
-		ImageView fotoFull = (ImageView) findViewById(R.id.editarFotoFull);
-		View mProfilePhotoContent = findViewById(R.id.editarFotoContent);
-		Button btnEditarFoto = (Button) findViewById(R.id.btnEditPhoto);
+		final ImageView foto = (ImageView) findViewById(R.id.showPhoto);
+		final ImageView fotoFull = (ImageView) findViewById(R.id.editarFotoFull);
+		final View mProfilePhotoContent = findViewById(R.id.editarFotoContent);
+		final Button btnEditarFoto = (Button) findViewById(R.id.btnEditPhoto);
 		mLoading = findViewById(R.id.editarPerfilLoading);
 		mLoading.setVisibility(View.GONE);
 		
@@ -92,13 +92,23 @@ public class EditarPerfilActivity extends Activity {
 			etEditarSenha.setVisibility(View.GONE);
 		}
 		
-		mCameraBundle = new CameraActivityBundle(this, foto, fotoFull, mProfilePhotoContent);
-		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
-		mCameraBundle.editarFoto(btnEditarFoto);
-		
-		preencheCampos();
-		
-		salvarPerfil();
+		mController.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
+
+			@Override
+			public void onSuccess(Usuario result) {
+				mCameraBundle = new CameraActivityBundle(EditarPerfilActivity.this, result, foto, fotoFull, mProfilePhotoContent);
+				mCameraBundle.setFoto(result.getFoto());
+				mCameraBundle.editarFoto(btnEditarFoto);
+				preencheCampos(result);
+				salvarPerfil(result);
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				System.out.println(errorMessage);
+			}
+		}, "");
+	
 	}
 	
 	@Override
@@ -131,9 +141,29 @@ public class EditarPerfilActivity extends Activity {
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent imageReturnedIntent) { 
 	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-	    mCameraBundle. onActivityResult(requestCode, resultCode, imageReturnedIntent, mLoading);
+	    new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while (mCameraBundle == null) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						mCameraBundle.onActivityResult(requestCode, resultCode, imageReturnedIntent, mLoading);
+					}
+				});
+			}
+		}).start();
 	}
 	
 }

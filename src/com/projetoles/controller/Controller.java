@@ -28,8 +28,10 @@ public abstract class Controller<T extends Model> {
 
 	public Controller(Context context) {
 		this.mContext = context;
-		this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
-		this.mEditor = mSession.edit();
+		try {
+			this.mSession = context.getSharedPreferences("com.example.verso", Context.MODE_PRIVATE); 
+			this.mEditor = mSession.edit();
+		} catch (Exception e) { }
 		this.mRequisitions = new HashMap<String, List<OnRequestListener<T>>>();
 	}
 
@@ -67,6 +69,8 @@ public abstract class Controller<T extends Model> {
     }
     
     public abstract void update(final T object, final OnRequestListener<T> callback);
+    
+    public abstract void get(String id, OnRequestListener<T> callback);
     
 	public void get(final String id, final OnRequestListener<T> callback, final Dependencies dependencies) {
 		if (mLoader.contains(id)) {
@@ -112,7 +116,7 @@ public abstract class Controller<T extends Model> {
 												});
 											}
 											mRequisitions.remove(id);
-										} catch (JSONException e) {
+										} catch (Exception e) {
 											e.printStackTrace();
 											callback.onError(e.getMessage());
 										}

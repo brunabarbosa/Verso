@@ -1,6 +1,9 @@
 package com.projetoles.verso;
 
-import java.util.ArrayList;
+import com.projetoles.controller.PoesiaController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ObjectListID;
+import com.projetoles.model.Poesia;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,9 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.projetoles.controller.PoesiaController;
-import com.projetoles.dao.OnRequestListener;
 
 public class PesquisarActivity extends Activity {
 
@@ -42,13 +42,13 @@ public class PesquisarActivity extends Activity {
 					ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", "É preciso informar pelo menos um campo.", null);
 					((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 				} else {
-					mController.pesquisar(titulo, autor, tag, trecho, new OnRequestListener<ArrayList<String>>(PesquisarActivity.this) {
+					mController.pesquisar(titulo, autor, tag, trecho, new OnRequestListener<ObjectListID<Poesia>>(PesquisarActivity.this) {
 						
 						@Override
-						public void onSuccess(ArrayList<String> resultados) {
+						public void onSuccess(ObjectListID<Poesia> resultados) {
 							((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 							Intent i = new Intent(PesquisarActivity.this, ResultadoPesquisaActivity.class);
-							i.putStringArrayListExtra("resultados", resultados);
+							i.putExtra("resultados", resultados);
 							startActivity(i);
 						}
 						

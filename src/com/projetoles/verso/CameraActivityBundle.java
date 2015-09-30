@@ -33,12 +33,14 @@ public class CameraActivityBundle {
 	private ImageView mFotoPreview;
 	private ImageView mFotoFull;
 	private View mMask;
+	private Usuario mUsuario;
 	
-	public CameraActivityBundle(Activity context, ImageView fotoPreview, ImageView fotoFull, View mask) {
+	public CameraActivityBundle(Activity context, Usuario usuario, ImageView fotoPreview, ImageView fotoFull, View mask) {
 		this.mFotoPreview = fotoPreview;
 		this.mFotoFull = fotoFull;
 		this.mMask = mask;
 		this.mContext = context;
+		this.mUsuario = usuario;
 		mFotoPreview.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -156,7 +158,7 @@ public class CameraActivityBundle {
         	byte[] b = stream.toByteArray();
         	//mLoading.setVisibility(View.VISIBLE);
         	UsuarioController controller = new UsuarioController(mContext);
-        	controller.setFoto(UsuarioController.usuarioLogado, b, new OnRequestListener<Usuario>(mContext) {
+        	controller.setFoto(mUsuario, b, new OnRequestListener<Usuario>(mContext) {
 				
 				@Override
 				public void onSuccess(Usuario usuario) { 

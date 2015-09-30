@@ -87,4 +87,14 @@ public class Comentario extends TemporalModel {
 		
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+		Comentario other = (Comentario) obj;
+		return this.getComentario().equals(other.getComentario()) && this.getPostador().equals(other.getPostador())
+				&& this.getStringDataCriacao().equals(other.getStringDataCriacao());
+	}
+	
 }

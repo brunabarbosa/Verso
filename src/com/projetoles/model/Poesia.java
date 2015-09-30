@@ -17,8 +17,8 @@ public class Poesia extends TemporalModel {
 	private String mAutor;
 	private String mPoesia;
 	private String mTags;
-	private ObjectListID mComentarios;
-	private ObjectListID mCurtidas;
+	private ObjectListID<Comentario> mComentarios;
+	private ObjectListID<Curtida> mCurtidas;
 
 	public static final Parcelable.Creator<Poesia> CREATOR = 
 			new Parcelable.Creator<Poesia>() {
@@ -55,7 +55,7 @@ public class Poesia extends TemporalModel {
 	}
 
 	public Poesia(String id, Calendar dataCriacao, String titulo, Usuario postador, String autor, String poesia,
-			String tags, ObjectListID comentarios, ObjectListID curtidas) {
+			String tags, ObjectListID<Comentario> comentarios, ObjectListID<Curtida> curtidas) {
 		super(id, dataCriacao);
 		setTitulo(titulo);
 		setPostador(postador);
@@ -132,19 +132,19 @@ public class Poesia extends TemporalModel {
 		return mTags;
 	}
 	
-	public void setComentarios(ObjectListID comentarios) {
+	public void setComentarios(ObjectListID<Comentario> comentarios) {
 		this.mComentarios = comentarios;
 	}
 	
-	public ObjectListID getComentarios() {
+	public ObjectListID<Comentario> getComentarios() {
 		return this.mComentarios;
 	}
 	 
-	public void setCurtidas(ObjectListID curtidas) {
+	public void setCurtidas(ObjectListID<Curtida> curtidas) {
 		this.mCurtidas = curtidas;
 	}
 	
-	public ObjectListID getCurtidas() {
+	public ObjectListID<Curtida> getCurtidas() {
 		return this.mCurtidas;
 	}
   

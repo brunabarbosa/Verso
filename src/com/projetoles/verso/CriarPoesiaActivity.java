@@ -45,7 +45,7 @@ public class CriarPoesiaActivity extends Activity {
 					
 					@Override
 					public void onSuccess(Poesia poesia) {
-						UsuarioController.usuarioLogado.getPoesias().add(poesia.getId());
+						UsuarioController.usuarioLogado.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
 						Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
 						startActivity(i);
 						finish();

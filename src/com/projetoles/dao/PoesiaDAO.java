@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.projetoles.model.CalendarUtils;
+import com.projetoles.model.Comentario;
+import com.projetoles.model.Curtida;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.Usuario;
@@ -105,8 +107,8 @@ public class PoesiaDAO extends DAO<Poesia> {
 		String poesia = json.getString("poetry");
 		String tags = json.getString("tags");
 		String autor = json.getString("author");
-		ObjectListID comentarios = new ObjectListID(json.getJSONArray("comments"));
-		ObjectListID curtidas = new ObjectListID(json.getJSONArray("likes"));
+		ObjectListID<Comentario> comentarios = new ObjectListID<Comentario>(json.getJSONArray("comments"));
+		ObjectListID<Curtida> curtidas = new ObjectListID<Curtida>(json.getJSONArray("likes"));
 		return new Poesia(id, dataCriacao, titulo, (Usuario)params.get(0), autor, poesia, tags, comentarios, curtidas);
 	}
 	 

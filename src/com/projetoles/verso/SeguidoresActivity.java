@@ -8,6 +8,7 @@ import com.projetoles.adapter.ListSeguidoresAdapter;
 import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.Seguida;
 import com.projetoles.model.Usuario;
 
@@ -27,28 +28,27 @@ public class SeguidoresActivity extends Activity {
 	private ListView mListView;
 	private List<Seguida> mListSeguidas;
 	private RelativeLayout mLoading;
-	private int mCountCarregadosSeguindo;
-	private int mCountCarregadosSeguidores;
+	private int mCountCarregados;
 	private Class mCallback;
 	private Usuario mUsuario;
 	protected static boolean mSeguindo;
 
-	private void carregaSeguidas(List<String> seguidas) {
+	private void carregaSeguidas(List<PreloadedObject<Seguida>> seguidas) {
 		if (!mUsuario.getSeguidores().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (String id : seguidas) {
-			mSeguidaController.get(id, new OnRequestListener<Seguida>(this) {
+		for (PreloadedObject<Seguida> id : seguidas) {
+			mSeguidaController.get(id.getId(), new OnRequestListener<Seguida>(this) {
 
 				@Override
 				public void onSuccess(Seguida result) {
 					mListSeguidas.add(result);
 					Collections.sort(mListSeguidas);
 					mListAdapter.notifyDataSetChanged();
-					mCountCarregadosSeguidores++;
+					mCountCarregados++;
 					runOnUiThread(new Runnable() {
 						public void run() {
-							if (mCountCarregadosSeguidores == mUsuario
+							if (mCountCarregados == mUsuario
 									.getSeguidores().size()) {
 								mLoading.setVisibility(View.GONE);
 							}
@@ -59,7 +59,7 @@ public class SeguidoresActivity extends Activity {
 				@Override
 				public void onError(String errorMessage) {
 					System.out.println(errorMessage);
-					mCountCarregadosSeguidores++;
+					mCountCarregados++;
 				}
 			});
 		}
