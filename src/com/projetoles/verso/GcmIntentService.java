@@ -16,6 +16,8 @@
 
 package com.projetoles.verso;
 
+import java.util.Collections;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.projetoles.controller.NotificacaoController;
 import com.projetoles.dao.OnRequestListener;
@@ -111,8 +113,10 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
-                NotificacoesTelaActivity nta = new NotificacoesTelaActivity();
-                nta.criarNotificacaoTela(extras.getString("_id"));
+                
+                NotificacoesTelaActivity nm = new NotificacoesTelaActivity();
+               
+                nm.criarNotificacaoTela(extras.getString("_id"));
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }

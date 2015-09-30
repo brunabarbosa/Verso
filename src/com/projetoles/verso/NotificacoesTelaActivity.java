@@ -18,22 +18,29 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class NotificacoesTelaActivity extends Activity {
-	
+
 	private NotificacaoController mNotificacaoController;
-	private ListNotificacoesAdapter mListAdapter;
+	protected static ListNotificacoesAdapter mListAdapter;
 	private ListView mListView;
-	private static List<Notificacao> mListNotificacoes;
+	protected static List<Notificacao> mListNotificacoes;
 	private RelativeLayout mLoading;
 	private int mCountCarregados;
-	
-	protected void criarNotificacaoTela(String nId){
-		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(NotificacoesTelaActivity.this) {
+
+	protected void criarNotificacaoTela(String nId) {
+		inicializaVars();
+		NotificacaoController mNotificacaoController = new NotificacaoController(
+				this);
+		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(
+				NotificacoesTelaActivity.this) {
 
 			@Override
 			public void onSuccess(Notificacao result) {
-				mListNotificacoes.add(result);
-				Collections.sort(mListNotificacoes);
-				mListAdapter.notifyDataSetChanged();
+				if(!mListNotificacoes.contains(result)){
+					mListNotificacoes.add(result);
+					Collections.sort(mListNotificacoes);
+					mListAdapter.notifyDataSetChanged();
+				}
+				
 			}
 
 			@Override
@@ -41,57 +48,46 @@ public class NotificacoesTelaActivity extends Activity {
 				System.out.println(errorMessage);
 			}
 		});
-		
-		
+
 	}
-	
-	/*public static void criarNotificacoes(final Usuario enderecado, Usuario postador, String mensagem, Poesia poesia, String tipo, Activity a){
-		mNotificacaoController.post(new Notificacao(null, Calendar.getInstance(), enderecado, postador, mensagem, poesia, tipo), 
-				new OnRequestListener<Notificacao>(a) {
 
-					@Override
-					public void onSuccess(Notificacao result) {
-						enderecado.getNotificacoes().add(result.getId());
-					}
-
-					@Override
-					public void onError(String errorMessage) {
-						System.out.println(errorMessage);
-					}
-				});
-	}*/
-	
 	private void carregarNotificacoes() {
 		if (!UsuarioController.usuarioLogado.getNotificacoes().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (PreloadedObject<Notificacao> id : UsuarioController.usuarioLogado.getNotificacoes().getList()) {
-			mNotificacaoController.get(id.getId(), new OnRequestListener<Notificacao>(this) {
+		for (PreloadedObject<Notificacao> id : UsuarioController.usuarioLogado
+				.getNotificacoes().getList()) {
+			mNotificacaoController.get(id.getId(),
+					new OnRequestListener<Notificacao>(this) {
 
-				@Override
-				public void onSuccess(Notificacao notificacao) {
-					mListNotificacoes.add(notificacao);
-					Collections.sort(mListNotificacoes);
-					mListAdapter.notifyDataSetChanged();
-					mCountCarregados++;
-					runOnUiThread(new Runnable() {
-						public void run() {
-							if (mCountCarregados == UsuarioController.usuarioLogado.getNotificacoes().size()) {
-								mLoading.setVisibility(View.GONE);
+						@Override
+						public void onSuccess(Notificacao notificacao) {
+							if(!mListNotificacoes.contains(notificacao)){
+								
+							mListNotificacoes.add(notificacao);
+							Collections.sort(mListNotificacoes);
+							mListAdapter.notifyDataSetChanged();
+							mCountCarregados++;
+							runOnUiThread(new Runnable() {
+								public void run() {
+									if (mCountCarregados == UsuarioController.usuarioLogado
+											.getNotificacoes().size()) {
+										mLoading.setVisibility(View.GONE);
+									}
+								}
+							});
 							}
 						}
-					});
-				}
 
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-					mCountCarregados++;
-				}
-			});
+						@Override
+						public void onError(String errorMessage) {
+							System.out.println(errorMessage);
+							mCountCarregados++;
+						}
+					});
 		}
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -102,13 +98,20 @@ public class NotificacoesTelaActivity extends Activity {
 		// Get widgets from layout
 		mListView = (ListView) findViewById(R.id.lvExpNotificacao);
 		mLoading = (RelativeLayout) findViewById(R.id.loadNotificacao);
-		
-		// Preparing list view
-		mListNotificacoes = new ArrayList<Notificacao>();
-		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mListNotificacoes);
+
+		inicializaVars();
 		mListView.setAdapter(mListAdapter);
 
 		carregarNotificacoes();
 	}
-	
+
+	private void inicializaVars() {
+		if (mListNotificacoes == null && mListAdapter == null) {
+			// Preparing list view
+			mListNotificacoes = new ArrayList<Notificacao>();
+			mListAdapter = new ListNotificacoesAdapter(
+					NotificacoesTelaActivity.this, mListNotificacoes);
+		}
+	}
+
 }
