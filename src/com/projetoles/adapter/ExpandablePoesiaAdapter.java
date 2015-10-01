@@ -18,7 +18,7 @@ import com.projetoles.verso.CurtidaActivity;
 import com.projetoles.verso.MainActivity;
 import com.projetoles.verso.R;
 import com.projetoles.verso.ResultadoPesquisaActivity;
-import com.projetoles.verso.SharingActivity;
+import com.projetoles.verso.SharingInstagramActivity;
 import com.projetoles.verso.UserProfileActivity;
  
 import android.app.Activity;
@@ -56,6 +56,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private View mLoading;
 	private Button btnCompartilharFacebook;
 	private Button btnCompartilharApp;
+	private Button btnCompartilhar;
 	private ExpandableListView mExpListView;
 
 	private int mPreviousTotalItemCount = 0;
@@ -228,13 +229,13 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 		setPoesiaData(date, poesia, mContext);
 	
-		btnCompartilharFacebook = (Button) convertView.findViewById(R.id.btnCompartilharFacebook);
+		btnCompartilhar = (Button) convertView.findViewById(R.id.btnCompartilhar);
 
-		// Compartilhar no facebook
-		btnCompartilharFacebook.setOnClickListener(new OnClickListener() {
+		// Compartilhar
+		btnCompartilhar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent share = new Intent(mContext, SharingActivity.class);
+				Intent share = new Intent(mContext, SharingInstagramActivity.class);
 
 				String saida = poesia.getTitulo().toString() + "\n" + "\n"
 						+ poesia.getPoesia().toString() + "\n" + "\n"

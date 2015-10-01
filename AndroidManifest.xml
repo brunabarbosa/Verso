@@ -28,6 +28,7 @@
 
     <uses-permission android:name="tntstudios.com.br.gcmapp.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -69,8 +70,6 @@
         </activity>
         <activity android:name=".CurtidaActivity" >
         </activity>
-        <activity android:name=".NotificacoesActivity" >
-        </activity>
         <activity android:name=".NotificacoesTelaActivity" >
         </activity>
         <activity 
@@ -78,7 +77,13 @@
             android:label="Configurações"
             android:parentActivityName=".MainActivity" >
         </activity>
-        <activity android:name=".SharingActivity" >
+        <activity android:name=".SharingInstagramActivity" >
+        </activity>
+        <activity android:name=".InstagramApp" >
+        </activity>
+        <activity android:name=".InstagramDialog" >
+        </activity>
+        <activity android:name=".InstagramSession" >
         </activity>
         <activity
             android:name=".ResultadoPesquisaActivity"
