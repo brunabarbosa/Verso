@@ -43,7 +43,7 @@ public class EditarPerfilActivity extends Activity {
 					 
 					@Override
 					public void onSuccess(Usuario usuario) {
-						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Successo!", "Usuário alterado com sucesso.", mLoading);
+						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Sucesso!", "Usuário alterado com sucesso.", mLoading);
 					}
 					
 					@Override
