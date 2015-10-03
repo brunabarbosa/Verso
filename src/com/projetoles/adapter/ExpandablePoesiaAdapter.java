@@ -75,7 +75,6 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		this.mUsuario = UsuarioController.usuarioLogado;
 		this.mLoading = loading;
 		this.mListPoesias.sort();
-		loadNextPage(NUMBERS_TO_LOAD);
 		mExpListView.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
@@ -97,6 +96,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				}
 			}
 		});
+		loadNextPage(NUMBERS_TO_LOAD);
 	}
 
 	private void loadNextPage(int itemsToLoad) {

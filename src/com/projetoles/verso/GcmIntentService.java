@@ -17,7 +17,9 @@
 package com.projetoles.verso;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.projetoles.controller.NotificacaoController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Usuario;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -32,6 +34,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -46,24 +49,19 @@ public class GcmIntentService extends IntentService {
     public static final String TAG = "GCM Demo";
  
     private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder builder;
-    private NotificacaoController mController;
-    
+  
     public GcmIntentService() {
         super("GcmIntentService");
-        this.mController = new NotificacaoController(this);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Bundle extras = intent.getExtras();
+        final Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        
-        
         
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
@@ -72,21 +70,6 @@ public class GcmIntentService extends IntentService {
              * not interested in, or that you don't recognize.
              */
         	
-        	/*
-        	mController.get(extras.getString("_id"), new OnRequestListener<Notificacao>(this) {
-				
-				@Override
-				public void onSuccess(Notificacao result) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
-				}
-			});
-        	*/
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
@@ -110,9 +93,21 @@ public class GcmIntentService extends IntentService {
                 // Post notification of received message.
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
                 
-                NotificacoesTelaActivity nm = new NotificacoesTelaActivity();
-               
-                nm.criarNotificacaoTela(extras.getString("_id"));
+				UsuarioController controller = new UsuarioController(GcmIntentService.this);
+				controller.getUsuarioLogado(new OnRequestListener<Usuario>(GcmIntentService.this) {
+
+					@Override
+					public void onSuccess(Usuario usuario) {
+						if (extras.getString("enderecado").equals(usuario.getId()))
+							usuario.getNotificacoes().add(extras.getString("_id"), Long.valueOf(extras.getString("date")));
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
+					}
+				}, null);
+			
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }

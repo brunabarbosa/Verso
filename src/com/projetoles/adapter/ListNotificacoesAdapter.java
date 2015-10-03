@@ -1,14 +1,14 @@
 package com.projetoles.adapter;
 
-import java.util.List;
-
 import com.projetoles.controller.NotificacaoController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
+import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 import com.projetoles.verso.ComentarioActivity;
 import com.projetoles.verso.MainActivity;
 import com.projetoles.verso.R;
@@ -23,23 +23,111 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ListNotificacoesAdapter extends BaseAdapter {
 
+	private static final int NUMBERS_TO_LOAD = 10;
+	private static final int VISIBLE_THRESHOLD = 3;
+	
 	private Activity mContext;
-	private List<Notificacao> mListNotificacoes;
-
-	public ListNotificacoesAdapter(Activity context, List<Notificacao> listNotificacoes) {
+	private ObjectListID<Notificacao> mListNotificacoes;
+	private View mLoading;
+	private NotificacaoController mNotificacaoController;
+	private ListView mListView;
+	
+	private int mPreviousTotalItemCount = 0;
+	private boolean mLoadingPoesias = false;
+	private int mAlreadyLoaded;
+	private int mExpectedLoaded;
+	
+	public ListNotificacoesAdapter(Activity context, ObjectListID<Notificacao> listNotificacoes, View loading,
+			ListView listView) {
     	this.mContext = context;
         this.mListNotificacoes = listNotificacoes;
+        this.mLoading = loading;
+        this.mNotificacaoController = new NotificacaoController(context);
+        this.mListView = listView;
+        this.mListNotificacoes.sort();
+        mListView.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (totalItemCount < mPreviousTotalItemCount) {
+					mPreviousTotalItemCount = totalItemCount;
+					if (totalItemCount == 0) mLoadingPoesias = true;
+				}
+				if (!mLoadingPoesias) {
+					mLoading.setVisibility(View.GONE);
+				}
+				if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
+				}
+			}
+		});
+        loadNextPage(NUMBERS_TO_LOAD);
+	}
+
+	private void loadNextPage(int itemsToLoad) {
+		if (mPreviousTotalItemCount >= mListNotificacoes.size()) {
+			mLoadingPoesias = false;
+		} else {
+			mAlreadyLoaded = 0;
+			mExpectedLoaded = 0;
+			mLoadingPoesias = true;
+			for (int i = 0; i < Math.min(mListNotificacoes.size(), itemsToLoad); i++) {
+				if (!mListNotificacoes.get(i).isLoaded()) {
+					mExpectedLoaded++;
+					mListNotificacoes.get(i).load(mNotificacaoController, new OnRequestListener<Notificacao>(mContext) {
+
+						@Override
+						public void onSuccess(Notificacao result) {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingPoesias = false;
+							}
+							notifyDataSetChanged();
+						}
+
+						@Override
+						public void onError(String errorMessage) {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingPoesias = false;
+							}
+						}
+					});
+				}
+				if (mExpectedLoaded > 0) {
+					mLoading.setVisibility(View.VISIBLE);
+					mLoadingPoesias = true;
+				} else {
+					mLoading.setVisibility(View.GONE);
+					mLoadingPoesias = false;
+				}
+			}
+		}
 	}
 
 	@Override
 	public int getCount() {
-		return this.mListNotificacoes.size();
+		int count = 0;
+		for (PreloadedObject<Notificacao> id : mListNotificacoes.getList()) {
+			if (id.isLoaded()) ++count;
+		}
+		return count;
 	}
 
 	@Override
@@ -68,7 +156,7 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_comentario, parent, false);
 		}
-		final Notificacao n = this.mListNotificacoes.get(position);
+		final Notificacao n = this.mListNotificacoes.get(position).getLoadedObj();
 		if (n != null) {
 			ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
@@ -86,9 +174,9 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 						
 						@Override
 						public void onSuccess(String result) {
-							mListNotificacoes.remove(n);
+							mListNotificacoes.remove(n.getId());
 							notifyDataSetChanged();
-						}
+						} 
 						
 						@Override
 						public void onError(String errorMessage) {
