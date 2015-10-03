@@ -20,7 +20,7 @@ import com.projetoles.verso.R;
 import com.projetoles.verso.ResultadoPesquisaActivity;
 import com.projetoles.verso.SharingInstagramActivity;
 import com.projetoles.verso.UserProfileActivity;
- 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -43,7 +43,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
-
+ 
 	private static final int NUMBERS_TO_LOAD = 10;
 	private static final int VISIBLE_THRESHOLD = 3;
 	

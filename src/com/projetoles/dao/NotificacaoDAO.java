@@ -65,8 +65,7 @@ public class NotificacaoDAO extends DAO<Notificacao> {
 		Calendar dataCriacao = CalendarUtils.stringToCalendar(json.getString("date"));
 		String mensagem = json.getString("mensagem");
 		String tipo = json.getString("tipo");
-		return new Notificacao(id, dataCriacao, (Usuario)params.get(0), (Usuario)params.get(1), 
-				mensagem, (Poesia) params.get(2), tipo);
+		return new Notificacao(id, dataCriacao, (Usuario)params.get(0), (Usuario)params.get(1), mensagem, (Poesia) params.get(2), tipo);
 	}
 
 }

@@ -45,22 +45,27 @@ public abstract class Controller<T extends Model> {
     	if (dependencies.isEmpty()) {
     		callback.onSuccess(loaded);
     	} else { 
-    		Pair<String, Controller> first = dependencies.getFirst();
+    		Pair<String, Object> first = dependencies.getFirst();
     		try {
-	    		String key = json.getString(first.first);
-	    		first.second.get(key, new OnRequestListener<Object>(callback.getContext()) {
-	
-					@Override
-					public void onSuccess(Object result) {
-						loaded.add(result);
-						Controller.this.load(dependencies.getTail(), loaded, json, callback);
-					}
-	
-					@Override
-					public void onError(String errorMessage) {
-						callback.onError(errorMessage);
-					}
-				}, new Dependencies());
+    			if (first.second instanceof Controller) {
+		    		String key = json.getString(first.first);
+		    		((Controller)first.second).get(key, new OnRequestListener<Object>(callback.getContext()) {
+		
+						@Override
+						public void onSuccess(Object result) {
+							loaded.add(result);
+							Controller.this.load(dependencies.getTail(), loaded, json, callback);
+						}
+		
+						@Override
+						public void onError(String errorMessage) {
+							callback.onError(errorMessage);
+						}
+					});
+    			} else {
+    				loaded.add(first.second);
+    				Controller.this.load(dependencies.getTail(), loaded, json, callback);
+    			}
 			} catch (JSONException e) {
 				e.printStackTrace();
 				callback.onError(e.getMessage());

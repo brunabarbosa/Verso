@@ -16,12 +16,8 @@
 
 package com.projetoles.verso;
 
-import java.util.Collections;
-
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.projetoles.controller.NotificacaoController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Notificacao;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -36,7 +32,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -77,6 +72,7 @@ public class GcmIntentService extends IntentService {
              * not interested in, or that you don't recognize.
              */
         	
+        	/*
         	mController.get(extras.getString("_id"), new OnRequestListener<Notificacao>(this) {
 				
 				@Override
@@ -90,7 +86,7 @@ public class GcmIntentService extends IntentService {
 					Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
 				}
 			});
-        	
+        	*/
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {

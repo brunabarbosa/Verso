@@ -272,8 +272,31 @@ public class UsuarioController extends Controller<Usuario> {
 	}
 
 	@Override
-	public void get(String id, OnRequestListener<Usuario> callback) {
-		throw new UnsupportedOperationException();
+	public void get(String id, final OnRequestListener<Usuario> callback) {
+		((UsuarioDAO)mDAO).get(id, new OnRequestListener<String>(callback.getContext()) {
+			
+			@Override
+			public void onSuccess(String jsonResult) {
+				try {
+					JSONObject jsonObject = new JSONObject(jsonResult.toString());
+					boolean success = jsonObject.getBoolean("success");
+					if (success) {
+						Usuario encontrado = mDAO.getFromJSON(jsonObject, new ArrayList<Object>());
+						callback.onSuccess(encontrado);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+		});
 	}
 	
 }

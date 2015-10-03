@@ -20,16 +20,15 @@ import android.widget.RelativeLayout;
 public class NotificacoesTelaActivity extends Activity {
 
 	private NotificacaoController mNotificacaoController;
-	protected static ListNotificacoesAdapter mListAdapter;
+	private ListNotificacoesAdapter mListAdapter;
+	private List<Notificacao> mListNotificacoes;
 	private ListView mListView;
-	protected static List<Notificacao> mListNotificacoes;
 	private RelativeLayout mLoading;
 	private int mCountCarregados;
 
 	protected void criarNotificacaoTela(String nId) {
 		inicializaVars();
-		NotificacaoController mNotificacaoController = new NotificacaoController(
-				this);
+		NotificacaoController mNotificacaoController = new NotificacaoController(this);
 		mNotificacaoController.get(nId, new OnRequestListener<Notificacao>(
 				NotificacoesTelaActivity.this) {
 
@@ -55,27 +54,24 @@ public class NotificacoesTelaActivity extends Activity {
 		if (!UsuarioController.usuarioLogado.getNotificacoes().isEmpty()) {
 			mLoading.setVisibility(View.VISIBLE);
 		}
-		for (PreloadedObject<Notificacao> id : UsuarioController.usuarioLogado
-				.getNotificacoes().getList()) {
-			mNotificacaoController.get(id.getId(),
-					new OnRequestListener<Notificacao>(this) {
+		for (PreloadedObject<Notificacao> id : UsuarioController.usuarioLogado.getNotificacoes().getList()) {
+			mNotificacaoController.get(id.getId(), new OnRequestListener<Notificacao>(this) {
 
 						@Override
 						public void onSuccess(Notificacao notificacao) {
-							if(!mListNotificacoes.contains(notificacao)){
-								
-							mListNotificacoes.add(notificacao);
-							Collections.sort(mListNotificacoes);
-							mListAdapter.notifyDataSetChanged();
-							mCountCarregados++;
-							runOnUiThread(new Runnable() {
-								public void run() {
-									if (mCountCarregados == UsuarioController.usuarioLogado
-											.getNotificacoes().size()) {
-										mLoading.setVisibility(View.GONE);
+							if (!mListNotificacoes.contains(notificacao)) {
+								mListNotificacoes.add(notificacao);
+								Collections.sort(mListNotificacoes);
+								mListAdapter.notifyDataSetChanged();
+								mCountCarregados++;
+								runOnUiThread(new Runnable() {
+									public void run() {
+										if (mCountCarregados == UsuarioController.usuarioLogado
+												.getNotificacoes().size()) {
+											mLoading.setVisibility(View.GONE);
+										}
 									}
-								}
-							});
+								});
 							}
 						}
 
@@ -109,8 +105,7 @@ public class NotificacoesTelaActivity extends Activity {
 		if (mListNotificacoes == null && mListAdapter == null) {
 			// Preparing list view
 			mListNotificacoes = new ArrayList<Notificacao>();
-			mListAdapter = new ListNotificacoesAdapter(
-					NotificacoesTelaActivity.this, mListNotificacoes);
+			mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mListNotificacoes);
 		}
 	}
 
