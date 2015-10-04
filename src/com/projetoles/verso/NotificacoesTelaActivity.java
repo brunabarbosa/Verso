@@ -33,7 +33,7 @@ public class NotificacoesTelaActivity extends Activity {
 			mListNotificacoes.add(id);
 		}
 		
-		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mListNotificacoes, mLoading, mListView);
+		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mLoading, mListView, mListNotificacoes);
 		
 		mListView.setAdapter(mListAdapter);
 	}

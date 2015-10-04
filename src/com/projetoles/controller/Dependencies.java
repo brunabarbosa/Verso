@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.util.Pair;
 
-@SuppressWarnings("rawtypes")
 public class Dependencies {
 
 	private List<Pair<String, Object>> mDependencies = new ArrayList<Pair<String, Object>>();

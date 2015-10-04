@@ -1,5 +1,8 @@
 package com.projetoles.verso;
 
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.model.Usuario;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,9 +17,6 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.model.Usuario;
 
 public class MainActivity extends TabActivity {
 	

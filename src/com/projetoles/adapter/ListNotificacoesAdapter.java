@@ -8,7 +8,6 @@ import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
-import com.projetoles.model.PreloadedObject;
 import com.projetoles.verso.ComentarioActivity;
 import com.projetoles.verso.MainActivity;
 import com.projetoles.verso.R;
@@ -23,123 +22,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ListNotificacoesAdapter extends BaseAdapter {
+public class ListNotificacoesAdapter extends ScrollableList<Notificacao> {
 
-	private static final int NUMBERS_TO_LOAD = 10;
-	private static final int VISIBLE_THRESHOLD = 3;
-	
-	private Activity mContext;
-	private ObjectListID<Notificacao> mListNotificacoes;
-	private View mLoading;
-	private NotificacaoController mNotificacaoController;
-	private ListView mListView;
-	
-	private int mPreviousTotalItemCount = 0;
-	private boolean mLoadingPoesias = false;
-	private int mAlreadyLoaded;
-	private int mExpectedLoaded;
-	
-	public ListNotificacoesAdapter(Activity context, ObjectListID<Notificacao> listNotificacoes, View loading,
-			ListView listView) {
-    	this.mContext = context;
-        this.mListNotificacoes = listNotificacoes;
-        this.mLoading = loading;
-        this.mNotificacaoController = new NotificacaoController(context);
-        this.mListView = listView;
-        this.mListNotificacoes.sort();
-        mListView.setOnScrollListener(new OnScrollListener() {
-			
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				
-			}
-			
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (totalItemCount < mPreviousTotalItemCount) {
-					mPreviousTotalItemCount = totalItemCount;
-					if (totalItemCount == 0) mLoadingPoesias = true;
-				}
-				if (!mLoadingPoesias) {
-					mLoading.setVisibility(View.GONE);
-				}
-				if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
-				}
-			}
-		});
-        loadNextPage(NUMBERS_TO_LOAD);
+	public ListNotificacoesAdapter(Activity context, View loading, ListView listView, 
+			ObjectListID<Notificacao> listNotificacoes) {
+		super(context, loading, listView, listNotificacoes, new NotificacaoController(context));
 	}
 
-	private void loadNextPage(int itemsToLoad) {
-		if (mPreviousTotalItemCount >= mListNotificacoes.size()) {
-			mLoadingPoesias = false;
-		} else {
-			mAlreadyLoaded = 0;
-			mExpectedLoaded = 0;
-			mLoadingPoesias = true;
-			for (int i = 0; i < Math.min(mListNotificacoes.size(), itemsToLoad); i++) {
-				if (!mListNotificacoes.get(i).isLoaded()) {
-					mExpectedLoaded++;
-					mListNotificacoes.get(i).load(mNotificacaoController, new OnRequestListener<Notificacao>(mContext) {
-
-						@Override
-						public void onSuccess(Notificacao result) {
-							mAlreadyLoaded++;
-							if (mAlreadyLoaded >= mExpectedLoaded) {
-								mLoading.setVisibility(View.GONE);
-								mLoadingPoesias = false;
-							}
-							notifyDataSetChanged();
-						}
-
-						@Override
-						public void onError(String errorMessage) {
-							mAlreadyLoaded++;
-							if (mAlreadyLoaded >= mExpectedLoaded) {
-								mLoading.setVisibility(View.GONE);
-								mLoadingPoesias = false;
-							}
-						}
-					});
-				}
-				if (mExpectedLoaded > 0) {
-					mLoading.setVisibility(View.VISIBLE);
-					mLoadingPoesias = true;
-				} else {
-					mLoading.setVisibility(View.GONE);
-					mLoadingPoesias = false;
-				}
-			}
-		}
-	}
-
-	@Override
-	public int getCount() {
-		int count = 0;
-		for (PreloadedObject<Notificacao> id : mListNotificacoes.getList()) {
-			if (id.isLoaded()) ++count;
-		}
-		return count;
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return this.mListNotificacoes.get(position);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		return 0;
-	}
-	
 	private void setPhoto(ImageView imview, byte[] photo) {
 		if (photo.length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
@@ -156,8 +49,9 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_comentario, parent, false);
 		}
-		final Notificacao n = this.mListNotificacoes.get(position).getLoadedObj();
+		final Notificacao n = this.mList.get(position).getLoadedObj();
 		if (n != null) {
+			convertView.setVisibility(View.VISIBLE);
 			ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
@@ -174,7 +68,7 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 						
 						@Override
 						public void onSuccess(String result) {
-							mListNotificacoes.remove(n.getId());
+							mList.remove(n.getId());
 							notifyDataSetChanged();
 						} 
 						
@@ -209,6 +103,8 @@ public class ListNotificacoesAdapter extends BaseAdapter {
 			};
 			nome.setOnClickListener(clicaUsuario);
 			foto.setOnClickListener(clicaUsuario);
+		} else {
+			convertView.setVisibility(View.GONE);
 		}
 		return convertView;
 	}
