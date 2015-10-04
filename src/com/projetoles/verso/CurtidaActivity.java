@@ -1,48 +1,25 @@
 package com.projetoles.verso;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.projetoles.adapter.ListCurtidaAdapter;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.ObjectListID;
+import com.projetoles.model.Poesia;
+import com.projetoles.model.PreloadedObject;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
-
-import com.projetoles.adapter.ListCurtidaAdapter;
-import com.projetoles.controller.CurtidaController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Curtida;
-import com.projetoles.model.Poesia;
-import com.projetoles.model.PreloadedObject;
 
 public class CurtidaActivity extends Activity {
 
 	private Poesia mPoesia;
-	private CurtidaController mCurtidaController;
-	private List<Curtida> mListCurtidas;
+	private ObjectListID<Curtida> mListCurtidas;
 	private ListView mListView;
 	private ListCurtidaAdapter mAdapter;
-	
-	private void carregaCurtidas() {
-		for (PreloadedObject<Curtida> id : mPoesia.getCurtidas().getList()) {
-			mCurtidaController.get(id.getId(), new OnRequestListener<Curtida>(this) {
-				 
-				@Override 
-				public void onSuccess(Curtida curtida) {
-					mListCurtidas.add(curtida);
-					Collections.sort(mListCurtidas);
-					mAdapter.notifyDataSetChanged();
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-				}
-			});
-		}
-	}
+	private View mLoading;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +31,16 @@ public class CurtidaActivity extends Activity {
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		getActionBar().setTitle(mPoesia.getTitulo() + " - Curtidas");
 		
-		mCurtidaController = new CurtidaController(this);
-		
-		mListCurtidas = new ArrayList<Curtida>();
+		mListCurtidas = new ObjectListID<Curtida>();
 		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
-		mAdapter = new ListCurtidaAdapter(this, mListCurtidas);
-		mListView.setAdapter(mAdapter);
+		mLoading = findViewById(R.id.loadCurtidas);
 		
-		carregaCurtidas(); 
+		for (PreloadedObject<Curtida> id : mPoesia.getCurtidas().getList()) {
+			mListCurtidas.add(id);
+		}
+	
+		mAdapter = new ListCurtidaAdapter(this, mLoading, mListView, mListCurtidas);
+		mListView.setAdapter(mAdapter);	
 	}
 
 	@Override

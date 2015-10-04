@@ -1,13 +1,14 @@
 package com.projetoles.adapter;
 
-import java.util.List;
-
+import com.projetoles.controller.CurtidaController;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.ImageUtils;
+import com.projetoles.model.ObjectListID;
 import com.projetoles.verso.R;
 import com.projetoles.verso.UserProfileActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,18 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
  
-public class ListCurtidaAdapter extends BaseAdapter  {
+public class ListCurtidaAdapter extends ScrollableList<Curtida> {
  
-    private Context mContext;
-    private List<Curtida> mListCurtidas;
- 
-    public ListCurtidaAdapter(Context context, List<Curtida> listCurtidas) {
-    	this.mContext = context;
-        this.mListCurtidas = listCurtidas;
+    public ListCurtidaAdapter(Activity context, View loading, ListView listView, ObjectListID<Curtida> listCurtidas) {
+    	super(context, loading, listView, listCurtidas, new CurtidaController(context));
     }
 	
     private void setPhoto(ImageView imview, byte[] photo) {
@@ -45,8 +42,9 @@ public class ListCurtidaAdapter extends BaseAdapter  {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_comentario, parent, false);
 		}
-		final Curtida c = this.mListCurtidas.get(position);
+		final Curtida c = this.mList.get(position).getLoadedObj();
 		if (c != null) {
+			convertView.setVisibility(View.VISIBLE);
 			ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
@@ -68,24 +66,10 @@ public class ListCurtidaAdapter extends BaseAdapter  {
 			};
 			nome.setOnClickListener(clicaUsuario);
 			foto.setOnClickListener(clicaUsuario);
+		} else {
+			convertView.setVisibility(View.GONE);
 		}
 		return convertView;
-	}
-
-	@Override
-	public int getCount() {
-		return this.mListCurtidas.size();
-	}
-
-	@Override
-	public Object getItem(int arg0) {
-		return this.mListCurtidas.get(arg0);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }
