@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 public class NotificacoesTelaActivity extends Activity {
 
 	private ListNotificacoesAdapter mListAdapter;
-	private ObjectListID<Notificacao> mListNotificacoes;
 	private ListView mListView;
 	private RelativeLayout mLoading;
+	private ObjectListID<Notificacao> mList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +26,12 @@ public class NotificacoesTelaActivity extends Activity {
 		// Get widgets from layout
 		mListView = (ListView) findViewById(R.id.lvExpNotificacao);
 		mLoading = (RelativeLayout) findViewById(R.id.loadNotificacao);
-		
-		mListNotificacoes = new ObjectListID<Notificacao>();
-	
-		for (PreloadedObject<Notificacao> id : UsuarioController.usuarioLogado.getNotificacoes().getList()) {
-			mListNotificacoes.add(id);
+		mList = new ObjectListID<Notificacao>();
+		for (PreloadedObject<Notificacao> id :  UsuarioController.usuarioLogado.getNotificacoes().getList()) {
+			mList.add(id);
 		}
 		
-		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mLoading, mListView, mListNotificacoes);
+		mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mLoading, mListView, mList);
 		
 		mListView.setAdapter(mListAdapter);
 	}

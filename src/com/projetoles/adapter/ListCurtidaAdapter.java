@@ -3,7 +3,6 @@ package com.projetoles.adapter;
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Curtida;
-import com.projetoles.model.ImageUtils;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.verso.R;
 import com.projetoles.verso.UserProfileActivity;
@@ -11,8 +10,6 @@ import com.projetoles.verso.UserProfileActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,16 +24,6 @@ public class ListCurtidaAdapter extends ScrollableList<Curtida> {
     	super(context, loading, listView, listCurtidas, new CurtidaController(context));
     }
 	
-    private void setPhoto(ImageView imview, byte[] photo) {
-		if (photo.length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			imview.setImageBitmap(bmp);
-		} else {
-			imview.setImageResource(R.drawable.icone_foto);
-		}
-	}
-    
     public View getView(int position, View convertView, ViewGroup parent){
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

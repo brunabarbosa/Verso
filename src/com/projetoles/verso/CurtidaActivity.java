@@ -1,10 +1,7 @@
 package com.projetoles.verso;
 
 import com.projetoles.adapter.ListCurtidaAdapter;
-import com.projetoles.model.Curtida;
-import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
-import com.projetoles.model.PreloadedObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,7 +13,6 @@ import android.widget.ListView;
 public class CurtidaActivity extends Activity {
 
 	private Poesia mPoesia;
-	private ObjectListID<Curtida> mListCurtidas;
 	private ListView mListView;
 	private ListCurtidaAdapter mAdapter;
 	private View mLoading;
@@ -31,15 +27,10 @@ public class CurtidaActivity extends Activity {
 		mPoesia = (Poesia) b.getParcelable("poesia");
 		getActionBar().setTitle(mPoesia.getTitulo() + " - Curtidas");
 		
-		mListCurtidas = new ObjectListID<Curtida>();
 		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
 		mLoading = findViewById(R.id.loadCurtidas);
 		
-		for (PreloadedObject<Curtida> id : mPoesia.getCurtidas().getList()) {
-			mListCurtidas.add(id);
-		}
-	
-		mAdapter = new ListCurtidaAdapter(this, mLoading, mListView, mListCurtidas);
+		mAdapter = new ListCurtidaAdapter(this, mLoading, mListView, mPoesia.getCurtidas());
 		mListView.setAdapter(mAdapter);	
 	}
 

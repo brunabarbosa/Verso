@@ -1,9 +1,5 @@
 package com.projetoles.verso;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.adapter.ListComentarioAdapter;
 import com.projetoles.controller.ComentarioController;
@@ -11,6 +7,7 @@ import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
+import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
 
@@ -33,14 +30,13 @@ public class ComentarioActivity extends Activity {
 	private Poesia mPoesia;
 	private ListComentarioAdapter mListAdapter;
 	private ListView mListView;
-	private List<Comentario> mListComentarios;
 	private Button btnCriaComentario;
 	private EditText etComentario;
 	private Class mCallback;
 	private Bundle mBundle;
 	private RelativeLayout mLoading;
-	private int mCountCarregados;
 	private boolean mPosting;
+	private ObjectListID<Comentario> mList;
 	
 	private void criarComentario() {
 		btnCriaComentario.setOnClickListener(new View.OnClickListener() {
@@ -55,21 +51,37 @@ public class ComentarioActivity extends Activity {
 	 
 						@Override
 						public void onSuccess(Comentario comentario) {
-							if (!mListComentarios.contains(comentario)) {
+							mLoading.setVisibility(View.GONE);
+							mPosting = false;
+							if (!mList.contains(comentario.getId())) {
+								PreloadedObject<Comentario> obj = new PreloadedObject<Comentario>(comentario.getDataCriacao(), comentario.getId());
+								obj.setLoadedObj(comentario);
+								mList.add(obj);
+								mList.sort();
 								mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
-								mListComentarios.add(comentario);
-								Collections.sort(mListComentarios);
+								mPoesiaController.update(mPoesia, new OnRequestListener<Poesia>(ComentarioActivity.this) {
+
+									@Override
+									public void onSuccess(Poesia result) {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void onError(String errorMessage) {
+										// TODO Auto-generated method stub
+										
+									}
+								});
 								mListAdapter.notifyDataSetChanged();
-								mLoading.setVisibility(View.GONE);
 								etComentario.setText("");
 							}
-							mPosting = false;
 						}
 
 						@Override
 						public void onError(String errorMessage) {
+							mLoading.setVisibility(View.GONE);
 							mPosting = false;
-							System.out.println(errorMessage);
 							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 						}
 					});
@@ -77,37 +89,6 @@ public class ComentarioActivity extends Activity {
 				
 			}
 		});
-	}
-	
-	private void carregarComentarios() {
-		if (!mPoesia.getComentarios().isEmpty()) {
-			mLoading.setVisibility(View.VISIBLE);
-		}
-		for (PreloadedObject<Comentario> comentario : mPoesia.getComentarios().getList()) {
-			mComentarioController.get(comentario.getId(), new OnRequestListener<Comentario>(this) {
-
-				@Override
-				public void onSuccess(Comentario comentario) {
-					mListComentarios.add(comentario);
-					Collections.sort(mListComentarios);
-					mCountCarregados++;
-					runOnUiThread(new Runnable() {
-						public void run() {
-							if (mCountCarregados == mPoesia.getComentarios().size()) {
-								mLoading.setVisibility(View.GONE);
-							}
-							mListAdapter.notifyDataSetChanged();
-						}
-					});
-				}
-
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-					mCountCarregados++;
-				}
-			});
-		}
 	}
 	
 	@Override
@@ -133,8 +114,11 @@ public class ComentarioActivity extends Activity {
 		mLoading = (RelativeLayout) findViewById(R.id.loadComentario);
 		
 		// Preparing list view
-		mListComentarios = new ArrayList<Comentario>();
-		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mListComentarios);
+		mList = new ObjectListID<Comentario>();
+		for (PreloadedObject<Comentario> id : mPoesia.getComentarios().getList()) {
+			mList.add(id);
+		}
+		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList);
 		mListView.setAdapter(mListAdapter);
 
 		TextView poesiaTitulo = (TextView) findViewById(R.id.poesiaTitulo);
@@ -146,7 +130,6 @@ public class ComentarioActivity extends Activity {
 		TextView poesiaData = (TextView) findViewById(R.id.poesiaData);
 		ExpandablePoesiaAdapter.setPoesiaData(poesiaData, mPoesia, this);
 		
-		carregarComentarios();
 		criarComentario();
 	}
 

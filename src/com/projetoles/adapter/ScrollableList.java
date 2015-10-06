@@ -2,15 +2,20 @@ package com.projetoles.adapter;
 
 import com.projetoles.controller.Controller;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.TemporalModel;
+import com.projetoles.verso.R;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapter {
@@ -122,5 +127,15 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 	public long getItemId(int arg0) {
 		return 0;
 	}
-	
+
+    protected void setPhoto(ImageView imview, byte[] photo) {
+		if (photo.length > 0) {
+			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+			bmp = ImageUtils.getCroppedBitmap(bmp);
+			imview.setImageBitmap(bmp);
+		} else {
+			imview.setImageResource(R.drawable.icone_foto);
+		}
+	}
+    
 }

@@ -1,56 +1,40 @@
 package com.projetoles.adapter;
 
-import java.util.List;
-
 import com.projetoles.controller.ComentarioController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Comentario;
-import com.projetoles.model.ImageUtils;
+import com.projetoles.model.ObjectListID;
 import com.projetoles.verso.R;
 import com.projetoles.verso.UserProfileActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
  
-public class ListComentarioAdapter extends BaseAdapter  {
+public class ListComentarioAdapter extends ScrollableList<Comentario> {
  
-    private Activity mContext;
-    private List<Comentario> mListComentarios;
- 
-    public ListComentarioAdapter(Activity context, List<Comentario> listComentarios) {
-    	this.mContext = context;
-        this.mListComentarios = listComentarios;
+    public ListComentarioAdapter(Activity context, View loading, ListView listView,
+    		ObjectListID<Comentario> listComentarios) {
+    	super(context, loading, listView, listComentarios, new ComentarioController(context));
     }
 	
-    private void setPhoto(ImageView imview, byte[] photo) {
-		if (photo.length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			imview.setImageBitmap(bmp);
-		} else {
-			imview.setImageResource(R.drawable.icone_foto);
-		}
-	}
-    
     public View getView(int position, View convertView, ViewGroup parent){
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_group_comentario, parent, false);
 		}
-		final Comentario c = this.mListComentarios.get(position);
+		final Comentario c = this.mList.get(position).getLoadedObj();
 		if (c != null) {
+			convertView.setVisibility(View.VISIBLE);
 			ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
 			TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
 			TextView comentario = (TextView) convertView.findViewById(R.id.comment);
@@ -68,7 +52,7 @@ public class ListComentarioAdapter extends BaseAdapter  {
 							
 							@Override
 							public void onSuccess(String result) {
-								mListComentarios.remove(c);
+								mList.remove(c.getId());
 								notifyDataSetChanged();
 							}
 							
@@ -97,24 +81,10 @@ public class ListComentarioAdapter extends BaseAdapter  {
 			};
 			nome.setOnClickListener(clicaUsuario);
 			foto.setOnClickListener(clicaUsuario);
+		} else {
+			convertView.setVisibility(View.GONE);
 		}
 		return convertView;
-	}
-
-	@Override
-	public int getCount() {
-		return this.mListComentarios.size();
-	}
-
-	@Override
-	public Object getItem(int arg0) {
-		return this.mListComentarios.get(arg0);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

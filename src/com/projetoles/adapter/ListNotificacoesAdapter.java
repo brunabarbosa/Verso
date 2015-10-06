@@ -4,7 +4,6 @@ import com.projetoles.controller.NotificacaoController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
@@ -16,8 +15,6 @@ import com.projetoles.verso.UserProfileActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,16 +28,6 @@ public class ListNotificacoesAdapter extends ScrollableList<Notificacao> {
 	public ListNotificacoesAdapter(Activity context, View loading, ListView listView, 
 			ObjectListID<Notificacao> listNotificacoes) {
 		super(context, loading, listView, listNotificacoes, new NotificacaoController(context));
-	}
-
-	private void setPhoto(ImageView imview, byte[] photo) {
-		if (photo.length > 0) {
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			bmp = ImageUtils.getCroppedBitmap(bmp);
-			imview.setImageBitmap(bmp);
-		} else {
-			imview.setImageResource(R.drawable.icone_foto);
-		}
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <GridLayout 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/excluir"
         android:columnCount="2"
         android:rowCount="3"
         android:useDefaultMargins="true"
@@ -24,12 +25,12 @@
 
         <TextView
             android:id="@+id/mensagem"
-            android:layout_width="230dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="left"
             android:layout_row="0"
             android:ellipsize="none"
             android:maxLines="100"
@@ -40,11 +41,11 @@
 
         <TextView
             android:id="@+id/comment"
-            android:layout_width="230dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:layout_column="1" 
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:layout_row="1"
             android:ellipsize="none"
             android:maxLines="100"
@@ -56,8 +57,8 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:layout_column="1"
-            android:layout_gravity="fill_horizontal|center_vertical"
             android:layout_row="2"
             android:ellipsize="none"
             android:maxLines="100"
@@ -66,14 +67,15 @@
             android:textColor="#a28e68"
             android:textSize="12sp"
             android:textStyle="italic" />
+	
     </GridLayout>
 
     <ImageView
         android:id="@+id/excluir"
+        android:layout_alignParentRight="true"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_gravity="right|center_vertical"
         android:layout_margin="5dp"
         android:src="@drawable/ic_action" />
  
-</FrameLayout>
+</RelativeLayout>
