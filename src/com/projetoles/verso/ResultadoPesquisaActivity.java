@@ -34,7 +34,7 @@ public class ResultadoPesquisaActivity extends Activity {
 				previousGroup = groupPosition;
 			}
 		});
-		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, mBundle, mLoading);
+		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, mBundle, mLoading, tvNenhumResultado);
 
 		mExpListView.setAdapter(mAdapter);
 	}

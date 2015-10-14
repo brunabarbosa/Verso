@@ -58,6 +58,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private Button btnCompartilharApp;
 	private Button btnCompartilhar;
 	private ExpandableListView mExpListView;
+	private View mEmpty;
 
 	private int mPreviousTotalItemCount = 0;
 	private boolean mLoadingPoesias = false;
@@ -65,7 +66,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private int mExpectedLoaded;
 	
 	public ExpandablePoesiaAdapter(Activity context, ExpandableListView expListView, 
-			ObjectListID<Poesia> listPoesias, Bundle bundle, View loading) {
+			ObjectListID<Poesia> listPoesias, Bundle bundle, View loading, View empty) {
 		this.mContext = context;
 		this.mExpListView = expListView;
 		this.mListPoesias = listPoesias;
@@ -74,29 +75,36 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		this.mBundle = bundle;
 		this.mUsuario = UsuarioController.usuarioLogado;
 		this.mLoading = loading;
+		this.mEmpty = empty;
 		this.mListPoesias.sort();
-		mExpListView.setOnScrollListener(new OnScrollListener() {
-			
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
+		mLoading.setVisibility(View.INVISIBLE);
+		if (!mListPoesias.isEmpty()) {
+			loadNextPage(NUMBERS_TO_LOAD);
+			mEmpty.setVisibility(View.INVISIBLE);
+			mExpListView.setOnScrollListener(new OnScrollListener() {
 				
-			}
-			
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (totalItemCount < mPreviousTotalItemCount) {
-					mPreviousTotalItemCount = totalItemCount;
-					if (totalItemCount == 0) mLoadingPoesias = true;
+				@Override
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+					
 				}
-				if (!mLoadingPoesias) {
-					mLoading.setVisibility(View.GONE);
+				
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+					if (totalItemCount < mPreviousTotalItemCount) {
+						mPreviousTotalItemCount = totalItemCount;
+						if (totalItemCount == 0) mLoadingPoesias = true;
+					}
+					if (!mLoadingPoesias) {
+						mLoading.setVisibility(View.INVISIBLE);
+					}
+					if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+						loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
+					}
 				}
-				if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
-				}
-			}
-		});
-		loadNextPage(NUMBERS_TO_LOAD);
+			});
+		} else {
+			mEmpty.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void loadNextPage(int itemsToLoad) {

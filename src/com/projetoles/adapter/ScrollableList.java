@@ -24,7 +24,7 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 	private static final int VISIBLE_THRESHOLD = 3;
 
 	private int mPreviousTotalItemCount = 0;
-	private boolean mLoadingPoesias = false;
+	private boolean mLoadingItems = false;
 	private int mAlreadyLoaded;
 	private int mExpectedLoaded;
 
@@ -53,26 +53,27 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if (totalItemCount < mPreviousTotalItemCount) {
 					mPreviousTotalItemCount = totalItemCount;
-					if (totalItemCount == 0) mLoadingPoesias = true;
+					if (totalItemCount == 0) mLoadingItems = true;
 				}
-				if (!mLoadingPoesias) {
+				if (!mLoadingItems) {
 					mLoading.setVisibility(View.GONE);
 				}
-				if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+				if (!mLoadingItems && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
 					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
 				}
 			}
 		});
-        loadNextPage(NUMBERS_TO_LOAD);
+		if (!mList.isEmpty())
+			loadNextPage(NUMBERS_TO_LOAD);
 	}
 
 	private void loadNextPage(int itemsToLoad) {
 		if (mPreviousTotalItemCount >= mList.size()) {
-			mLoadingPoesias = false;
+			mLoadingItems = false;
 		} else {
 			mAlreadyLoaded = 0;
 			mExpectedLoaded = 0;
-			mLoadingPoesias = true;
+			mLoadingItems = true;
 			for (int i = 0; i < Math.min(mList.size(), itemsToLoad); i++) {
 				if (!mList.get(i).isLoaded()) {
 					mExpectedLoaded++;
@@ -83,7 +84,7 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 							mAlreadyLoaded++;
 							if (mAlreadyLoaded >= mExpectedLoaded) {
 								mLoading.setVisibility(View.GONE);
-								mLoadingPoesias = false;
+								mLoadingItems = false;
 							}
 							notifyDataSetChanged();
 						}
@@ -93,17 +94,17 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 							mAlreadyLoaded++;
 							if (mAlreadyLoaded >= mExpectedLoaded) {
 								mLoading.setVisibility(View.GONE);
-								mLoadingPoesias = false;
+								mLoadingItems = false;
 							}
 						}
 					});
 				}
 				if (mExpectedLoaded > 0) {
 					mLoading.setVisibility(View.VISIBLE);
-					mLoadingPoesias = true;
+					mLoadingItems = true;
 				} else {
 					mLoading.setVisibility(View.GONE);
-					mLoadingPoesias = false;
+					mLoadingItems = false;
 				}
 			}
 		}

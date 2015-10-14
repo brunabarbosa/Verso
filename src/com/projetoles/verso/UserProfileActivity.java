@@ -40,6 +40,7 @@ public class UserProfileActivity extends Activity {
 	private ExpandablePoesiaAdapter mAdapter;
 	private View mLoading;
 	private ImageView mGoBack;
+	private View mEmpty;
 
 	private void fillPoesias() {
 		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
@@ -53,7 +54,7 @@ public class UserProfileActivity extends Activity {
 			}
 		});
 		
-		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading);
+		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading, mEmpty);
 
 		mExpListView.setAdapter(mAdapter);
 	}
@@ -123,6 +124,7 @@ public class UserProfileActivity extends Activity {
 		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
 		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
 		mLoading = findViewById(R.id.loading);
+		mEmpty = findViewById(R.id.empty);
 
 		mCameraBundle = new CameraActivityBundle(this, mUsuario, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
 		mCameraBundle.setFoto(mUsuario.getFoto());

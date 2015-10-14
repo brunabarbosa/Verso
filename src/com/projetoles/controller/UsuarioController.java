@@ -65,7 +65,7 @@ public class UsuarioController extends Controller<Usuario> {
 
 	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
-			Usuario usuario = new Usuario(email, null, senha, null, null, new byte[]{}, 
+			Usuario usuario = new Usuario(email, Calendar.getInstance(), senha, null, null, new byte[]{}, 
 					new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
 			this.login(usuario, regId, callback);
 		} catch (Exception e) {

@@ -23,6 +23,7 @@ public class PerfilActivity extends Activity {
 	private View mLoading;
 	private ObjectListID<Poesia> mListPoesias;
 	private int mCountCarregados;
+	private View mEmpty;
 
 	private void fillPoesias() {
 		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
@@ -36,7 +37,7 @@ public class PerfilActivity extends Activity {
 			}
 		});
 		
-		mAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, mExpListView, mListPoesias, null, mLoading);
+		mAdapter = new ExpandablePoesiaAdapter(MainActivity.sInstance, mExpListView, mListPoesias, null, mLoading, mEmpty);
 		
 		mExpListView.setAdapter(mAdapter);
 	}
@@ -49,6 +50,7 @@ public class PerfilActivity extends Activity {
 		mSeguidaController = new SeguidaController(this);
 		mExpListView = (ExpandableListView) findViewById(R.id.lvExp);
 		mLoading = findViewById(R.id.loading);
+		mEmpty = findViewById(R.id.empty);
 
 		// preparing list data
 		mListPoesias = new ObjectListID<Poesia>();
@@ -56,6 +58,9 @@ public class PerfilActivity extends Activity {
 		for (PreloadedObject<Poesia> id : UsuarioController.usuarioLogado.getPoesias().getList()) {
 			mListPoesias.add(id);
 		}
+		
+		if (UsuarioController.usuarioLogado.getSeguindo().isEmpty())
+			fillPoesias();
 		
 		for (PreloadedObject<Seguida> id : UsuarioController.usuarioLogado.getSeguindo().getList()) {
 			mSeguidaController.get(id.getId(), new OnRequestListener<Seguida>(this) {
