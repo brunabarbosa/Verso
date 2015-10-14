@@ -1,6 +1,7 @@
 package com.projetoles.dao;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import org.json.JSONException;
@@ -71,6 +72,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 	public void post(Usuario usuario, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
 			.addParam("email", usuario.getId())
+			.addParam("date", usuario.getStringDataCriacao())
 			.addParam("password", usuario.getSenha())
 			.addParam("name", usuario.getNome())
 			.setDomain(DOMAIN)
@@ -115,6 +117,9 @@ public class UsuarioDAO extends DAO<Usuario> {
 	@Override
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {
 		String email = obj.getString("email");
+		long data = obj.getLong("date");
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(data);
 		String nome = obj.getString("name");
 		byte[] foto = {};
 		if (obj.has("photo")) {
@@ -130,7 +135,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 		ObjectListID<Seguida> seguindo = new ObjectListID<Seguida>(obj.getJSONArray("followeds"));
 		ObjectListID<Seguida> seguidores = new ObjectListID<Seguida>(obj.getJSONArray("followers"));
 		boolean notificacoesHabilitadas = obj.getBoolean("enable_notifications");
-		return new Usuario(email, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
+		return new Usuario(email, c, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
 	}
 
 }

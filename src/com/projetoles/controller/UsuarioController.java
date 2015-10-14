@@ -1,6 +1,7 @@
 package com.projetoles.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,7 @@ public class UsuarioController extends Controller<Usuario> {
 
 	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
-			Usuario usuario = new Usuario(email, senha, null, null, new byte[]{}, 
+			Usuario usuario = new Usuario(email, null, senha, null, null, new byte[]{}, 
 					new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
 			this.login(usuario, regId, callback);
 		} catch (Exception e) {
@@ -137,7 +138,7 @@ public class UsuarioController extends Controller<Usuario> {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				Usuario usuario = new Usuario(id, senha, nome, "", new byte[]{}, 
+				Usuario usuario = new Usuario(id, Calendar.getInstance(), senha, nome, "", new byte[]{}, 
 						new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
@@ -165,7 +166,7 @@ public class UsuarioController extends Controller<Usuario> {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				Usuario usuario = new Usuario(usuarioLogado.getId(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
+				Usuario usuario = new Usuario(usuarioLogado.getId(), usuarioLogado.getDataCriacao(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
 						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas(), 
 						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores(), usuarioLogado.getNotificacoesHabilitadas());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {

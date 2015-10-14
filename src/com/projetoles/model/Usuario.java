@@ -1,10 +1,12 @@
 package com.projetoles.model;
 
+import java.util.Calendar;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 
-public class Usuario extends Model {
+public class Usuario extends TemporalModel {
 
 	private static final int TAMANHO_MAXIMO_NOME = 30;
 	private static final int TAMANHO_MINIMO_SENHA = 6;
@@ -64,10 +66,10 @@ public class Usuario extends Model {
 		dest.writeParcelable(this.getSeguidores(), flags);
 	}
 	
-	public Usuario(String email, String senha, String nome, String biografia, byte[] foto, 
+	public Usuario(String email, Calendar dataCriacao, String senha, String nome, String biografia, byte[] foto, 
 			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
 			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
-		super(email);
+		super(email, dataCriacao);
 		setSenha(senha);
 		setNome(nome);
 		setFoto(foto);
@@ -80,10 +82,10 @@ public class Usuario extends Model {
 		setNotificacoesHabilitadas(notificacoesHabilitadas);
 	}
 
-	public Usuario(String email, String nome, String biografia, byte[] foto,
+	public Usuario(String email, Calendar dataCriacao, String nome, String biografia, byte[] foto,
 			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
 			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
-		this(email, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
+		this(email, dataCriacao, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
 	}
 
 	@Override
