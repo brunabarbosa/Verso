@@ -34,7 +34,7 @@ public class ComentarioController extends Controller<Comentario> {
 					if (!postador.equals(poesia.getPostador())) {
 						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), poesia.getPostador(), postador, " comentou a poesia " + poesia.getTitulo(), poesia, "poesia"), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
- 
+  
 							@Override
 							public void onSuccess(Notificacao result) {
 								poesia.getPostador().getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());

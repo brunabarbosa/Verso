@@ -5,6 +5,18 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/lblListItemTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:textSize="17dip"
+        android:textStyle="bold"
+		android:ellipsize="none"
+		android:scrollHorizontally="false"  />
+    
+    <TextView
         android:id="@+id/lblListItem"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -12,7 +24,9 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
-        android:textSize="17dip" />
+        android:textSize="17dip"
+        android:ellipsize="none"
+		android:scrollHorizontally="false" />
 
     <TextView
         android:id="@+id/tags"

@@ -10,7 +10,7 @@ public class Poesia extends TemporalModel {
 	private static final int TAMANHO_MAXIMO_TITULO = 30;
 	private static final int TAMANHO_MAXIMO_AUTOR = 30;
 	private static final int TAMANHO_MAXIMO_TAGS = 150;
-	private static final int TAMANHO_MAXIMO_POESIA = 2000;
+	private static final int TAMANHO_MAXIMO_POESIA = 5000;
 	
 	private String mTitulo;
 	private Usuario mPostador;

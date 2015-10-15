@@ -229,7 +229,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		}
 
 		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-
+		TextView txtListChildTitle = (TextView) convertView.findViewById(R.id.lblListItemTitle);
 		final Poesia poesia = mListPoesias.get(groupPosition).getLoadedObj();
 
 		TextView tags = (TextView) convertView.findViewById(R.id.tags);
@@ -247,23 +247,20 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			public void onClick(View v) {
 				Intent share = new Intent(mContext, SharingInstagramActivity.class);
 
-				String saida = poesia.getTitulo().toString() + "\n" + "\n"
+				String saida = poesia.getTitulo().toString() + "\n\n"
 						+ poesia.getPoesia().toString() + "\n" + "\n"
-						+ poesia.getAutor() + "\n" + "\n" + "#appVer(Só)";
+						+ poesia.getAutor();
 
-				share.putExtra("titulo", poesia.getTitulo().toString() + "\n"
-						+ "\n");
+				share.putExtra("titulo", poesia.getTitulo().toString() + "\n" + "\n");
 				share.putExtra("texto", saida);
 
 				mContext.startActivity(share);
-
 			}
 		});
 
-		btnCompartilharApp = (Button) convertView
-				.findViewById(R.id.btnCompartilharApp);
+		btnCompartilharApp = (Button) convertView.findViewById(R.id.btnCompartilharApp);
 		
-		if (mUsuario.getPoesias().contains(poesia.getId())) {
+		if (poesia.getPostador().equals(mUsuario)) {
 			btnCompartilharApp.setVisibility(View.GONE);
 		} else {
 			btnCompartilharApp.setVisibility(View.VISIBLE);
@@ -306,6 +303,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		});
 
 		txtListChild.setText(childText);
+		txtListChildTitle.setText(poesia.getTitulo());
 		return convertView;
 	}
 

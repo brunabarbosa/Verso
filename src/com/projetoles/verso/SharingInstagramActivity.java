@@ -46,8 +46,7 @@ public class SharingInstagramActivity extends Activity {
 	});
 
 	private void createInstagramIntent(String titulo, String texto) {
-
-		Bitmap image = ImageUtils.drawTextToBitmap(SharingInstagramActivity.this, R.drawable.share, texto );
+		Bitmap image = ImageUtils.drawTextToBitmap(SharingInstagramActivity.this, R.drawable.share, texto, titulo.length());
 
 		 // Create the new Intent using the 'Send' action.
 	    Intent share = new Intent(Intent.ACTION_SEND);
@@ -66,7 +65,7 @@ public class SharingInstagramActivity extends Activity {
 
 	private Uri getImageUri(Context applicationContext, Bitmap inImage) {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-	    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+	    inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 		String path = Images.Media.insertImage(SharingInstagramActivity.this.getContentResolver(), inImage, "Title", null);
 	    return Uri.parse(path);
 	}
@@ -76,8 +75,7 @@ public class SharingInstagramActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_share);
 
-		mApp = new InstagramApp(this, ApplicationData.CLIENT_ID,
-				ApplicationData.CLIENT_SECRET, ApplicationData.CALLBACK_URL);
+		mApp = new InstagramApp(this, ApplicationData.CLIENT_ID, ApplicationData.CLIENT_SECRET, ApplicationData.CALLBACK_URL);
 
 		if (!mApp.hasAccessToken())
 			mApp.authorize();
@@ -85,12 +83,14 @@ public class SharingInstagramActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		final String titulo = (String) b.get("titulo");
 		String texto = (String) b.get("texto");
+
+		if (texto.length() > 300) {
+			texto = texto.substring(0, 300) + "...";
+		}
+		texto += "\n\n#AppVer(só)\nBaixe agora mesmo em:\nhttps://goo.gl/g8f0Lj";
+
 		createInstagramIntent(titulo, texto);
 		
-		if (texto.length() > 500) {
-			texto = texto.substring(0, 500) + "... Veja mais em: https://play.google.com/store/apps/details?id=com.projetoles.verso";
-		}
-
 		mApp.setListener(new OAuthAuthenticationListener() {
 
 			@Override
