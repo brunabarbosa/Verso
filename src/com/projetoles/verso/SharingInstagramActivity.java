@@ -84,8 +84,12 @@ public class SharingInstagramActivity extends Activity {
 
 		Bundle b = getIntent().getExtras();
 		final String titulo = (String) b.get("titulo");
-		final String texto = (String) b.get("texto");
+		String texto = (String) b.get("texto");
 		createInstagramIntent(titulo, texto);
+		
+		if (texto.length() > 500) {
+			texto = texto.substring(0, 500) + "... Veja mais em: https://play.google.com/store/apps/details?id=com.projetoles.verso";
+		}
 
 		mApp.setListener(new OAuthAuthenticationListener() {
 

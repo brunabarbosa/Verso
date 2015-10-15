@@ -1,5 +1,7 @@
 package com.projetoles.adapter;
 
+import java.util.Calendar;
+
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
@@ -263,9 +265,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		
 		if (mUsuario.getPoesias().contains(poesia.getId())) {
 			btnCompartilharApp.setVisibility(View.GONE);
-			btnCompartilharApp.setVisibility(View.GONE);
 		} else {
-			btnCompartilharApp.setVisibility(View.VISIBLE);
 			btnCompartilharApp.setVisibility(View.VISIBLE);
 		}
 
@@ -273,24 +273,32 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 		btnCompartilharApp.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				mLoading.setVisibility(View.VISIBLE);
+				btnCompartilharApp.setEnabled(false);
 				mPoesiaController.post(poesia.getTitulo(), poesia.getAutor(),
 					poesia.getPostador(), poesia.getPoesia(),
-					poesia.getDataCriacao(), poesia.getTags(),
+					Calendar.getInstance(), poesia.getTags(),
 					new OnRequestListener<Poesia>(mContext) {
-
+   
 						@Override
 						public void onSuccess(Poesia poesia) {
+							mLoading.setVisibility(View.GONE);
+							btnCompartilharApp.setEnabled(true);
 							if (!mUsuario.getPoesias().contains(poesia.getId())) {
 								mUsuario.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
+								mListPoesias.add(new PreloadedObject<Poesia>(poesia.getDataCriacao(), poesia.getId()));
+								mListPoesias.sort();
+								notifyDataSetChanged();
+								ActivityUtils.showMessageDialog(mContext, "Sucesso!", "Poesia compartilhada com sucesso!", mLoading);
 							} else {
-								ActivityUtils.showMessageDialog(mContext,
-										"Um erro ocorreu", "t", mLoading);
+								ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", "t", mLoading);
 							}
-
 						}
 
 						@Override
 						public void onError(final String errorMessage) {
+							mLoading.setVisibility(View.GONE);
+							btnCompartilharApp.setEnabled(true);
 							ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, mLoading);
 						}
 					});

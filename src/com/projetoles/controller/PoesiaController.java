@@ -63,14 +63,14 @@ public class PoesiaController extends Controller<Poesia> {
 			String poesia, Calendar dataCriacao, String tags,
 			final OnRequestListener<Poesia> callback) {
 		try { 
-			Poesia p = new Poesia(null, dataCriacao, titulo, postador, autor, poesia, tags, new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
+			Poesia p = new Poesia(null, dataCriacao, titulo, UsuarioController.usuarioLogado, autor, poesia, tags, new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
 			super.post(p, new OnRequestListener<Poesia>(callback.getContext()) {
 				
 				@Override
 				public void onSuccess(Poesia result) {
 					if (!postador.equals(UsuarioController.usuarioLogado)) {
 						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-						postador, UsuarioController.usuarioLogado, " compartilhou sua poesia.", result, "poesia"), 
+								postador, UsuarioController.usuarioLogado, " compartilhou sua poesia.", result, "poesia"), 
 							new OnRequestListener<Notificacao>(callback.getContext()) {
  
 								@Override

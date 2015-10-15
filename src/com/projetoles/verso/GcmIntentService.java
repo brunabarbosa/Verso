@@ -91,24 +91,36 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(extras.getString("titulo"), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
-                
-				UsuarioController controller = new UsuarioController(GcmIntentService.this);
-				controller.getUsuarioLogado(new OnRequestListener<Usuario>(GcmIntentService.this) {
-
+                final UsuarioController controller = new UsuarioController(GcmIntentService.this);
+				
+                controller.get(extras.getString("titulo"), new OnRequestListener<Usuario>(this) {
+					
 					@Override
-					public void onSuccess(Usuario usuario) {
-						if (extras.getString("enderecado").equals(usuario.getId()))
-							usuario.getNotificacoes().add(extras.getString("_id"), Long.valueOf(extras.getString("date")));
-					}
+					public void onSuccess(Usuario result) {
+						sendNotification(result.getNome(), extras.getString("mensagem"), extras.getString("dataCriacao"), extras.getString("enderecado"));
 
+						controller.getUsuarioLogado(new OnRequestListener<Usuario>(GcmIntentService.this) {
+
+							@Override
+							public void onSuccess(Usuario usuario) {
+								if (extras.getString("enderecado").equals(usuario.getId()))
+									usuario.getNotificacoes().add(extras.getString("_id"), Long.valueOf(extras.getString("date")));
+							}
+
+							@Override
+							public void onError(String errorMessage) {
+								Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
+							}
+						}, null);
+
+						Log.i(TAG, "Received: " + extras.toString());
+					}
+					
 					@Override
 					public void onError(String errorMessage) {
-						Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
+						Log.e(TAG, errorMessage);
 					}
-				}, null);
-			
-                Log.i(TAG, "Received: " + extras.toString());
+				});
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -125,13 +137,13 @@ public class GcmIntentService extends IntentService {
         
         Intent notificationIntent = new Intent(this, NotificacoesTelaActivity.class);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,notificationIntent , 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.logo_notificacao)
-        .setContentTitle("Ver(só)")
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(titulo + msg))
-        .setContentText(titulo + msg);
+	        .setContentTitle("Ver(só)")
+	        .setStyle(new NotificationCompat.BigTextStyle()
+	        .bigText(titulo + msg))
+	        .setContentText(titulo + msg);
 
         mBuilder.setContentIntent(contentIntent);
         

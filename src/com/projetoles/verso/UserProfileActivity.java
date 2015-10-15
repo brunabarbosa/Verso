@@ -124,15 +124,10 @@ public class UserProfileActivity extends Activity {
 		mUserPicture = (ImageView) findViewById(R.id.otherProfilePhoto);
 		mProfilePhotoContent = (RelativeLayout) findViewById(R.id.otherProfilePhotoContent);
 		mLoading = findViewById(R.id.loading);
-		mEmpty = findViewById(R.id.empty);
+		mEmpty = findViewById(R.id.sem_poesia);
 
 		mCameraBundle = new CameraActivityBundle(this, mUsuario, mUserPicturePreview, mUserPicture, mProfilePhotoContent);
 		mCameraBundle.setFoto(mUsuario.getFoto());
-		
-		TextView semPoesia = (TextView) findViewById(R.id.sem_poesia);
-		if (mUsuario.getPoesias().isEmpty()) {
-			semPoesia.setVisibility(View.VISIBLE);
-		}
 		
 		mExpListView = (ExpandableListView) findViewById(R.id.lvPoesiasDoUserExp);
 
