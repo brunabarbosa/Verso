@@ -119,7 +119,7 @@ public class EditarPerfilActivity extends Activity {
 		}, "");
 	
 	}
-	
+	 
 	@Override
 	public void onBackPressed() {
 		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);

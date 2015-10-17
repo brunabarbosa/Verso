@@ -10,74 +10,76 @@
 	    android:background="@drawable/background" >
 	    
 	    <!-- to show what the parent is -->
-		<GridLayout
-		    android:id="@+id/profileBar"
-		    android:layout_width="match_parent"
+	    <RelativeLayout
+	        android:id="@+id/profileBar"
+	        android:layout_width="match_parent"
 		    android:layout_height="60dp"
 		    android:layout_alignParentTop="true"
 		    android:background="@drawable/barra_user"
-		    android:padding="5dp"
-		    android:columnCount="3" >
-		
+		    android:padding="5dp" >
+	        
 		    <ImageView
 		        android:id="@+id/userPicture"
 		        android:layout_width="50dp"
 		        android:layout_height="50dp"
-		        android:layout_column="0"
-		        android:layout_marginRight="10dp"
-		        android:layout_gravity="left|top"
-		        android:layout_row="0"
+		        android:layout_margin="5dp"
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerVertical="true"
 		        android:clickable="true"
 		        android:src="@drawable/icone_foto" />
 		
 		    <TextView
 		        android:id="@+id/mensagem"
-		        android:layout_column="1"
-		        android:layout_row="0"
-		        android:layout_gravity="left|center_vertical"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_toRightOf="@+id/userPicture"
+		        android:layout_toLeftOf="@+id/buttons"
+		        android:layout_centerVertical="true"
 		        android:text="UserName"
+		        android:ellipsize="none"
+		        android:scrollHorizontally="false"
+		        android:lines="1"
+           		android:maxLines="1"
 		        android:textColor="#866a3f"
 		        android:textSize="23sp" />
-		    
-		    <ImageView
-		        android:id="@+id/btnSair"
-		        android:layout_width="30dp"
-		        android:layout_height="30dp"
-		        android:layout_column="2"
-		        android:layout_marginRight="10dp"
-		        android:layout_gravity="right|center_vertical"
-		        android:layout_row="0"
-		        android:alpha="0.6"
-		        android:clickable="true"
-		        android:src="@drawable/sair" />
 	
-		    <ImageView
-		        android:visibility="gone"
-		        android:id="@+id/btnCriarPoema"
-		        android:layout_width="30dp"
-		        android:layout_height="30dp"
-		        android:layout_column="2"
-		        android:layout_marginRight="10dp"
-		        android:layout_gravity="right|center_vertical"
-		        android:layout_row="0"
-		        android:alpha="0.6"
-		        android:clickable="true"
-		        android:src="@drawable/ic_send_black_24dp" />
+		    <RelativeLayout
+		        android:id="@+id/buttons"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="5dp"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true" >
+				        
+			    <ImageView
+			        android:id="@+id/btnSair"
+			        android:layout_width="30dp"
+			        android:layout_height="30dp"
+			        android:alpha="0.6"
+			        android:clickable="true"
+			        android:src="@drawable/sair" />
+		
+			    <ImageView
+			        android:visibility="gone"
+			        android:id="@+id/btnCriarPoema"
+			        android:layout_width="30dp"
+			        android:layout_height="30dp"
+			        android:alpha="0.6"
+			        android:clickable="true"
+			        android:src="@drawable/ic_send_black_24dp" />
+				    
+			    <ImageView
+			        android:visibility="gone"
+			        android:id="@+id/btnPesquisar"
+			        android:layout_width="30dp"
+			        android:layout_height="30dp"
+			        android:clickable="true"
+			        android:src="@drawable/busca" />
+			    
+		    </RelativeLayout>
 		    
-		    <ImageView
-		        android:visibility="gone"
-		        android:id="@+id/btnPesquisar"
-		        android:layout_width="30dp"
-		        android:layout_height="30dp"
-		        android:layout_column="2"
-		        android:layout_marginRight="10dp"
-		        android:layout_gravity="right|center_vertical"
-		        android:layout_row="0"
-		        android:clickable="true"
-		        android:src="@drawable/busca" />
-		    
-		</GridLayout>
-	
+	    </RelativeLayout>
+	     
 	    <LinearLayout
 	        android:id="@+id/profileTabs"
 	    	android:layout_below="@+id/profileBar"

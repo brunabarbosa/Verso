@@ -9,67 +9,82 @@
 	    android:weightSum="1"
 	    android:background="@drawable/background" >
 	    
-	    <ScrollView
-	        android:id="@+id/poesiaConteudo"
+	    <RelativeLayout
+	        android:id="@+id/poesiaConteudo2"
 	        android:layout_width="match_parent"
-	        android:layout_height="150dp"
-	        android:background="@drawable/barra_poesia" >
-	        
-		    <LinearLayout
+	        android:layout_height="wrap_content" >
+		         
+		    <ScrollView
+	        	android:id="@+id/poesiaConteudo"
 		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:padding="10dp"
-		        android:orientation="vertical" >
+		        android:layout_height="150dp"
+		        android:background="@drawable/barra_poesia" >
 		        
-		        <TextView
-		            android:id="@+id/poesiaTitulo"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:textSize="16sp"
-		            android:textStyle="bold"
-		            android:ellipsize="none"
-	                android:maxLines="5"
-					android:scrollHorizontally="false"
-		            android:text="Titulo da poesia" />
-		        
-		        <TextView
-		            android:id="@+id/poesia"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:ellipsize="none"
-	                android:maxLines="300"
-	                android:layout_marginTop="5dp"
-					android:scrollHorizontally="false"
-		            android:text="Conteudo aqui" />
-		        
-		        <TextView
-		            android:id="@+id/poesiaTags"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_marginTop="10dp"
-		            android:ellipsize="none"
-	                android:maxLines="2"
-					android:scrollHorizontally="false"
-		            android:text="#Gostei #Muito #Dessa #Poesia" />
-		        
-		        <TextView
-		            android:id="@+id/poesiaData"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_marginTop="10dp"
-		            android:ellipsize="none"
-	                android:maxLines="2"
-					android:scrollHorizontally="false"
-					android:textSize="12sp"
-		            android:text="Postado em xxx por ..." />
-		        
-		    </LinearLayout>
-		
-		</ScrollView>
-		
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:padding="10dp"
+			        android:orientation="vertical" >
+			        
+			        <TextView
+			            android:id="@+id/poesiaTitulo"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:textSize="16sp"
+			            android:textStyle="bold"
+			            android:ellipsize="none"
+		                android:maxLines="5"
+						android:scrollHorizontally="false"
+			            android:text="Titulo da poesia" />
+			        
+			        <TextView
+			            android:id="@+id/poesia"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:ellipsize="none"
+		                android:maxLines="300"
+		                android:layout_marginTop="5dp"
+						android:scrollHorizontally="false"
+			            android:text="Conteudo aqui" />
+			        
+			        <TextView
+			            android:id="@+id/poesiaTags"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:layout_marginTop="10dp"
+			            android:ellipsize="none"
+		                android:maxLines="2"
+						android:scrollHorizontally="false"
+			            android:text="#Gostei #Muito #Dessa #Poesia" />
+			        
+			        <TextView
+			            android:id="@+id/poesiaData"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:layout_marginTop="10dp"
+			            android:ellipsize="none"
+		                android:maxLines="2"
+						android:scrollHorizontally="false"
+						android:textSize="12sp"
+			            android:text="Postado em xxx por ..." />
+			        
+			    </LinearLayout>
+			
+			</ScrollView>
+			
+		    <ImageButton
+		        android:id="@+id/hideContent" 
+		        android:layout_width="50dp"
+		        android:layout_height="30dp"
+		        android:layout_alignBottom="@+id/poesiaConteudo"
+		        android:layout_centerHorizontal="true"
+		        android:src="@drawable/ic_arrow_drop_up_black_24dp" />
+		    
+	    </RelativeLayout>
+	    
 		<ListView
 	        android:id="@+id/lvExpComentario"
-	        android:layout_below="@+id/poesiaConteudo"
+	        android:layout_below="@+id/poesiaConteudo2"
 	        android:layout_above="@+id/campoComment"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent" >

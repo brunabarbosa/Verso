@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -134,6 +135,22 @@ public class ComentarioActivity extends Activity {
 		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList);
 		mListView.setAdapter(mListAdapter);
 
+		final ImageButton hideContent = (ImageButton) findViewById(R.id.hideContent); 
+		final View content = findViewById(R.id.poesiaConteudo);
+		hideContent.setOnClickListener(new View.OnClickListener() {
+			 
+			@Override
+			public void onClick(View v) {
+				if (content.getVisibility() == View.GONE) {
+					content.setVisibility(View.VISIBLE);
+					hideContent.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+				} else {
+					content.setVisibility(View.GONE);
+					hideContent.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+				}
+			}
+		});
+		
 		TextView poesiaTitulo = (TextView) findViewById(R.id.poesiaTitulo);
 		poesiaTitulo.setText(mPoesia.getTitulo());
 		TextView poesiaConteudo = (TextView) findViewById(R.id.poesia);
