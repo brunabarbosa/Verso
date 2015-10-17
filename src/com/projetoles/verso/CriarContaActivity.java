@@ -46,8 +46,12 @@ public class CriarContaActivity extends Activity {
 					
 					@Override
 					public void onError(final String errorMessage) {
-						System.out.println(errorMessage);
 						ActivityUtils.showMessageDialog(CriarContaActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+					}
+
+					@Override
+					public void onTimeout() {
+						ActivityUtils.showMessageDialog(CriarContaActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
 					}
 				});
 			}

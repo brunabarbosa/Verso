@@ -111,6 +111,11 @@ public class GcmIntentService extends IntentService {
 							public void onError(String errorMessage) {
 								Toast.makeText(GcmIntentService.this, errorMessage, Toast.LENGTH_LONG).show();
 							}
+
+							@Override
+							public void onTimeout() {
+								Toast.makeText(GcmIntentService.this, "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", Toast.LENGTH_LONG).show();
+							}
 						}, null);
 
 						Log.i(TAG, "Received: " + extras.toString());
@@ -119,6 +124,11 @@ public class GcmIntentService extends IntentService {
 					@Override
 					public void onError(String errorMessage) {
 						Log.e(TAG, errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						Log.e(TAG, "TIMEOUT");
 					}
 				});
             }

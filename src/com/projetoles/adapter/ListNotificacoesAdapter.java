@@ -63,6 +63,12 @@ public class ListNotificacoesAdapter extends ScrollableList<Notificacao> {
 						public void onError(String errorMessage) {
 							System.out.println(errorMessage);
 						}
+
+						@Override
+						public void onTimeout() {
+							// TODO Auto-generated method stub
+							
+						}
 					});
 				}
 			});

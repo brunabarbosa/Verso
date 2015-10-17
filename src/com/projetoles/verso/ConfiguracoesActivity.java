@@ -43,6 +43,11 @@ public class ConfiguracoesActivity extends Activity {
 					public void onError(String errorMessage) {
 						Toast.makeText(ConfiguracoesActivity.this, errorMessage, Toast.LENGTH_LONG).show();
 					}
+
+					@Override
+					public void onTimeout() {
+						Toast.makeText(ConfiguracoesActivity.this, "Um erro ocorreu. Tente novamente.", Toast.LENGTH_LONG).show();
+					}
 				});
 			}
 		});

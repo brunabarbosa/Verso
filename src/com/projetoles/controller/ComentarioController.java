@@ -45,6 +45,11 @@ public class ComentarioController extends Controller<Comentario> {
 							public void onError(String errorMessage) {
 								System.out.println(errorMessage);
 							}
+
+							@Override
+							public void onTimeout() {
+								System.out.println("TIMEOUT");
+							}
 						});
 					}
 					callback.onSuccess(comentarioResult);
@@ -53,6 +58,11 @@ public class ComentarioController extends Controller<Comentario> {
 				@Override
 				public void onError(String errorMessage) {
 					System.out.println(errorMessage);
+				}
+
+				@Override
+				public void onTimeout() {
+					System.out.println("TIMEOUT");
 				}
 			}); 
 		} catch (Exception e) {

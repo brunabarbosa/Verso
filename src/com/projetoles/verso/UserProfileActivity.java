@@ -171,6 +171,11 @@ public class UserProfileActivity extends Activity {
 						public void onError(String errorMessage) {
 							System.out.println(errorMessage);
 						}
+
+						@Override
+						public void onTimeout() {
+							System.out.println("TIMEOUT");
+						}
 					});
 				} else {
 					mSeguidaController.post(UsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
@@ -186,6 +191,11 @@ public class UserProfileActivity extends Activity {
 						@Override
 						public void onError(String errorMessage) {
 							System.out.println(errorMessage);
+						}
+
+						@Override
+						public void onTimeout() {
+							System.out.println("TIMEOUT");
 						}
 					});
 				}
@@ -224,13 +234,12 @@ public class UserProfileActivity extends Activity {
 
 			@Override
 			public void onError(String errorMessage) {
-				runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						finish();
-					}
-				});
+				finish();
+			}
+
+			@Override
+			public void onTimeout() {
+				finish();
 			}
 		});
 	}

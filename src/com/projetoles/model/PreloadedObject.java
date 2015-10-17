@@ -82,6 +82,11 @@ public class PreloadedObject<T extends TemporalModel> implements Comparable<Prel
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			} 
+			
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
 		});
 	}
 	

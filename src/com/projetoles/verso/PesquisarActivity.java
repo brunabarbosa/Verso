@@ -57,6 +57,12 @@ public class PesquisarActivity extends Activity {
 							((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 							ActivityUtils.showMessageDialog(PesquisarActivity.this, "Um erro ocorreu", errorMessage, null);
 						}
+
+						@Override
+						public void onTimeout() {
+							((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
+							ActivityUtils.showMessageDialog(PesquisarActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", null);
+						}
 					});
 				}
 			}

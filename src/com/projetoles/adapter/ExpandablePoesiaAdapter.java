@@ -139,6 +139,15 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								mLoadingPoesias = false;
 							}
 						}
+
+						@Override
+						public void onTimeout() {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingPoesias = false;
+							}
+						}
 					});
 				}
 				if (mExpectedLoaded > 0) {
@@ -206,6 +215,12 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 							public void onError(String errorMessage) {
 								((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
 								ActivityUtils.showMessageDialog(context, "Um erro ocorreu", errorMessage, null);
+							}
+
+							@Override
+							public void onTimeout() {
+								((MainActivity)MainActivity.sInstance).mLoading.setVisibility(View.GONE);
+								ActivityUtils.showMessageDialog(context, "Ops", "Ocorreu um problema com sua requisição. Verifique sua conexão com a internet.", null);
 							}
 						});
 					}
@@ -298,6 +313,13 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 							btnCompartilharApp.setEnabled(true);
 							ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, mLoading);
 						}
+
+						@Override
+						public void onTimeout() {
+							mLoading.setVisibility(View.GONE);
+							btnCompartilharApp.setEnabled(true);
+							ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", mLoading);
+						}
 					});
 			}
 		});
@@ -356,6 +378,11 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								public void onError(String errorMessage) {
 									ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", "Não foi possível excluir esta poesia. Tente novamente", null);
 								}
+
+								@Override
+								public void onTimeout() {
+									ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", null);
+								}
 							});
 						}
 					}).setNegativeButton("Não", null)
@@ -410,6 +437,14 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 											.setMessage(errorMessage)
 											.create().show();
 									}
+
+									@Override
+									public void onTimeout() {
+										new AlertDialog.Builder(mContext)
+										.setTitle("Ops")
+										.setMessage("Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.")
+										.create().show();
+									}
 								});
 							} catch (Exception e) {
 								new AlertDialog.Builder(mContext)
@@ -451,6 +486,12 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 									System.out.println("ERROR descurtir: " + errorMessage);
 									v.setClickable(true);
 								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT descurtir!");
+									v.setClickable(true);
+								}
 							});
 					} else {
 						mCurtidaController.post(mUsuario, poesia,
@@ -467,6 +508,12 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								@Override
 								public void onError(String errorMessage) {
 									System.out.println("ERROR curtir: " + errorMessage);
+									v.setClickable(true);
+								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT descurtir");
 									v.setClickable(true);
 								}
 							});

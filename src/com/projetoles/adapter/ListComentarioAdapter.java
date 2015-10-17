@@ -60,6 +60,12 @@ public class ListComentarioAdapter extends ScrollableList<Comentario> {
 							public void onError(String errorMessage) {
 								System.out.println(errorMessage);
 							}
+
+							@Override
+							public void onTimeout() {
+								// TODO Auto-generated method stub
+								
+							}
 						});
 					}
 				});

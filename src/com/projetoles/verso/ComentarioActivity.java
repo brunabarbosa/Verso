@@ -72,6 +72,12 @@ public class ComentarioActivity extends Activity {
 										// TODO Auto-generated method stub
 										
 									}
+
+									@Override
+									public void onTimeout() {
+										// TODO Auto-generated method stub
+										
+									}
 								});
 								mListAdapter.notifyDataSetChanged();
 								etComentario.setText("");
@@ -83,6 +89,13 @@ public class ComentarioActivity extends Activity {
 							mLoading.setVisibility(View.GONE);
 							mPosting = false;
 							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+						}
+
+						@Override
+						public void onTimeout() {
+							mLoading.setVisibility(View.GONE);
+							mPosting = false;
+							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
 						}
 					});
 				}

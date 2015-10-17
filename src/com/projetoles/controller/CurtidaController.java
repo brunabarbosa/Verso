@@ -51,6 +51,11 @@ public class CurtidaController extends Controller<Curtida> {
 								public void onError(String errorMessage) {
 									System.out.println(errorMessage);
 								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT");
+								}
 							});
 					}
 					callback.onSuccess(result);
@@ -61,6 +66,11 @@ public class CurtidaController extends Controller<Curtida> {
 				public void onError(String errorMessage) {
 					System.out.println(errorMessage);
 					
+				}
+
+				@Override
+				public void onTimeout() {
+					System.out.println("TIMEOUT");
 				}
 			});
 		} catch (Exception e) {

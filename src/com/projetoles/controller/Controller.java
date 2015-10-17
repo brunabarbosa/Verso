@@ -61,6 +61,11 @@ public abstract class Controller<T extends Model> {
 						public void onError(String errorMessage) {
 							callback.onError(errorMessage);
 						}
+
+						@Override
+						public void onTimeout() {
+							callback.onTimeout();
+						}
 					});
     			} else {
     				loaded.add(first.second);
@@ -89,6 +94,11 @@ public abstract class Controller<T extends Model> {
 				@Override
 				public void onError(String errorMessage) {
 					callback.onError(errorMessage);
+				}
+
+				@Override
+				public void onTimeout() {
+					callback.onTimeout();
 				}
 			});
 		} else { 
@@ -131,6 +141,11 @@ public abstract class Controller<T extends Model> {
 									public void onError(String errorMessage) {
 										callback.onError(errorMessage);
 									}
+
+									@Override
+									public void onTimeout() {
+										callback.onTimeout();
+									}
 								});
 							} else {
 								callback.onError(jsonObject.getString("message"));
@@ -144,6 +159,11 @@ public abstract class Controller<T extends Model> {
 					@Override
 					public void onError(String errorMessage) {
 						callback.onError(errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						callback.onTimeout();
 					}
 				});
 			} else {
@@ -183,6 +203,11 @@ public abstract class Controller<T extends Model> {
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
 		});
 	}
 	
@@ -215,6 +240,11 @@ public abstract class Controller<T extends Model> {
             public void onError(String errorMessage) {
                 callback.onError(errorMessage);
             }
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
         });
 	} 
 	
@@ -246,6 +276,11 @@ public abstract class Controller<T extends Model> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
 			}
 		});
 	}

@@ -36,6 +36,8 @@ public abstract class OnRequestListener<T> {
 	 */
 	public abstract void onError(String errorMessage);
 	
+	public abstract void onTimeout();
+	
 	public void runOnUiThread(Runnable runnable) {
 		Handler handler = new Handler(mContext.getMainLooper());
 		handler.post(runnable);

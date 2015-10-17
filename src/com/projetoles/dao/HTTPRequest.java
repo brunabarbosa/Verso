@@ -61,8 +61,8 @@ public abstract class HTTPRequest {
 					
 					@Override
 					public void run() {
-						if (finalIsError) {
-							listener.onError(finalContent);
+						if (finalIsError) { 
+							listener.onTimeout();
 						} else {
 							listener.onSuccess(finalContent);
 						}

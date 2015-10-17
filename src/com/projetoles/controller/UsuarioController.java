@@ -101,6 +101,11 @@ public class UsuarioController extends Controller<Usuario> {
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
 		});
 	}
 	
@@ -129,6 +134,11 @@ public class UsuarioController extends Controller<Usuario> {
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
 		});
 	}
  
@@ -151,6 +161,11 @@ public class UsuarioController extends Controller<Usuario> {
 					@Override
 					public void onError(String errorMessage) {
 						callback.onError(errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						callback.onTimeout();
 					}
 				}); 
 			}
@@ -185,6 +200,11 @@ public class UsuarioController extends Controller<Usuario> {
 					@Override
 					public void onError(String errorMessage) {
 						callback.onError(errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						callback.onTimeout();
 					}
 				});
 			}
@@ -250,6 +270,11 @@ public class UsuarioController extends Controller<Usuario> {
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);	
 			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
 		});
 	}
 
@@ -268,6 +293,11 @@ public class UsuarioController extends Controller<Usuario> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
 			}
 		});
 	}
@@ -296,6 +326,11 @@ public class UsuarioController extends Controller<Usuario> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
 			}
 		});
 	}

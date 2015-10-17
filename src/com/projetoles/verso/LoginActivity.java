@@ -251,6 +251,12 @@ public class LoginActivity extends Activity {
 					public void onError(final String errorMessage) {
 						ActivityUtils.showMessageDialog(LoginActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 					}
+
+
+					@Override
+					public void onTimeout() {
+						ActivityUtils.showMessageDialog(LoginActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+					}
 				});
 			}
 		});
@@ -322,6 +328,11 @@ public class LoginActivity extends Activity {
 																	finish();
 																	System.out.println(errorMessage);
 																}
+
+																@Override
+																public void onTimeout() {
+																	ActivityUtils.showMessageDialog(LoginActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+																}
 															});
 														}
 													}).start();
@@ -331,8 +342,18 @@ public class LoginActivity extends Activity {
 												public void onError(String errorMessage) {
 													ActivityUtils.showMessageDialog(LoginActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 												}
+
+												@Override
+												public void onTimeout() {
+													ActivityUtils.showMessageDialog(LoginActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+												}
 											});
 											
+										}
+
+										@Override
+										public void onTimeout() {
+											ActivityUtils.showMessageDialog(LoginActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
 										}
 									});
                                     
@@ -387,13 +408,12 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onError(String errorMessage) {
-				runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						mLoading.setVisibility(View.GONE);
-					}
-				});
+				mLoading.setVisibility(View.GONE);
+			}
+
+			@Override
+			public void onTimeout() {
+				mLoading.setVisibility(View.GONE);
 			}
 		}, mRegId);
     }

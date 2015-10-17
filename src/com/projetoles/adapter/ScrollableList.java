@@ -97,6 +97,15 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 								mLoadingItems = false;
 							}
 						}
+
+						@Override
+						public void onTimeout() {
+							mAlreadyLoaded++;
+							if (mAlreadyLoaded >= mExpectedLoaded) {
+								mLoading.setVisibility(View.GONE);
+								mLoadingItems = false;
+							}
+						}
 					});
 				}
 				if (mExpectedLoaded > 0) {

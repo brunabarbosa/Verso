@@ -48,8 +48,12 @@ public class EditarPerfilActivity extends Activity {
 					
 					@Override
 					public void onError(String errorMessage) {
-						System.out.println(errorMessage);
 						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+					}
+
+					@Override
+					public void onTimeout() {
+						ActivityUtils.showMessageDialog(EditarPerfilActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
 					}
 				});
 			
@@ -106,6 +110,11 @@ public class EditarPerfilActivity extends Activity {
 			@Override
 			public void onError(String errorMessage) {
 				System.out.println(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				System.out.println("TIMEOUT");
 			}
 		}, "");
 	

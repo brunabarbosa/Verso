@@ -80,6 +80,11 @@ public class PerfilActivity extends Activity {
 				public void onError(String errorMessage) {
 					System.err.println(errorMessage);
 				}
+
+				@Override
+				public void onTimeout() {
+					System.out.println("TIMEOUT");
+				}
 			});
 		}
 	}

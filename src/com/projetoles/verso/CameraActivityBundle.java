@@ -168,8 +168,12 @@ public class CameraActivityBundle {
 				
 				@Override
 				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
 					ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, loading);
+				}
+
+				@Override
+				public void onTimeout() {
+					ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", loading);
 				}
 			});
         }

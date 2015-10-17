@@ -56,6 +56,12 @@ public class PoesiaController extends Controller<Poesia> {
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);
 			}
+
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
  
@@ -82,6 +88,11 @@ public class PoesiaController extends Controller<Poesia> {
 								public void onError(String errorMessage) {
 									System.out.println(errorMessage);
 								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT");
+								}
 							});
 					}
 					callback.onSuccess(result);
@@ -92,6 +103,11 @@ public class PoesiaController extends Controller<Poesia> {
 				public void onError(String errorMessage) {
 					System.out.println(errorMessage);
 					
+				}
+
+				@Override
+				public void onTimeout() {
+					System.out.println("TIMEOUT");
 				}
 			});
 		} catch (Exception e) {
@@ -146,6 +162,11 @@ public class PoesiaController extends Controller<Poesia> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);	
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
 			}
 		});
 	}
