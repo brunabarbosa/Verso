@@ -2,12 +2,11 @@ package com.projetoles.adapter;
 
 import java.util.Comparator;
 
-import com.projetoles.controller.CurtidaController;
+import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.CalendarUtils;
-import com.projetoles.model.Curtida;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
+import com.projetoles.model.Usuario;
 import com.projetoles.verso.R;
 import com.projetoles.verso.UserProfileActivity;
 
@@ -22,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
  
-public class ListCurtidaAdapter extends ScrollableList<Curtida> {
+public class ListUsuarioAdapter extends ScrollableList<Usuario> {
  
-    public ListCurtidaAdapter(Activity context, View loading, ListView listView, 
-    		ObjectListID<Curtida> listCurtidas, Comparator<PreloadedObject<Curtida>> comparator) {
-    	super(context, loading, listView, listCurtidas, new CurtidaController(context), comparator);
+    public ListUsuarioAdapter(Activity context, View loading, ListView listView, 
+    		ObjectListID<Usuario> listUsuarios, Comparator<PreloadedObject<Usuario> > comparator) {
+    	super(context, loading, listView, listUsuarios, new UsuarioController(context), comparator);
     }
 	
     public View getView(int position, View convertView, ViewGroup parent){
@@ -38,20 +37,20 @@ public class ListCurtidaAdapter extends ScrollableList<Curtida> {
     	final TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
     	final TextView comentario = (TextView) convertView.findViewById(R.id.comment);
     	final TextView data = (TextView) convertView.findViewById(R.id.date);
-    	return super.getView(position, convertView, parent, new OnRequestListener<Curtida>(mContext) {
+    	return super.getView(position, convertView, parent, new OnRequestListener<Usuario>(mContext) {
 			
 			@Override
-			public void onSuccess(final Curtida c) {
-				nome.setText(c.getPostador().getNome() + " curtiu esta poesia.");
+			public void onSuccess(final Usuario usuario) {
+				nome.setText(usuario.getNome());
 				comentario.setVisibility(View.GONE);
-				data.setText("Curtido em " + CalendarUtils.getDataFormada(c.getDataCriacao()));
-				setPhoto(foto, c.getPostador().getFoto());
+				data.setText("Seguido por " + usuario.getNumSeguidores() + " pessoa(s).");
+				setPhoto(foto, usuario.getFoto());
 				OnClickListener clicaUsuario = new OnClickListener() {
 					
 					@Override
 					public void onClick(View arg0) {
 						Intent intent = new Intent(mContext, UserProfileActivity.class);
-						intent.putExtra("usuario", c.getPostador());
+						intent.putExtra("usuario", usuario);
 						mContext.startActivity(intent);
 					}
 				};
@@ -70,6 +69,7 @@ public class ListCurtidaAdapter extends ScrollableList<Curtida> {
 				// TODO Auto-generated method stub
 				
 			}
+			
 		});
 	}
 

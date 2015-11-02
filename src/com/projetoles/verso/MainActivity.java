@@ -1,6 +1,7 @@
 package com.projetoles.verso;
 
 import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Usuario;
 
 import android.app.TabActivity;
@@ -39,6 +40,7 @@ public class MainActivity extends TabActivity {
 		TabSpec comporSpec = mTabHost.newTabSpec("Compor");
 		TabSpec sobreSpec = mTabHost.newTabSpec("Sobre");
 		TabSpec buscaSpec = mTabHost.newTabSpec("Home");
+		TabSpec descobrirSpec = mTabHost.newTabSpec("Descobrir");
 		
 		homeSpec.setIndicator("", getResources().getDrawable(R.drawable.home));
 		Intent homeIntent = new Intent(MainActivity.this, PerfilActivity.class);
@@ -56,10 +58,15 @@ public class MainActivity extends TabActivity {
 		Intent buscaIntent = new Intent(MainActivity.this, PesquisarActivity.class);
 		buscaSpec.setContent(buscaIntent);
 		
+		descobrirSpec.setIndicator("", getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
+		Intent descobrirIntent = new Intent(MainActivity.this, PesquisarActivity.class);
+		descobrirSpec.setContent(descobrirIntent);
+		
 		mTabHost.addTab(homeSpec);
 		mTabHost.addTab(comporSpec);
 		mTabHost.addTab(sobreSpec);
 		mTabHost.addTab(buscaSpec);
+		mTabHost.addTab(descobrirSpec);
 
 		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
@@ -79,6 +86,11 @@ public class MainActivity extends TabActivity {
 					mBtnPesquisar.setVisibility(View.VISIBLE);
 				} else {
 					mBtnPesquisar.setVisibility(View.GONE);
+				}
+				if (mTabHost.getCurrentTab() == 4) {
+					mTabHost.setCurrentTab(0);
+					Intent intent = new Intent(MainActivity.this, DescobrirActivity.class);
+					startActivity(intent);
 				}
 				setTabColor(mTabHost);
 			}
@@ -100,96 +112,116 @@ public class MainActivity extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_tabbed_main);
-		
+
 		sInstance = this;
 		
 		getActionBar().hide(); 
 
 		mController = new UsuarioController(this);
-		mUsuario = UsuarioController.usuarioLogado;
 		
-		TextView seguindo = (TextView) findViewById(R.id.txtNumSeguindo);
-		TextView seguidores = (TextView) findViewById(R.id.txtNumSeguidores);
-		
-		seguindo.setOnClickListener(new OnClickListener() {
+		mController.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
 
 			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
-				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", MainActivity.class);
-				intent.putExtra("seguindo", true);
-				startActivity(intent);
-				finish();
-			}
-		});
-		
-		seguidores.setOnClickListener(new OnClickListener() {
+			public void onSuccess(final Usuario usuarioLogado) {
+				setContentView(R.layout.activity_tabbed_main);
+				
+				mUsuario = usuarioLogado;
+				
+				TextView seguindo = (TextView) findViewById(R.id.txtNumSeguindo);
+				TextView seguidores = (TextView) findViewById(R.id.txtNumSeguidores);
+				
+				seguindo.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
-				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", MainActivity.class);
-				intent.putExtra("seguindo", false);
-				startActivity(intent);
-				finish();
-			}
-		});
-		
-		setTabs();
+					@Override
+					public void onClick(View arg0) {
+						Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
+						intent.putExtra("usuario", mUsuario);
+						intent.putExtra("callback", MainActivity.class);
+						intent.putExtra("seguindo", true);
+						startActivity(intent);
+						finish();
+					}
+				});
+				
+				seguidores.setOnClickListener(new OnClickListener() {
 
-		mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
-		mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
-		mBtnSair = (ImageView) findViewById(R.id.btnSair);
-		mLoading = findViewById(R.id.mainLoading);
-		
-		View profilePhotoContent = findViewById(R.id.profilePhotoContent);
-		Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
-		ImageView fotoFull = (ImageView) findViewById(R.id.profilePhoto);
-		ImageView fotoPreview = (ImageView) findViewById(R.id.userPicture);
-		
-		mCameraBundle = new CameraActivityBundle(this, UsuarioController.usuarioLogado, fotoPreview, fotoFull, profilePhotoContent);
-		mCameraBundle.setFoto(UsuarioController.usuarioLogado.getFoto());
-		mCameraBundle.editarFoto(btnEditPhoto);
-		
-		//set userName
-		TextView usuarioName = (TextView) findViewById(R.id.mensagem);
-		usuarioName.setText(mUsuario.getNome());
-		usuarioName.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						Intent intent = new Intent(MainActivity.this, SeguidoresActivity.class);
+						intent.putExtra("usuario", mUsuario);
+						intent.putExtra("callback", MainActivity.class);
+						intent.putExtra("seguindo", false);
+						startActivity(intent);
+						finish();
+					}
+				});
+				
+				setTabs();
+
+				mBtnCriarPoema = (ImageView) findViewById(R.id.btnCriarPoema);
+				mBtnPesquisar = (ImageView) findViewById(R.id.btnPesquisar);
+				mBtnSair = (ImageView) findViewById(R.id.btnSair);
+				mLoading = findViewById(R.id.mainLoading);
+				
+				View profilePhotoContent = findViewById(R.id.profilePhotoContent);
+				Button btnEditPhoto = (Button) findViewById(R.id.btnProfilePhotoEdit);
+				ImageView fotoFull = (ImageView) findViewById(R.id.profilePhoto);
+				ImageView fotoPreview = (ImageView) findViewById(R.id.userPicture);
+				
+				mCameraBundle = new CameraActivityBundle(MainActivity.this, mUsuario, fotoPreview, fotoFull, profilePhotoContent);
+				mCameraBundle.setFoto(mUsuario.getFoto());
+				mCameraBundle.editarFoto(btnEditPhoto);
+				
+				//set userName
+				TextView usuarioName = (TextView) findViewById(R.id.mensagem);
+				usuarioName.setText(mUsuario.getNome());
+				usuarioName.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+						intent.putExtra("usuario", mUsuario);
+						startActivity(intent);
+					}
+				});
+				
+				// submenu
+				TextView biografia = (TextView) findViewById(R.id.textBiografia);
+				biografia.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
+						intent.putExtra("usuario", mUsuario);
+						intent.putExtra("callback", MainActivity.class);
+						startActivity(intent);
+						finish();
+					}
+				});
+				mBtnSair.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						mController.logout();
+						Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+						MainActivity.this.startActivity(intent);
+						finish();
+					}
+				});
+			}
 			
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-				intent.putExtra("usuario", UsuarioController.usuarioLogado);
-				startActivity(intent);
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
 			}
-		});
-		
-		// submenu
-		TextView biografia = (TextView) findViewById(R.id.textBiografia);
-		biografia.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(MainActivity.this, BiografiaActivity.class);
-				intent.putExtra("usuario", mUsuario);
-				intent.putExtra("callback", MainActivity.class);
-				startActivity(intent);
-				finish();
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
 			}
-		});
-		mBtnSair.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mController.logout();
-				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-				MainActivity.this.startActivity(intent);
-				finish();
-			}
-		});
+		}, null);
 	}
 	
 	@Override

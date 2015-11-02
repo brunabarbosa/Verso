@@ -40,34 +40,39 @@ public abstract class HTTPRequest {
 			
 			@Override
 			public void run() {
-				boolean isError = false;
-				String content;
 				try {
-					content = getContent();
-				} catch(Exception e) {
-					content = e.getMessage();
-					isError = true;
-				}
-				//necessário para acessar dentro da thread
-				final boolean finalIsError = isError;
-				final String finalContent = content;
-				COUNT_NUM_THREADS--;
-				if (!SLEEPING_THREADS.isEmpty()) {
-					Thread t = SLEEPING_THREADS.get(0);
-					SLEEPING_THREADS.remove(t);
-					t.start(); 
-				}
-				listener.runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (finalIsError) { 
-							listener.onTimeout();
-						} else {
-							listener.onSuccess(finalContent);
-						}
+					boolean isError = false;
+					String content;
+					try {
+						content = getContent();
+					} catch(Exception e) {
+						content = e.getMessage();
+						isError = true;
 					}
-				});
+					//necessário para acessar dentro da thread
+					final boolean finalIsError = isError;
+					final String finalContent = content;
+					COUNT_NUM_THREADS--;
+					if (!SLEEPING_THREADS.isEmpty()) {
+						Thread t = SLEEPING_THREADS.get(0);
+						SLEEPING_THREADS.remove(t);
+						t.start(); 
+					}
+					listener.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							if (finalIsError) { 
+								System.out.println("TIMEOUT! " + finalContent);
+								listener.onTimeout();
+							} else {
+								listener.onSuccess(finalContent);
+							}
+						}
+					});
+				} catch (Exception e) {
+					listener.onError(e.getMessage());
+				}
 			}
 		});
 		if (COUNT_NUM_THREADS < MAX_NUM_THREADS) {

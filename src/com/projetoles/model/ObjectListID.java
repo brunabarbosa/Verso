@@ -2,6 +2,7 @@ package com.projetoles.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -69,6 +70,14 @@ public class ObjectListID<T extends TemporalModel> implements Parcelable {
 		return mList.get(index);
 	}
 
+	public PreloadedObject<T> getById(String id) {
+		for (PreloadedObject<T> obj : mList) {
+			if (obj.getId().equals(id))
+				return obj;
+		}
+		return null;
+	}
+	
 	public boolean remove(String id) {
 		PreloadedObject<T> obj = null;
 		for (PreloadedObject<T> t : mList) {
@@ -112,6 +121,10 @@ public class ObjectListID<T extends TemporalModel> implements Parcelable {
 	
 	public void sort() {
 		Collections.sort(this.mList);
+	}
+	
+	public void sort(Comparator<PreloadedObject<T> > comparator) {
+		Collections.sort(this.mList, comparator);
 	}
 	
 }

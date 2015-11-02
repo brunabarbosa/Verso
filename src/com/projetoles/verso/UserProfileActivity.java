@@ -4,6 +4,7 @@ import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.DateComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
@@ -54,7 +55,8 @@ public class UserProfileActivity extends Activity {
 			}
 		});
 		
-		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading, mEmpty);
+		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading, mEmpty, 
+				false, new DateComparator<Poesia>());
 
 		mExpListView.setAdapter(mAdapter);
 	}
@@ -137,70 +139,94 @@ public class UserProfileActivity extends Activity {
 		for (PreloadedObject<Poesia> id : mUsuario.getPoesias().getList()) {
 			mListPoesias.add(id);
 		}
-		
+
 		fillPoesias();
 		
-		final Button seguir = (Button) findViewById(R.id.seguir);
-		if (UsuarioController.usuarioLogado.equals(mUsuario)) {
-			seguir.setVisibility(View.GONE);
-		}
-
-		PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
-		if (seguidaId != null) {
-			seguir.setText("Seguindo");
-			seguir.setBackgroundResource(R.drawable.seguir_ativo);
-		}
+		ActivityUtils.loadSharedPoetries(this, mUsuario, mListPoesias, mAdapter, false);
 		
-		// listener para seguir
-		seguir.setOnClickListener(new OnClickListener() {
+		final Button seguir = (Button) findViewById(R.id.seguir);
+		seguir.setVisibility(View.GONE);
+		
+		UsuarioController controller = new UsuarioController(this);
+		controller.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
+
 			@Override
-			public void onClick(View v) {
-				PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(UsuarioController.usuarioLogado.getSeguindo());
-				if (seguidaId != null) {
-					mSeguidaController.delete(seguidaId.getId(), new OnRequestListener<String>(UserProfileActivity.this) {
-						@Override
-						public void onSuccess(String result) {
-							UsuarioController.usuarioLogado.getSeguindo().remove(result);
-							mUsuario.getSeguidores().remove(result);
-							//mUsuarioController.save(mUsuario);
-							seguir.setText("Seguir");
-							seguir.setBackgroundResource(R.drawable.seguir);
-						}
+			public void onSuccess(final Usuario usuarioLogado) {
 
-						@Override
-						public void onError(String errorMessage) {
-							System.out.println(errorMessage);
-						}
-
-						@Override
-						public void onTimeout() {
-							System.out.println("TIMEOUT");
-						}
-					});
-				} else {
-					mSeguidaController.post(UsuarioController.usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
-						@Override
-						public void onSuccess(Seguida result) {
-							UsuarioController.usuarioLogado.getSeguindo().add(result.getId(), result.getDataCriacao().getTimeInMillis());
-							mUsuario.getSeguidores().add(result.getId(), result.getDataCriacao().getTimeInMillis());
-							//mUsuarioController.save(mUsuario);
-							seguir.setText("Seguindo");
-							seguir.setBackgroundResource(R.drawable.seguir_ativo);
-						}
-
-						@Override
-						public void onError(String errorMessage) {
-							System.out.println(errorMessage);
-						}
-
-						@Override
-						public void onTimeout() {
-							System.out.println("TIMEOUT");
-						}
-					});
+				if (!usuarioLogado.equals(mUsuario)) {
+					seguir.setVisibility(View.VISIBLE);
 				}
+
+				PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(usuarioLogado.getSeguindo());
+				if (seguidaId != null) {
+					seguir.setText("Seguindo");
+					seguir.setBackgroundResource(R.drawable.seguir_ativo);
+				}
+			
+				// listener para seguir
+				seguir.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						PreloadedObject<Seguida> seguidaId = mUsuario.getSeguidores().getIntersecction(usuarioLogado.getSeguindo());
+						if (seguidaId != null) {
+							mSeguidaController.delete(seguidaId.getId(), new OnRequestListener<String>(UserProfileActivity.this) {
+								@Override
+								public void onSuccess(String result) {
+									usuarioLogado.getSeguindo().remove(result);
+									mUsuario.getSeguidores().remove(result);
+									//mUsuarioController.save(mUsuario);
+									seguir.setText("Seguir");
+									seguir.setBackgroundResource(R.drawable.seguir);
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println(errorMessage);
+								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT");
+								}
+							});
+						} else {
+							mSeguidaController.post(usuarioLogado, mUsuario, new OnRequestListener<Seguida>(UserProfileActivity.this) {
+								@Override
+								public void onSuccess(Seguida result) {
+									usuarioLogado.getSeguindo().add(result.getId(), result.getDataCriacao().getTimeInMillis());
+									mUsuario.getSeguidores().add(result.getId(), result.getDataCriacao().getTimeInMillis());
+									//mUsuarioController.save(mUsuario);
+									seguir.setText("Seguindo");
+									seguir.setBackgroundResource(R.drawable.seguir_ativo);
+								}
+
+								@Override
+								public void onError(String errorMessage) {
+									System.out.println(errorMessage);
+								}
+
+								@Override
+								public void onTimeout() {
+									System.out.println("TIMEOUT");
+								}
+							});
+						}
+					}
+				});
 			}
-		});
+
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
+			}
+		}, null);
 	}
 
 
@@ -234,11 +260,13 @@ public class UserProfileActivity extends Activity {
 
 			@Override
 			public void onError(String errorMessage) {
+				System.out.println("ERROR ON UPDATE: " + errorMessage);
 				finish();
 			}
 
 			@Override
 			public void onTimeout() {
+				System.out.println("TIMEOUT ON UPDATE.");
 				finish();
 			}
 		});

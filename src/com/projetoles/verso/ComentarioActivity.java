@@ -7,9 +7,11 @@ import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
+import com.projetoles.model.DateComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
+import com.projetoles.model.Usuario;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -44,63 +46,83 @@ public class ComentarioActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if (!mPosting) {
-					mPosting = true;
-					final String comentario = etComentario.getText().toString();
-					mLoading.setVisibility(View.VISIBLE);
-					mComentarioController.post(UsuarioController.usuarioLogado, mPoesia, comentario, new OnRequestListener<Comentario>(ComentarioActivity.this) {
-	 
-						@Override
-						public void onSuccess(Comentario comentario) {
-							mLoading.setVisibility(View.GONE);
-							mPosting = false;
-							if (!mList.contains(comentario.getId())) {
-								PreloadedObject<Comentario> obj = new PreloadedObject<Comentario>(comentario.getDataCriacao(), comentario.getId());
-								obj.setLoadedObj(comentario);
-								mList.add(obj);
-								mList.sort();
-								mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
-								mPoesiaController.update(mPoesia, new OnRequestListener<Poesia>(ComentarioActivity.this) {
+				mLoading.setVisibility(View.VISIBLE);
+				UsuarioController controller = new UsuarioController(ComentarioActivity.this);
+				controller.getUsuarioLogado(new OnRequestListener<Usuario>(ComentarioActivity.this) {
 
-									@Override
-									public void onSuccess(Poesia result) {
-										// TODO Auto-generated method stub
-										
+					@Override
+					public void onSuccess(Usuario usuarioLogado) {
+						if (!mPosting) {
+							mPosting = true;
+							final String comentario = etComentario.getText().toString();
+							mComentarioController.post(usuarioLogado, mPoesia, comentario, new OnRequestListener<Comentario>(ComentarioActivity.this) {
+			 
+								@Override
+								public void onSuccess(Comentario comentario) {
+									mLoading.setVisibility(View.GONE);
+									mPosting = false;
+									if (!mList.contains(comentario.getId())) {
+										PreloadedObject<Comentario> obj = new PreloadedObject<Comentario>(comentario.getDataCriacao(), comentario.getId());
+										obj.setLoadedObj(comentario);
+										mList.add(obj);
+										mList.sort();
+										mPoesia.getComentarios().add(comentario.getId(), comentario.getDataCriacao().getTimeInMillis());
+										mPoesiaController.update(mPoesia, new OnRequestListener<Poesia>(ComentarioActivity.this) {
+
+											@Override
+											public void onSuccess(Poesia result) {
+												// TODO Auto-generated method stub
+												
+											}
+
+											@Override
+											public void onError(String errorMessage) {
+												// TODO Auto-generated method stub
+												
+											}
+
+											@Override
+											public void onTimeout() {
+												// TODO Auto-generated method stub
+												
+											}
+										});
+										mListAdapter.notifyDataSetChanged();
+										etComentario.setText("");
 									}
+								}
 
-									@Override
-									public void onError(String errorMessage) {
-										// TODO Auto-generated method stub
-										
-									}
+								@Override
+								public void onError(String errorMessage) {
+									mLoading.setVisibility(View.GONE);
+									mPosting = false;
+									ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+								}
 
-									@Override
-									public void onTimeout() {
-										// TODO Auto-generated method stub
-										
-									}
-								});
-								mListAdapter.notifyDataSetChanged();
-								etComentario.setText("");
-							}
-						}
-
-						@Override
-						public void onError(String errorMessage) {
+								@Override
+								public void onTimeout() {
+									mLoading.setVisibility(View.GONE);
+									mPosting = false;
+									ActivityUtils.showMessageDialog(ComentarioActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+								}
+							});
+						} else {
 							mLoading.setVisibility(View.GONE);
-							mPosting = false;
-							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 						}
+					}
 
-						@Override
-						public void onTimeout() {
-							mLoading.setVisibility(View.GONE);
-							mPosting = false;
-							ActivityUtils.showMessageDialog(ComentarioActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
-						}
-					});
-				}
-				
+					@Override
+					public void onError(String errorMessage) {
+						mLoading.setVisibility(View.GONE);
+						ActivityUtils.showMessageDialog(ComentarioActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+					}
+
+					@Override
+					public void onTimeout() {
+						mLoading.setVisibility(View.GONE);
+						ActivityUtils.showMessageDialog(ComentarioActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+					}
+				}, null);
 			}
 		});
 	}
@@ -132,7 +154,7 @@ public class ComentarioActivity extends Activity {
 		for (PreloadedObject<Comentario> id : mPoesia.getComentarios().getList()) {
 			mList.add(id);
 		}
-		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList);
+		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList, new DateComparator<Comentario>());
 		mListView.setAdapter(mListAdapter);
 
 		final ImageButton hideContent = (ImageButton) findViewById(R.id.hideContent); 

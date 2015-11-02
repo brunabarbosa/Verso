@@ -1,13 +1,17 @@
 package com.projetoles.adapter;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
+import com.projetoles.controller.CompartilhamentoController;
 import com.projetoles.controller.CurtidaController;
 import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Comentario;
+import com.projetoles.model.Compartilhamento;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
@@ -31,6 +35,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,6 +58,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private ObjectListID<Poesia> mListPoesias;
 	private CurtidaController mCurtidaController;
 	private PoesiaController mPoesiaController;
+	private CompartilhamentoController mCompartilhamentoController;
 	private Bundle mBundle;
 	private Usuario mUsuario;
 	private View mLoading;
@@ -61,54 +67,85 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private Button btnCompartilhar;
 	private ExpandableListView mExpListView;
 	private View mEmpty;
-
+	private boolean mIsOnFeed;
+	private List<Poesia> mUpdatedList;
+	private Comparator<PreloadedObject<Poesia>> mComparator;
+	
 	private int mPreviousTotalItemCount = 0;
 	private boolean mLoadingPoesias = false;
 	private int mAlreadyLoaded;
 	private int mExpectedLoaded;
 	
-	public ExpandablePoesiaAdapter(Activity context, ExpandableListView expListView, 
-			ObjectListID<Poesia> listPoesias, Bundle bundle, View loading, View empty) {
+	public ExpandablePoesiaAdapter(final Activity context, final ExpandableListView expListView, 
+			final ObjectListID<Poesia> listPoesias, final Bundle bundle, final View loading, final View empty, 
+			final boolean isOnFeed, Comparator<PreloadedObject<Poesia>> comparator) {
 		this.mContext = context;
 		this.mExpListView = expListView;
 		this.mListPoesias = listPoesias;
 		this.mCurtidaController = new CurtidaController(context);
 		this.mPoesiaController = new PoesiaController(context);
+		this.mCompartilhamentoController = new CompartilhamentoController(context);
+		this.mComparator = comparator;
 		this.mBundle = bundle;
-		this.mUsuario = UsuarioController.usuarioLogado;
 		this.mLoading = loading;
 		this.mEmpty = empty;
-		this.mListPoesias.sort();
-		mLoading.setVisibility(View.INVISIBLE);
-		if (!mListPoesias.isEmpty()) {
-			loadNextPage(NUMBERS_TO_LOAD);
-			mEmpty.setVisibility(View.INVISIBLE);
-			mExpListView.setOnScrollListener(new OnScrollListener() {
-				
-				@Override
-				public void onScrollStateChanged(AbsListView view, int scrollState) {
-					
+		this.mIsOnFeed = isOnFeed;
+		this.mUpdatedList = new ArrayList<Poesia>();
+		this.mListPoesias.sort(this.mComparator);
+		UsuarioController controller = new UsuarioController(context);
+		controller.getUsuarioLogado(new OnRequestListener<Usuario>(context) {
+ 
+			@Override
+			public void onSuccess(Usuario usuarioLogado) {
+				ExpandablePoesiaAdapter.this.mUsuario = usuarioLogado;
+				mLoading.setVisibility(View.INVISIBLE);
+				if (!mListPoesias.isEmpty()) {
+					loadNextPage(NUMBERS_TO_LOAD);
+					mEmpty.setVisibility(View.INVISIBLE);
+					mExpListView.setOnScrollListener(new OnScrollListener() {
+						
+						@Override
+						public void onScrollStateChanged(AbsListView view, int scrollState) {
+							
+						}
+						
+						@Override
+						public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+							if (totalItemCount < mPreviousTotalItemCount) {
+								mPreviousTotalItemCount = totalItemCount;
+								if (totalItemCount == 0) mLoadingPoesias = true;
+							}
+							if (!mLoadingPoesias) {
+								mLoading.setVisibility(View.INVISIBLE);
+							}
+							if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+								loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
+							}
+						}
+					});
+				} else {
+					mEmpty.setVisibility(View.VISIBLE);
 				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
 				
-				@Override
-				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-					if (totalItemCount < mPreviousTotalItemCount) {
-						mPreviousTotalItemCount = totalItemCount;
-						if (totalItemCount == 0) mLoadingPoesias = true;
-					}
-					if (!mLoadingPoesias) {
-						mLoading.setVisibility(View.INVISIBLE);
-					}
-					if (!mLoadingPoesias && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-						loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
-					}
-				}
-			});
-		} else {
-			mEmpty.setVisibility(View.VISIBLE);
-		}
+			}
+
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
+			}
+		}, null);
 	}
 
+	public void hideEmptyMessage() {
+		mEmpty.setVisibility(View.GONE);
+	}
+	
 	private void loadNextPage(int itemsToLoad) {
 		if (mPreviousTotalItemCount >= mListPoesias.size()) {
 			mLoadingPoesias = false;
@@ -128,6 +165,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								mLoading.setVisibility(View.GONE);
 								mLoadingPoesias = false;
 							}
+							mListPoesias.sort(mComparator);
 							notifyDataSetChanged();
 						}
 
@@ -163,7 +201,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public Object getChild(int groupPosition, int childPosititon) {
-		return this.mListPoesias.get(groupPosition).getLoadedObj().getPoesia();
+		return this.mListPoesias.get(groupPosition).getPureLoadedObj().getPoesia();
 	}
 
 	@Override
@@ -172,14 +210,15 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	}
 	
 	public static void setPoesiaData(TextView date, final Poesia poesia, final Activity context) {
-		date.setText("Postado em " + CalendarUtils.getDataFormada(poesia.getDataCriacao()) + " por ");
+		date.setText((poesia.getCompartilhadoPor().isEmpty() ? "Postado em " : "Compartilhado em ") + CalendarUtils.getDataFormada(poesia.getDataCriacao()) 
+			+ (poesia.getCompartilhadoPor().isEmpty() ? "" : " e postado ") + " por ");
 		SpannableString link = ClickableString.makeLinkSpan(poesia.getPostador().getNome(), new View.OnClickListener() {
-			
+			  
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(context, UserProfileActivity.class);
 				intent.putExtra("usuario", poesia.getPostador());
-				context.startActivity(intent);
+		 		context.startActivity(intent);
 			}
 		});
 		date.append(link);
@@ -231,102 +270,144 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			ClickableString.makeLinksFocusable(tags);
 		}
 	}
+
+	public View getView(int position, View convertView, ViewGroup parent, int layout, final OnRequestListener<Pair<View, Poesia> > callback) {
+    	if (convertView == null) {
+  			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+  			convertView = inflater.inflate(layout, parent, false);
+  		}
+  		convertView.setVisibility(View.GONE);
+  		final View fConvertView = convertView;
+  		Poesia loadedObj = mListPoesias.get(position).getPureLoadedObj();
+  		if (loadedObj != null) {
+  			if (mUpdatedList.contains(loadedObj)) {
+  				fConvertView.setVisibility(View.VISIBLE);
+  				callback.onSuccess(new Pair<View, Poesia>(fConvertView, loadedObj));
+  			} else {
+  				callback.onSuccess(new Pair<View, Poesia>(fConvertView, loadedObj));
+  				mListPoesias.get(position).getLoadedObj(mPoesiaController, new OnRequestListener<Poesia>(callback.getContext()) {
+
+					@Override
+					public void onSuccess(Poesia result) {
+						fConvertView.setVisibility(View.VISIBLE);
+						mUpdatedList.add(result);
+						callback.onSuccess(new Pair<View, Poesia>(fConvertView, result)); 
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						callback.onTimeout();
+					}
+				});
+  			}
+  		}
+  		return convertView;
+  	}
 	
 	@Override
 	public View getChildView(int groupPosition, final int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-
 		final String childText = (String) getChild(groupPosition, childPosition);
+		return getView(groupPosition, convertView, parent, R.layout.list_item, new OnRequestListener<Pair<View,Poesia>>(mContext) {
 
-		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = infalInflater.inflate(R.layout.list_item, null);
-		}
-
-		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-		TextView txtListChildTitle = (TextView) convertView.findViewById(R.id.lblListItemTitle);
-		final Poesia poesia = mListPoesias.get(groupPosition).getLoadedObj();
-
-		TextView tags = (TextView) convertView.findViewById(R.id.tags);
-		TextView date = (TextView) convertView.findViewById(R.id.date);
-		
-		setPoesiaTags(tags, poesia, mPoesiaController, mContext);
-
-		setPoesiaData(date, poesia, mContext);
-	
-		btnCompartilhar = (Button) convertView.findViewById(R.id.btnCompartilhar);
-
-		// Compartilhar
-		btnCompartilhar.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Intent share = new Intent(mContext, SharingInstagramActivity.class);
+			public void onSuccess(Pair<View, Poesia> result) {
+				final View convertView = result.first;
+				final Poesia poesia = result.second;
+				TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
+				TextView txtListChildTitle = (TextView) convertView.findViewById(R.id.lblListItemTitle);
+				TextView tags = (TextView) convertView.findViewById(R.id.tags);
+				TextView date = (TextView) convertView.findViewById(R.id.date);
+				
+				setPoesiaTags(tags, poesia, mPoesiaController, mContext);
 
-				String saida = poesia.getTitulo().toString() + "\n\n"
-						+ poesia.getPoesia().toString() + "\n" + "\n"
-						+ poesia.getAutor();
+				setPoesiaData(date, poesia, mContext);
+			
+				btnCompartilhar = (Button) convertView.findViewById(R.id.btnCompartilhar);
 
-				share.putExtra("titulo", poesia.getTitulo().toString() + "\n" + "\n");
-				share.putExtra("texto", saida);
+				// Compartilhar
+				btnCompartilhar.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent share = new Intent(mContext, SharingInstagramActivity.class);
 
-				mContext.startActivity(share);
-			}
-		});
+						String saida = poesia.getTitulo().toString() + "\n\n"
+								+ poesia.getPoesia().toString() + "\n" + "\n"
+								+ poesia.getAutor();
 
-		btnCompartilharApp = (Button) convertView.findViewById(R.id.btnCompartilharApp);
-		
-		if (poesia.getPostador().equals(mUsuario)) {
-			btnCompartilharApp.setVisibility(View.GONE);
-		} else {
-			btnCompartilharApp.setVisibility(View.VISIBLE);
-		}
+						share.putExtra("titulo", poesia.getTitulo().toString() + "\n" + "\n");
+						share.putExtra("texto", saida);
 
-		// Compartilhar na aplicação
-		btnCompartilharApp.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mLoading.setVisibility(View.VISIBLE);
-				btnCompartilharApp.setEnabled(false);
-				mPoesiaController.post(poesia.getTitulo(), poesia.getAutor(),
-					poesia.getPostador(), poesia.getPoesia(),
-					Calendar.getInstance(), poesia.getTags(),
-					new OnRequestListener<Poesia>(mContext) {
-   
-						@Override
-						public void onSuccess(Poesia poesia) {
-							mLoading.setVisibility(View.GONE);
-							btnCompartilharApp.setEnabled(true);
-							if (!mUsuario.getPoesias().contains(poesia.getId())) {
-								mUsuario.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
-								mListPoesias.add(new PreloadedObject<Poesia>(poesia.getDataCriacao(), poesia.getId()));
-								mListPoesias.sort();
+						mContext.startActivity(share);
+					}
+				});
+
+				btnCompartilharApp = (Button) convertView.findViewById(R.id.btnCompartilharApp);
+				
+				if (poesia.getPostador().equals(mUsuario) || poesia.isCompartilhado(mUsuario)) {
+					btnCompartilharApp.setVisibility(View.GONE);
+				} else {
+					btnCompartilharApp.setVisibility(View.VISIBLE);
+				}
+
+				// Compartilhar na aplicação
+				btnCompartilharApp.setOnClickListener(new OnClickListener() {
+					@Override 
+					public void onClick(View v) {
+						System.out.println("Compartilhando...");
+						mLoading.setVisibility(View.VISIBLE);
+						btnCompartilharApp.setEnabled(false);
+						mCompartilhamentoController.post(mUsuario, poesia, new OnRequestListener<Compartilhamento>(mContext) {
+
+							@Override
+							public void onSuccess(Compartilhamento result) {
+								mLoading.setVisibility(View.GONE);
+								btnCompartilharApp.setEnabled(true);
+								if (!poesia.isCompartilhado(mUsuario)) {
+									poesia.getCompartilhadoPor().add(result);
+								}
 								notifyDataSetChanged();
 								ActivityUtils.showMessageDialog(mContext, "Sucesso!", "Poesia compartilhada com sucesso!", mLoading);
-							} else {
-								ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", "t", mLoading);
 							}
-						}
 
-						@Override
-						public void onError(final String errorMessage) {
-							mLoading.setVisibility(View.GONE);
-							btnCompartilharApp.setEnabled(true);
-							ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, mLoading);
-						}
+							@Override
+							public void onError(String errorMessage) {
+								mLoading.setVisibility(View.GONE);
+								btnCompartilharApp.setEnabled(true);
+								ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", errorMessage, mLoading);
+							}
 
-						@Override
-						public void onTimeout() {
-							mLoading.setVisibility(View.GONE);
-							btnCompartilharApp.setEnabled(true);
-							ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", mLoading);
-						}
-					});
+							@Override
+							public void onTimeout() {
+								mLoading.setVisibility(View.GONE);
+								btnCompartilharApp.setEnabled(true);
+								ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", mLoading);
+							}
+						});
+					}
+				});
+
+				txtListChild.setText(childText);
+				txtListChildTitle.setText(poesia.getTitulo());
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
-
-		txtListChild.setText(childText);
-		txtListChildTitle.setText(poesia.getTitulo());
-		return convertView;
 	}
 
 	@Override
@@ -335,8 +416,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public Object getGroup(int groupPosition) {
-		return this.mListPoesias.get(groupPosition).getLoadedObj().getTitulo();
+	public Object getGroup(int groupPosition) { 
+		return mListPoesias.get(groupPosition).getPureLoadedObj() == null ? "" : 
+			this.mListPoesias.get(groupPosition).getPureLoadedObj().getTitulo();
 	}
 
 	@Override
@@ -366,11 +448,48 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							mPoesiaController.delete(poesia.getId(), new OnRequestListener<String>(mContext) {
+							Compartilhamento comp = null;
+							for (Compartilhamento compartilhamento : poesia.getCompartilhadoPor()) {
+								if (compartilhamento.getPostador().equals(mUsuario)) {
+									comp = compartilhamento;
+								}
+							}
+							if (comp == null) {
+								System.out.println("deletando poesia");
+								mPoesiaController.delete(poesia.getId(), new OnRequestListener<String>(mContext) {
+	
+									@Override
+									public void onSuccess(String result) {
+										mListPoesias.remove(poesia.getId());
+										notifyDataSetChanged();
+									}
+	
+									@Override
+									public void onError(String errorMessage) {
+										ActivityUtils.showMessageDialog(mContext, "Um erro ocorreu", "Não foi possível excluir esta poesia. Tente novamente", null);
+									}
+	
+									@Override
+									public void onTimeout() {
+										ActivityUtils.showMessageDialog(mContext, "Ops", "Ocorreu um erro com sua requisição. Verifique sua conexão com a internet.", null);
+									}
+								});
+						} else {
+							System.out.println("deletando compartilhado");
+							mCompartilhamentoController.delete(comp.getId(), new OnRequestListener<String>(mContext) {
 
 								@Override
 								public void onSuccess(String result) {
-									mListPoesias.remove(poesia.getId());
+									Compartilhamento comp = null;
+									for (Compartilhamento c : poesia.getCompartilhadoPor()) {
+										if (c.getPostador().equals(mUsuario)) {
+											comp = c;
+										}
+									}
+									poesia.getCompartilhadoPor().remove(comp);
+									if (poesia.getCompartilhadoPor().isEmpty()) {
+										mListPoesias.remove(poesia.getId());
+									}
 									notifyDataSetChanged();
 								}
 
@@ -385,8 +504,10 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								}
 							});
 						}
-					}).setNegativeButton("Não", null)
-					.create().show();
+							
+					}
+				}).setNegativeButton("Não", null)
+				.create().show();
 			}
 		});
 	}
@@ -403,7 +524,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				final EditText alertTags = (EditText) alertView.findViewById(R.id.poemaTags);
 				final EditText alertPoesia = (EditText) alertView.findViewById(R.id.poema);
 				alertTitulo.setText(poesia.getTitulo());
-				alertAutor.setText(poesia.getAutor());
+				alertAutor.setText(poesia.getAutor().isEmpty() ? poesia.getPostador().getNome() : poesia.getAutor());
 				alertTags.setText(poesia.getTags());
 				alertPoesia.setText(poesia.getPoesia());
 				new AlertDialog.Builder(mContext)
@@ -476,8 +597,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								public void onSuccess(String id) {
 									mUsuario.getCurtidas().remove(id);
 									clicada.getCurtidas().remove(id);
+									clicada.setNumCurtidas(clicada.getNumCurtidas() - 1);
 									((ImageView) v).setImageResource(R.drawable.like_icon);
-									numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+									numLikes.setText(String.valueOf(clicada.getNumCurtidas()));
 									v.setClickable(true);
 								}
 	
@@ -500,8 +622,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 								public void onSuccess(Curtida curtida) {
 									mUsuario.getCurtidas().add(curtida.getId(), curtida.getDataCriacao().getTimeInMillis());
 									clicada.getCurtidas().add(curtida.getId(), curtida.getDataCriacao().getTimeInMillis());
+									clicada.setNumCurtidas(clicada.getNumCurtidas() + 1);
 									((ImageView) v).setImageResource(R.drawable.like_icon_ativo);
-									numLikes.setText(String.valueOf(clicada.getCurtidas().size()));
+									numLikes.setText(String.valueOf(clicada.getNumCurtidas()));
 									v.setClickable(true);
 								}
 
@@ -526,81 +649,132 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
-		
-		String headerTitle = (String) getGroup(groupPosition);
-		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = infalInflater.inflate(R.layout.list_group, null);
-		}
+		final String headerTitle = (String) getGroup(groupPosition);
+		return getView(groupPosition, convertView, parent, R.layout.list_group, new OnRequestListener<Pair<View, Poesia>>(mContext) {
+			
+			@Override
+			public void onSuccess(final Pair<View, Poesia> result) {
+				final View convertView = result.first;
+				final Poesia poesia = result.second;
+				final TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+				final TextView autor = (TextView) convertView.findViewById(R.id.author);
+				autor.setText(poesia.getAutor());
+				final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
+				numLikes.setText(String.valueOf(poesia.getNumCurtidas()));
+				final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
+				numComments.setText(String.valueOf(poesia.getNumComentarios()));
+				final ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
+				final ImageView edit = (ImageView) convertView.findViewById(R.id.edit);
+				final TextView msgShare = (TextView) convertView.findViewById(R.id.msgShare);
+				
+				if (!poesia.getPostador().equals(mUsuario)) {
+					edit.setVisibility(View.GONE);
+				} else {
+					edit.setVisibility(View.VISIBLE);
+				}
+				
+				boolean compartilhado = false;
+				for (Compartilhamento compartilhamento : poesia.getCompartilhadoPor()) {
+					if (compartilhamento.getPostador().equals(mUsuario)) compartilhado = true;
+				}
+				if ((poesia.getPostador().equals(mUsuario)) || (compartilhado && mIsOnFeed)) {
+					delete.setVisibility(View.VISIBLE);
+				} else {
+					delete.setVisibility(View.GONE);
+				}
+				
+				if (poesia.getCompartilhadoPor().isEmpty() || !mIsOnFeed) {
+					msgShare.setVisibility(View.GONE);
+				} else {
+					msgShare.setVisibility(View.VISIBLE);
+					msgShare.setText("");
+					boolean first = true;
+					for (Compartilhamento compartilhamento : poesia.getCompartilhadoPor()) {
+						if (!first) {
+							if (compartilhamento.equals(poesia.getCompartilhadoPor().get(poesia.getCompartilhadoPor().size() - 1))) {
+								msgShare.append(" e ");
+							} else {
+								msgShare.append(", ");
+							}
+						}
+						first = false;
+						final Usuario postador = compartilhamento.getPostador();
+						SpannableString link = ClickableString.makeLinkSpan(compartilhamento.getPostador().equals(mUsuario) ? "Você" : 
+							compartilhamento.getPostador().getNome(), new View.OnClickListener() {
+								
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(mContext, UserProfileActivity.class);
+									intent.putExtra("usuario", postador);
+									mContext.startActivity(intent);
+								}
+							});
+						msgShare.append(link);
+						msgShare.append(" ");
+					}
+					msgShare.append((poesia.getCompartilhadoPor().size() == 1 ? " compartilhou " : " compartilharam ") + ((poesia.getPostador().equals(mUsuario)) ? "sua" : "uma") + " poesia.");
+					//ClickableString.makeLinksFocusable(msgShare);
+				}
+				
+				// Botão tela de curtidas
+				numLikes.setTag(poesia);
+				numLikes.setOnClickListener(new OnClickListener() {
 
-		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(mContext, CurtidaActivity.class);
+						intent.putExtra("poesia", (Poesia) v.getTag());
+						mContext.startActivity(intent);
+					}
+				});
 
-		final Poesia poesia = mListPoesias.get(groupPosition).getLoadedObj();
+				// Botao tela de comentarios
+				ImageView btnComment = (ImageView) convertView.findViewById(R.id.commentIcon);
+				btnComment.setTag(poesia);
+				btnComment.setOnClickListener(new OnClickListener() {
 
-		final TextView autor = (TextView) convertView.findViewById(R.id.author);
-		autor.setText(poesia.getAutor());
-		final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
-		numLikes.setText(String.valueOf(poesia.getCurtidas().size()));
-		final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
-		numComments.setText(String.valueOf(poesia.getComentarios().size()));
-		final ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
-		final ImageView edit = (ImageView) convertView.findViewById(R.id.edit);
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(mContext, ComentarioActivity.class);
+						intent.putExtra("poesia", (Poesia) v.getTag());
+						intent.putExtra("callback", mContext.getClass());
+						intent.putExtra("bundle", mBundle);
+						mContext.startActivity(intent);
+						mContext.finish();
+					}
+				});
 
-		if (!poesia.getPostador().equals(UsuarioController.usuarioLogado)) {
-			delete.setVisibility(View.GONE);
-			edit.setVisibility(View.GONE);
-		} else {
-			delete.setVisibility(View.VISIBLE);
-			edit.setVisibility(View.VISIBLE);
-		}
+				// Botao curtir
+				final ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
+				if (mUsuario.getCurtidas().getIntersecction(poesia.getCurtidas()) != null) {
+					btnLike.setImageResource(R.drawable.like_icon_ativo);
+				} else {
+					btnLike.setImageResource(R.drawable.like_icon);
+				}
+				btnLike.setTag(poesia);
+				
+				lblListHeader.setTypeface(null, Typeface.BOLD);
+				lblListHeader.setText(headerTitle);
 
-		// Botão tela de curtidas
-		numLikes.setTag(poesia);
-		numLikes.setOnClickListener(new OnClickListener() {
+				editarPoesia(edit, poesia);
+				
+				excluirPoesia(delete, poesia);
+
+				curtirPoesia(btnLike, numLikes, poesia);
+			}
 
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(mContext, CurtidaActivity.class);
-				intent.putExtra("poesia", (Poesia) v.getTag());
-				mContext.startActivity(intent);
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
 			}
-		});
-
-		// Botao tela de comentarios
-		ImageView btnComment = (ImageView) convertView.findViewById(R.id.commentIcon);
-		btnComment.setTag(poesia);
-		btnComment.setOnClickListener(new OnClickListener() {
-
+			
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(mContext, ComentarioActivity.class);
-				intent.putExtra("poesia", (Poesia) v.getTag());
-				intent.putExtra("callback", mContext.getClass());
-				intent.putExtra("bundle", mBundle);
-				mContext.startActivity(intent);
-				mContext.finish();
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
-
-		// Botao curtir
-		final ImageView btnLike = (ImageView) convertView.findViewById(R.id.facebookIcon);
-		if (mUsuario.getCurtidas().getIntersecction(poesia.getCurtidas()) != null) {
-			btnLike.setImageResource(R.drawable.like_icon_ativo);
-		} else {
-			btnLike.setImageResource(R.drawable.like_icon);
-		}
-		btnLike.setTag(poesia);
-		
-		lblListHeader.setTypeface(null, Typeface.BOLD);
-		lblListHeader.setText(headerTitle);
-
-		editarPoesia(edit, poesia);
-		
-		excluirPoesia(delete, poesia);
-
-		curtirPoesia(btnLike, numLikes, poesia);
-		
-		return convertView;
 	}
 
 	@Override

@@ -27,7 +27,6 @@
             android:layout_marginTop="5dp"
             android:ellipsize="none"
             android:scrollHorizontally="false"
-            android:text="User Name"
             android:textColor="#927e58"
             android:textSize="20sp" />
 
@@ -38,7 +37,6 @@
             android:layout_marginTop="5dp"
             android:ellipsize="none"
             android:scrollHorizontally="false"
-            android:text="UserName"
             android:textColor="#927e58" />
 
         <TextView
@@ -48,7 +46,6 @@
             android:ellipsize="none"
             android:layout_marginTop="5dp"
             android:scrollHorizontally="false"
-            android:text="User Name"
             android:textColor="#a28e68"
             android:textSize="12sp"
             android:textStyle="italic" />

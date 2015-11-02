@@ -2,6 +2,8 @@ package com.projetoles.verso;
 
 import com.projetoles.adapter.ListSeguidoresAdapter;
 import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.DateComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.Seguida;
@@ -42,35 +44,55 @@ public class SeguidoresActivity extends Activity {
 
 		mListSeguidas = new ObjectListID<Seguida>();
 		
-		if (mUsuario.equals(UsuarioController.usuarioLogado)) { 
-			if (mSeguindo) {
-				getActionBar().setTitle("Pessoas que eu sigo");
-				for (PreloadedObject<Seguida> id : mUsuario.getSeguindo().getList()) {
-					mListSeguidas.add(id);
+		UsuarioController controller = new UsuarioController(this);
+		controller.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
+
+			@Override
+			public void onSuccess(final Usuario usuarioLogado) {
+				if (mUsuario.equals(usuarioLogado)) { 
+					if (mSeguindo) {
+						getActionBar().setTitle("Pessoas que eu sigo");
+						for (PreloadedObject<Seguida> id : mUsuario.getSeguindo().getList()) {
+							mListSeguidas.add(id);
+						}
+					} else {
+						getActionBar().setTitle("Meus seguidores");
+						for (PreloadedObject<Seguida> id : mUsuario.getSeguidores().getList()) {
+							mListSeguidas.add(id);
+						}
+					}
+				} else {
+					if (mSeguindo) {
+						getActionBar().setTitle("Pessoas que " + mUsuario.getNome() + " segue");
+						for (PreloadedObject<Seguida> id : mUsuario.getSeguindo().getList()) {
+							mListSeguidas.add(id);
+						}
+					} else {
+						getActionBar().setTitle("Seguidores de " + mUsuario.getNome());
+						for (PreloadedObject<Seguida> id : mUsuario.getSeguidores().getList()) {
+							mListSeguidas.add(id);
+						}
+					}
 				}
-			} else {
-				getActionBar().setTitle("Meus seguidores");
-				for (PreloadedObject<Seguida> id : mUsuario.getSeguidores().getList()) {
-					mListSeguidas.add(id);
-				}
+				
+				// Preparing list view
+				mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this, mLoading, mListView, 
+						mListSeguidas, new DateComparator<Seguida>(), mSeguindo);
+				mListView.setAdapter(mListAdapter);
 			}
-		} else {
-			if (mSeguindo) {
-				getActionBar().setTitle("Pessoas que " + mUsuario.getNome() + " segue");
-				for (PreloadedObject<Seguida> id : mUsuario.getSeguindo().getList()) {
-					mListSeguidas.add(id);
-				}
-			} else {
-				getActionBar().setTitle("Seguidores de " + mUsuario.getNome());
-				for (PreloadedObject<Seguida> id : mUsuario.getSeguidores().getList()) {
-					mListSeguidas.add(id);
-				}
+			
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
 			}
-		}
-		
-		// Preparing list view
-		mListAdapter = new ListSeguidoresAdapter(this, mLoading, mListView, mListSeguidas, mSeguindo);
-		mListView.setAdapter(mListAdapter);
+			
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+		}, null);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.projetoles.dao.POST.Builder;
+import com.projetoles.model.Compartilhamento;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.Notificacao;
@@ -102,7 +103,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 			.setPath("user/update");
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
-	}
+	} 
 	
 	public void setNotificacoes(Usuario usuario, boolean notificacoes, OnRequestListener<String> callback) {
 		POST.Builder postRequest = (POST.Builder) new POST.Builder()
@@ -114,6 +115,14 @@ public class UsuarioDAO extends DAO<Usuario> {
 		post.execute(callback);
 	}
 	
+	public void getMaisSeguidos(OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+				.setDomain(DOMAIN)
+				.setPath("user/most_followed");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	 
 	@Override
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {
 		String email = obj.getString("email");
@@ -134,8 +143,12 @@ public class UsuarioDAO extends DAO<Usuario> {
 		ObjectListID<Curtida> curtidas = new ObjectListID<Curtida>(obj.getJSONArray("likes"));
 		ObjectListID<Seguida> seguindo = new ObjectListID<Seguida>(obj.getJSONArray("followeds"));
 		ObjectListID<Seguida> seguidores = new ObjectListID<Seguida>(obj.getJSONArray("followers"));
+		ObjectListID<Compartilhamento> compartilhamentos = new ObjectListID<Compartilhamento>(obj.getJSONArray("shares"));
 		boolean notificacoesHabilitadas = obj.getBoolean("enable_notifications");
-		return new Usuario(email, c, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
+		Usuario usuario = new Usuario(email, c, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, compartilhamentos, notificacoesHabilitadas);
+		long numSeguidores = obj.getLong("followed");
+		usuario.setNumSeguidores(numSeguidores);
+		return usuario;
 	}
 
 }

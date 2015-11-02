@@ -1,6 +1,7 @@
 package com.projetoles.verso;
 
 import com.projetoles.adapter.ExpandablePoesiaAdapter;
+import com.projetoles.model.DateComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 
@@ -34,7 +35,8 @@ public class ResultadoPesquisaActivity extends Activity {
 				previousGroup = groupPosition;
 			}
 		});
-		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, mBundle, mLoading, tvNenhumResultado);
+		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, 
+				mBundle, mLoading, tvNenhumResultado, false, new DateComparator<Poesia>());
 
 		mExpListView.setAdapter(mAdapter);
 	}

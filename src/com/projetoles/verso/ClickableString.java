@@ -30,12 +30,12 @@ public class ClickableString extends ClickableSpan {
 	}
 	
 	public static void makeLinksFocusable(TextView tv) {
-	    MovementMethod m = tv.getMovementMethod();  
+		MovementMethod m = tv.getMovementMethod();  
 	    if ((m == null) || !(m instanceof LinkMovementMethod)) {  
 	        if (tv.getLinksClickable()) {  
 	            tv.setMovementMethod(LinkMovementMethod.getInstance());  
 	        }  
-	    }  
+	    }   
 	}
 
 }

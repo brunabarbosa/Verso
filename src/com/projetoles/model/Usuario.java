@@ -24,7 +24,9 @@ public class Usuario extends TemporalModel {
 	private ObjectListID<Curtida> mCurtidas;
 	private ObjectListID<Seguida> mSeguindo;
 	private ObjectListID<Seguida> mSeguidores;
+	private ObjectListID<Compartilhamento> mCompartilhamentos;
 	private boolean mNotificacoesHabilitadas;
+	private long mNumSeguidores;
 
 	public static final Parcelable.Creator<Usuario> CREATOR = 
 			new Parcelable.Creator<Usuario>() {
@@ -50,6 +52,8 @@ public class Usuario extends TemporalModel {
 		setCurtidas((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 		setSeguindo((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 		setSeguidores((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
+		setCompartilhamentos((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
+		setNumSeguidores(in.readLong());
 	}
 
 	@Override
@@ -64,11 +68,14 @@ public class Usuario extends TemporalModel {
 		dest.writeParcelable(this.getCurtidas(), flags);
 		dest.writeParcelable(this.getSeguindo(), flags);
 		dest.writeParcelable(this.getSeguidores(), flags);
+		dest.writeParcelable(this.getCompartilhamentos(), flags);
+		dest.writeLong(this.getNumSeguidores());
 	}
 	
 	public Usuario(String email, Calendar dataCriacao, String senha, String nome, String biografia, byte[] foto, 
 			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
-			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
+			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, ObjectListID<Compartilhamento> compartilhamentos,
+			boolean notificacoesHabilitadas) {
 		super(email, dataCriacao);
 		setSenha(senha);
 		setNome(nome);
@@ -79,13 +86,16 @@ public class Usuario extends TemporalModel {
 		setCurtidas(curtidas);
 		setSeguindo(seguindo);
 		setSeguidores(seguidores);
+		setCompartilhamentos(compartilhamentos);
 		setNotificacoesHabilitadas(notificacoesHabilitadas);
 	}
 
 	public Usuario(String email, Calendar dataCriacao, String nome, String biografia, byte[] foto,
 			ObjectListID<Poesia> poesias, ObjectListID<Notificacao> notificacoes, ObjectListID<Curtida> curtidas,
-			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, boolean notificacoesHabilitadas) {
-		this(email, dataCriacao, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, notificacoesHabilitadas);
+			ObjectListID<Seguida> seguindo, ObjectListID<Seguida> seguidores, ObjectListID<Compartilhamento> compartilhamentos,
+			boolean notificacoesHabilitadas) {
+		this(email, dataCriacao, null, nome, biografia, foto, poesias, notificacoes, curtidas, seguindo, seguidores, compartilhamentos,
+				notificacoesHabilitadas);
 	}
 
 	@Override
@@ -197,12 +207,28 @@ public class Usuario extends TemporalModel {
 		return this.mSeguidores;
 	}
 	
+	public void setCompartilhamentos(ObjectListID<Compartilhamento> compartilhamentos) {
+		this.mCompartilhamentos = compartilhamentos;
+	}
+	
+	public ObjectListID<Compartilhamento> getCompartilhamentos() {
+		return this.mCompartilhamentos;
+	}
+	
 	public boolean getNotificacoesHabilitadas() {
 		return this.mNotificacoesHabilitadas;
 	}
 	
 	public void setNotificacoesHabilitadas(boolean notificacoesHabilitadas) {
 		this.mNotificacoesHabilitadas = notificacoesHabilitadas;
+	}
+	
+	public long getNumSeguidores() {
+		return this.mNumSeguidores;
+	}
+	
+	public void setNumSeguidores(long numSeguidores) {
+		this.mNumSeguidores = numSeguidores;
 	}
 	
 	@Override

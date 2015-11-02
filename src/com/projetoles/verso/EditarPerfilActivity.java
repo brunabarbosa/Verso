@@ -28,6 +28,7 @@ public class EditarPerfilActivity extends Activity {
 	private Button btnSalvarPerfil;
 	private View mLoading;
 	private CameraActivityBundle mCameraBundle;
+	private Usuario mUsuario;
 
 	private void salvarPerfil(Usuario usuario) {
 		btnSalvarPerfil.setOnClickListener(new OnClickListener() {
@@ -75,6 +76,7 @@ public class EditarPerfilActivity extends Activity {
 
 		Bundle b = getIntent().getExtras();
 		mCallback = (Class) b.get("callback");
+		mUsuario = (Usuario) b.getParcelable("usuario");
 		
 		mController = new UsuarioController(this);
 		
@@ -123,7 +125,7 @@ public class EditarPerfilActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		Intent i = new Intent(EditarPerfilActivity.this, BiografiaActivity.class);
-		i.putExtra("usuario", UsuarioController.usuarioLogado);
+		i.putExtra("usuario", mUsuario);
 		i.putExtra("callback", mCallback);
 		startActivity(i);
 		finish();

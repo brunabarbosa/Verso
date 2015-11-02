@@ -31,50 +31,66 @@ public class SeguidaController extends Controller<Seguida> {
 	}
  
 	public void post(final Usuario seguidor, final Usuario seguindo, final OnRequestListener<Seguida> callback) {
-		try {
-			Seguida seguida = new Seguida(null, Calendar.getInstance(), seguidor, seguindo);
-			super.post(seguida, new OnRequestListener<Seguida>(callback.getContext()) {
+		UsuarioController controller = new UsuarioController(callback.getContext());
+		controller.getUsuarioLogado(new OnRequestListener<Usuario>(callback.getContext()) {
 
-				@Override
-				public void onSuccess(final Seguida seguidaResult) {
-					if (!seguindo.equals(UsuarioController.usuarioLogado)) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), seguindo, seguidor, " seguiu seu perfil.", new Poesia(), "usuario"), 
-							new OnRequestListener<Notificacao>(callback.getContext()) {
- 
-								@Override
-								public void onSuccess(Notificacao result) {
-									seguindo.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
-								}
+			@Override
+			public void onSuccess(final Usuario usuarioLogado) {
+				try {
+					Seguida seguida = new Seguida(null, Calendar.getInstance(), seguidor, seguindo);
+					SeguidaController.super.post(seguida, new OnRequestListener<Seguida>(callback.getContext()) {
 
-								@Override
-								public void onError(String errorMessage) {
-									System.out.println(errorMessage);
-								}
+						@Override
+						public void onSuccess(final Seguida seguidaResult) {
+							if (!seguindo.equals(usuarioLogado)) {
+								mNotificacao.post(new Notificacao(null, Calendar.getInstance(), seguindo, seguidor, " seguiu seu perfil.", new Poesia(), "usuario"), 
+									new OnRequestListener<Notificacao>(callback.getContext()) {
+		 
+										@Override
+										public void onSuccess(Notificacao result) {
+											seguindo.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
+										}
 
-								@Override
-								public void onTimeout() {
-									System.out.println("TIMEOUT");
-								}
-							});
-					}
-					callback.onSuccess(seguidaResult);
+										@Override
+										public void onError(String errorMessage) {
+											System.out.println(errorMessage);
+										}
+
+										@Override
+										public void onTimeout() {
+											System.out.println("TIMEOUT");
+										}
+									});
+							}
+							callback.onSuccess(seguidaResult);
+						}
+
+						@Override
+						public void onError(String errorMessage) {
+							callback.onError(errorMessage);
+						}
+
+						@Override
+						public void onTimeout() {
+							callback.onTimeout();
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
 				}
+			}
 
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-					
-				}
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
 
-				@Override
-				public void onTimeout() {
-					System.out.println("TIMEOUT");
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-			callback.onError(e.getMessage());
-		}
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		}, null);
 	}
 
 	@Override

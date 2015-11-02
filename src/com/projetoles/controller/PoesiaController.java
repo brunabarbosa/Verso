@@ -65,55 +65,72 @@ public class PoesiaController extends Controller<Poesia> {
 		});
 	}
  
-	public void post(String titulo, String autor, final Usuario postador,
-			String poesia, Calendar dataCriacao, String tags,
+	public void post(final String titulo, final String autor, final Usuario postador,
+			final String poesia, final Calendar dataCriacao, final String tags,
 			final OnRequestListener<Poesia> callback) {
-		try { 
-			Poesia p = new Poesia(null, dataCriacao, titulo, UsuarioController.usuarioLogado, autor, poesia, tags, new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
-			super.post(p, new OnRequestListener<Poesia>(callback.getContext()) {
-				
-				@Override
-				public void onSuccess(Poesia result) {
-					if (!postador.equals(UsuarioController.usuarioLogado)) {
-						mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
-								postador, UsuarioController.usuarioLogado, " compartilhou sua poesia.", result, "poesia"), 
-							new OnRequestListener<Notificacao>(callback.getContext()) {
- 
-								@Override
-								public void onSuccess(Notificacao result) {
-									postador.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
-								}
+		UsuarioController controller = new UsuarioController(callback.getContext());
+		controller.getUsuarioLogado(new OnRequestListener<Usuario>(callback.getContext()) {
 
-								@Override
-								public void onError(String errorMessage) {
-									System.out.println(errorMessage);
-								}
+			@Override
+			public void onSuccess(final Usuario usuarioLogado) {
+				try { 
+					Poesia p = new Poesia(null, dataCriacao, titulo, usuarioLogado, autor, poesia, tags, new ObjectListID<Comentario>(), new ObjectListID<Curtida>());
+					PoesiaController.super.post(p, new OnRequestListener<Poesia>(callback.getContext()) {
+						
+						@Override
+						public void onSuccess(Poesia result) {
+							if (!postador.equals(usuarioLogado)) {
+								mNotificacao.post(new Notificacao(null, Calendar.getInstance(), 
+										postador, usuarioLogado, " compartilhou sua poesia.", result, "poesia"), 
+									new OnRequestListener<Notificacao>(callback.getContext()) {
+		 
+										@Override
+										public void onSuccess(Notificacao result) {
+											postador.getNotificacoes().add(result.getId(), result.getDataCriacao().getTimeInMillis());
+										}
 
-								@Override
-								public void onTimeout() {
-									System.out.println("TIMEOUT");
-								}
-							});
-					}
-					callback.onSuccess(result);
-					
-				}
-				
-				@Override
-				public void onError(String errorMessage) {
-					System.out.println(errorMessage);
-					
-				}
+										@Override
+										public void onError(String errorMessage) {
+											System.out.println(errorMessage);
+										}
 
-				@Override
-				public void onTimeout() {
-					System.out.println("TIMEOUT");
+										@Override
+										public void onTimeout() {
+											System.out.println("TIMEOUT");
+										}
+									});
+							}
+							callback.onSuccess(result);
+							
+						}
+						
+						@Override
+						public void onError(String errorMessage) {
+							System.out.println(errorMessage);
+							
+						}
+
+						@Override
+						public void onTimeout() {
+							System.out.println("TIMEOUT");
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
 				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-			callback.onError(e.getMessage());
-		}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		}, null);
 	}
 
 	@Override
@@ -133,6 +150,10 @@ public class PoesiaController extends Controller<Poesia> {
 					JSONObject json = new JSONObject(jsonResult);
 					boolean success = json.getBoolean("success");
 					if (success) {
+						long numLikes = json.getLong("liked");
+						long numComments = json.getLong("commented");
+						object.setNumCurtidas(numLikes);
+						object.setNumComentarios(numComments);
 						ArrayList<PreloadedObject<Curtida>> likes = new ArrayList<PreloadedObject<Curtida>>();
 						JSONArray array = json.getJSONArray("likes");
 						for (int i = 0; i < array.length(); i++) {
@@ -162,6 +183,82 @@ public class PoesiaController extends Controller<Poesia> {
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);	
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		});
+	}
+
+	public void getMaisCurtidas(final OnRequestListener<ObjectListID<Poesia>> callback) {
+		((PoesiaDAO)mDAO).getMaisCurtidas(new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					boolean success = jsonObject.getBoolean("success");
+					if (success) { 
+						ObjectListID<Poesia> poesias = new ObjectListID<Poesia>();
+						JSONArray array = jsonObject.getJSONArray("poetries");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							poesias.add(new PreloadedObject<Poesia>(time, id));
+						}
+						callback.onSuccess(poesias);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		});
+	}
+	
+	public void getMaisComentadas(final OnRequestListener<ObjectListID<Poesia>> callback) {
+		((PoesiaDAO)mDAO).getMaisComentadas(new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					boolean success = jsonObject.getBoolean("success");
+					if (success) { 
+						ObjectListID<Poesia> poesias = new ObjectListID<Poesia>();
+						JSONArray array = jsonObject.getJSONArray("poetries");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							poesias.add(new PreloadedObject<Poesia>(time, id));
+						}
+						callback.onSuccess(poesias);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
 			}
 
 			@Override

@@ -1,6 +1,8 @@
 package com.projetoles.verso;
 
 import com.projetoles.adapter.ListCurtidaAdapter;
+import com.projetoles.model.Curtida;
+import com.projetoles.model.DateComparator;
 import com.projetoles.model.Poesia;
 
 import android.app.Activity;
@@ -30,7 +32,7 @@ public class CurtidaActivity extends Activity {
 		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
 		mLoading = findViewById(R.id.loadCurtidas);
 		
-		mAdapter = new ListCurtidaAdapter(this, mLoading, mListView, mPoesia.getCurtidas());
+		mAdapter = new ListCurtidaAdapter(this, mLoading, mListView, mPoesia.getCurtidas(), new DateComparator<Curtida>());
 		mListView.setAdapter(mAdapter);	
 	}
 

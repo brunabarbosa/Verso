@@ -98,7 +98,23 @@ public class PoesiaDAO extends DAO<Poesia> {
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	}
-	
+
+	public void getMaisCurtidas(OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+				.setDomain(DOMAIN)
+				.setPath("poetry/most_liked");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	 
+	public void getMaisComentadas(OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+				.setDomain(DOMAIN)
+				.setPath("poetry/most_commented");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
+	 
 	@Override
 	public Poesia getFromJSON(JSONObject json, List<Object> params) throws JSONException {
 		String id = json.getString("id");
@@ -109,7 +125,12 @@ public class PoesiaDAO extends DAO<Poesia> {
 		String autor = json.getString("author");
 		ObjectListID<Comentario> comentarios = new ObjectListID<Comentario>(json.getJSONArray("comments"));
 		ObjectListID<Curtida> curtidas = new ObjectListID<Curtida>(json.getJSONArray("likes"));
-		return new Poesia(id, dataCriacao, titulo, (Usuario)params.get(0), autor, poesia, tags, comentarios, curtidas);
+		Poesia p = new Poesia(id, dataCriacao, titulo, (Usuario)params.get(0), autor, poesia, tags, comentarios, curtidas);
+		long numCurtidas = json.getLong("liked");
+		long numComments = json.getLong("commented");
+		p.setNumCurtidas(numCurtidas);
+		p.setNumComentarios(numComments); 
+		return p;
 	}
 	 
 }

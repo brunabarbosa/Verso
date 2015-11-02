@@ -2,6 +2,12 @@ package com.projetoles.verso;
 
 import java.util.Calendar;
 
+import com.projetoles.controller.PoesiaController;
+import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
+import com.projetoles.model.Poesia;
+import com.projetoles.model.Usuario;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +15,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.projetoles.controller.PoesiaController;
-import com.projetoles.controller.UsuarioController;
-import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.Poesia;
 
 public class CriarPoesiaActivity extends Activity {
 	
@@ -30,29 +31,43 @@ public class CriarPoesiaActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				String titulo = etTitulo.getText().toString(); 
-				String autor = etAutor.getText().toString();
-				if (autor.trim().isEmpty()) {
-					autor = UsuarioController.usuarioLogado.getNome();
-				}
-				String poesia = etPoesia.getText().toString(); 
-				String tags = etTags.getText().toString();
-				Calendar dataCriacao = Calendar.getInstance();
-				
 				mLoading.setVisibility(View.VISIBLE);
-				mController.post(titulo, autor, UsuarioController.usuarioLogado, poesia, dataCriacao, 
-						tags, new OnRequestListener<Poesia>(CriarPoesiaActivity.this) {
-					
+				UsuarioController controller = new UsuarioController(CriarPoesiaActivity.this);
+				controller.getUsuarioLogado(new OnRequestListener<Usuario>(CriarPoesiaActivity.this) {
+ 
 					@Override
-					public void onSuccess(Poesia poesia) {
-						UsuarioController.usuarioLogado.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
-						Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
-						startActivity(i);
-						finish();
+					public void onSuccess(final Usuario usuarioLogado) {
+						String titulo = etTitulo.getText().toString(); 
+						String autor = etAutor.getText().toString();
+						String poesia = etPoesia.getText().toString(); 
+						String tags = etTags.getText().toString();
+						Calendar dataCriacao = Calendar.getInstance();
+
+						mController.post(titulo, autor, usuarioLogado, poesia, dataCriacao, 
+								tags, new OnRequestListener<Poesia>(CriarPoesiaActivity.this) {
+							
+							@Override
+							public void onSuccess(Poesia poesia) {
+								usuarioLogado.getPoesias().add(poesia.getId(), poesia.getDataCriacao().getTimeInMillis());
+								Intent i = new Intent(CriarPoesiaActivity.this, MainActivity.class);
+								startActivity(i);
+								finish();
+							}
+							
+							@Override
+							public void onError(final String errorMessage) {
+								ActivityUtils.showMessageDialog(CriarPoesiaActivity.this, "Um erro ocorreu", errorMessage, mLoading);
+							}
+
+							@Override
+							public void onTimeout() {
+								ActivityUtils.showMessageDialog(CriarPoesiaActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
+							}
+						});
 					}
-					
+
 					@Override
-					public void onError(final String errorMessage) {
+					public void onError(String errorMessage) {
 						ActivityUtils.showMessageDialog(CriarPoesiaActivity.this, "Um erro ocorreu", errorMessage, mLoading);
 					}
 
@@ -60,7 +75,7 @@ public class CriarPoesiaActivity extends Activity {
 					public void onTimeout() {
 						ActivityUtils.showMessageDialog(CriarPoesiaActivity.this, "Ops", "Ocorreu um erro com a sua requisição. Verifique sua conexão com a internet.", mLoading);
 					}
-				});
+				}, null);
 			}
 		});
 	}

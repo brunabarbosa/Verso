@@ -2,16 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#ffffff">
-
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/msgShare"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:ellipsize="none"
+        android:scrollHorizontally="false"
+        android:text="Você compartilhou uma poesia"
+        android:focusable="false" />
+    
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/barra_poesia"
         android:columnCount="3"
         android:rowCount="3"
-        android:padding="10dp" >
+        android:padding="10dp">
  
         <TextView
            android:id="@+id/lblListHeader"
@@ -26,7 +36,8 @@
            android:scrollHorizontally="false"
            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
            android:textColor="#927e58"
-           android:textSize="17dp" />
+           android:textSize="17dp"
+           android:focusable="false"  />
         
         <TextView
            android:id="@+id/author"
@@ -40,11 +51,11 @@
            android:maxLines="5"
            android:scrollHorizontally="false"
            android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-           android:text="author"
            android:textColor="#927e58"
            android:textSize="16sp"
            android:paddingBottom="10dp"
-		   android:clickable="true"/>
+		   android:clickable="true"
+		   android:focusable="false" />
         
         <ImageView
             android:id="@+id/commentIcon"
@@ -55,7 +66,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:clickable="true"
-            android:src="@drawable/comment" />
+            android:src="@drawable/comment"
+            android:focusable="false"  />
 
         <ImageView
             android:id="@+id/facebookIcon"
@@ -65,7 +77,8 @@
             android:layout_column="1"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/like_icon"/>
+            android:src="@drawable/like_icon"
+            android:focusable="false" />
 
         <TextView
             android:id="@+id/num_comments"
@@ -74,9 +87,9 @@
             android:layout_column="2"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="0"
             android:textColor="#a1967c"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:focusable="false"  />
 
         <TextView
             android:id="@+id/num_likes"
@@ -87,9 +100,9 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:clickable="true"
-            android:text="0"
             android:textColor="#a1967c"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:focusable="false"  />
 		
 		<ImageView
             android:id="@+id/edit"
@@ -100,7 +113,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:alpha="0.4"
-            android:src="@drawable/ic_edit_black_48dp" />
+            android:src="@drawable/ic_edit_black_48dp"
+            android:focusable="false"  />
 		
 		<ImageView
             android:id="@+id/delete"
@@ -111,7 +125,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:alpha="0.4"
-            android:src="@drawable/ic_clear_black_48dp" />
+            android:src="@drawable/ic_clear_black_48dp"
+            android:focusable="false"  />
 		
     </GridLayout>
  

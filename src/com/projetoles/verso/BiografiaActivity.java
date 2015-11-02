@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projetoles.controller.UsuarioController;
+import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Usuario;
 
 public class BiografiaActivity extends Activity {
@@ -27,6 +28,7 @@ public class BiografiaActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(BiografiaActivity.this, EditarPerfilActivity.class);
 				i.putExtra("callback", mCallback);
+				i.putExtra("usuario", mUsuario);
 				startActivity(i);
 				finish();
 			}
@@ -56,9 +58,29 @@ public class BiografiaActivity extends Activity {
  		cameraBundle.setFoto(mUsuario.getFoto());
  		
 		btnEditarPerfil = (Button) findViewById(R.id.btnEditarPerfil);
-		if (!mUsuario.equals(UsuarioController.usuarioLogado)) {
-			btnEditarPerfil.setVisibility(View.GONE);
-		}
+		btnEditarPerfil.setVisibility(View.GONE);
+		UsuarioController usuarioController = new UsuarioController(this);
+		usuarioController.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
+			
+			@Override
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSuccess(Usuario usuarioLogado) {
+				if (mUsuario.equals(usuarioLogado)) {
+					btnEditarPerfil.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+		}, null);
 		
 		editarPerfil();
 	}

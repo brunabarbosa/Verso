@@ -10,25 +10,42 @@
 
     </ExpandableListView>
     
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+	    <RelativeLayout
+		     android:id="@+id/empty"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:visibility="invisible" >
+	        
+	        <TextView
+	            android:id="@+id/tvNone"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerInParent="true"
+		        android:text="Não há poesias para visualizar. :(" />
+		    
+	        <Button
+                android:id="@+id/btnDescobrir"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_margin="2dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/tvNone"
+                android:background="@drawable/entrar"
+                android:text="Descubra novas poesias" />
+     
+	    </RelativeLayout>
+	    
 	    <ProgressBar
 	        android:id="@+id/loading"
 	        style="?android:attr/progressBarStyleLarge"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_centerInParent="true"  />
-	    
-	    <TextView
-	        android:id="@+id/empty"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerInParent="true"
-	        android:text="Não há poesias para visualizar. :("
-	        android:visibility="invisible" />
-	    
-    </RelativeLayout>
+	        android:layout_gravity="center"  />
+	     
+    </FrameLayout>
 
 </FrameLayout>

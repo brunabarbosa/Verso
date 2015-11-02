@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.projetoles.verso"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="3"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -83,6 +83,14 @@
         <activity android:name=".InstagramDialog" >
         </activity>
         <activity android:name=".InstagramSession" >
+        </activity>
+        <activity android:name=".DescobrirActivity" >
+        </activity>
+        <activity android:name=".MaisCurtidasActivity" >
+        </activity>
+        <activity android:name=".MaisComentadasActivity" >
+        </activity>
+        <activity android:name=".MaisSeguidosActivity" >
         </activity>
         <activity
             android:name=".ResultadoPesquisaActivity"

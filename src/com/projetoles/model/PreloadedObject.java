@@ -1,9 +1,10 @@
 package com.projetoles.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import com.projetoles.controller.Controller;
-import com.projetoles.controller.Dependencies;
 import com.projetoles.dao.OnRequestListener;
 
 import android.os.Parcel;
@@ -14,6 +15,7 @@ public class PreloadedObject<T extends TemporalModel> implements Comparable<Prel
 	private Calendar date;
 	private String id;
 	private T loadedObj;
+	private List<PreloadedListener<T> > listeners = new ArrayList<PreloadedListener<T> >();
 
 	public static final Parcelable.Creator<PreloadedObject> CREATOR = 
 			new Parcelable.Creator<PreloadedObject>() {
@@ -75,6 +77,9 @@ public class PreloadedObject<T extends TemporalModel> implements Comparable<Prel
 			@Override
 			public void onSuccess(T result) {
 				loadedObj = result;
+				for (PreloadedListener<T> listener : listeners) {
+					listener.onLoad(result);
+				}
 				callback.onSuccess(result);
 			}
 
@@ -90,8 +95,33 @@ public class PreloadedObject<T extends TemporalModel> implements Comparable<Prel
 		});
 	}
 	
-	public T getLoadedObj() {
+	public T getPureLoadedObj() {
 		return loadedObj;
+	}
+	
+	public void getLoadedObj(Controller<T> controller, final OnRequestListener<T> callback) {
+		if (loadedObj == null) {
+			callback.onError("Not loaded yet.");
+		} else {
+			controller.update(loadedObj, new OnRequestListener<T>(callback.getContext()) {
+
+				@Override
+				public void onSuccess(T result) {
+					loadedObj = result;
+					callback.onSuccess(result);
+				}
+
+				@Override
+				public void onError(String errorMessage) {
+					callback.onError(errorMessage);
+				}
+
+				@Override
+				public void onTimeout() {
+					callback.onTimeout();
+				}
+			});
+		}
 	}
 	
 	public void setLoadedObj(T loadedObj) {
@@ -100,6 +130,10 @@ public class PreloadedObject<T extends TemporalModel> implements Comparable<Prel
 	
 	public boolean isLoaded() {
 		return loadedObj != null;
+	}
+	
+	public List<PreloadedListener<T> > getListeners() {
+		return listeners;
 	}
 	
 	@Override

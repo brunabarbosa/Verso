@@ -1,22 +1,32 @@
 package com.projetoles.adapter;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import com.projetoles.controller.Controller;
+import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.ImageUtils;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.TemporalModel;
+import com.projetoles.model.Usuario;
 import com.projetoles.verso.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapter {
 
@@ -33,38 +43,63 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 	protected ListView mListView;
 	protected ObjectListID<T> mList;
 	protected Controller<T> mController;
+	protected Usuario mUsuario;
+	protected Comparator<PreloadedObject<T> > mComparator;
+	protected List<T> mUpdatedList;
 	
-	public ScrollableList(Activity context, View loading, ListView listView, ObjectListID<T> list,
-			Controller<T> controller) {
+	public ScrollableList(final Activity context, final View loading, final ListView listView, final ObjectListID<T> list,
+			final Controller<T> controller, final Comparator<PreloadedObject<T> > comparator) {
 		this.mContext = context;
 		this.mLoading = loading;
 		this.mListView = listView;
 		this.mController = controller;
+		this.mUpdatedList = new ArrayList<T>();
+		this.mComparator = comparator;
 		this.mList = list;
-		this.mList.sort();
-		mListView.setOnScrollListener(new OnScrollListener() {
-			
+		this.mList.sort(this.mComparator);
+		UsuarioController usuarioController = new UsuarioController(context);
+		usuarioController.getUsuarioLogado(new OnRequestListener<Usuario>(context) {
+
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			public void onSuccess(Usuario usuarioLogado) {
+				ScrollableList.this.mUsuario = usuarioLogado;
+				mListView.setOnScrollListener(new OnScrollListener() {
+					
+					@Override
+					public void onScrollStateChanged(AbsListView view, int scrollState) {
+						
+					}
+					
+					@Override
+					public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+						if (totalItemCount < mPreviousTotalItemCount) {
+							mPreviousTotalItemCount = totalItemCount;
+							if (totalItemCount == 0) mLoadingItems = true;
+						}
+						if (!mLoadingItems) {
+							mLoading.setVisibility(View.GONE);
+						}
+						if (!mLoadingItems && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
+							loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
+						}
+					}
+				});
+				if (!mList.isEmpty())
+					loadNextPage(NUMBERS_TO_LOAD);
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				// TODO Auto-generated method stub
 				
 			}
-			
+
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (totalItemCount < mPreviousTotalItemCount) {
-					mPreviousTotalItemCount = totalItemCount;
-					if (totalItemCount == 0) mLoadingItems = true;
-				}
-				if (!mLoadingItems) {
-					mLoading.setVisibility(View.GONE);
-				}
-				if (!mLoadingItems && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-					loadNextPage(totalItemCount + NUMBERS_TO_LOAD);
-				}
+			public void onTimeout() {
+				// TODO Auto-generated method stub
+				
 			}
-		});
-		if (!mList.isEmpty())
-			loadNextPage(NUMBERS_TO_LOAD);
+		}, null);
 	}
 
 	private void loadNextPage(int itemsToLoad) {
@@ -77,6 +112,7 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 			for (int i = 0; i < Math.min(mList.size(), itemsToLoad); i++) {
 				if (!mList.get(i).isLoaded()) {
 					mExpectedLoaded++;
+					final PreloadedObject<T> id = mList.get(i);
 					mList.get(i).load(mController, new OnRequestListener<T>(mContext) {
 
 						@Override
@@ -86,12 +122,14 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 								mLoading.setVisibility(View.GONE);
 								mLoadingItems = false;
 							}
+							mList.sort(mComparator);
 							notifyDataSetChanged();
 						}
-
+ 
 						@Override
 						public void onError(String errorMessage) {
 							mAlreadyLoaded++;
+							System.out.println("ON ERROR " + id.getId() + " " + errorMessage + " " + mAlreadyLoaded + " " + mExpectedLoaded);
 							if (mAlreadyLoaded >= mExpectedLoaded) {
 								mLoading.setVisibility(View.GONE);
 								mLoadingItems = false;
@@ -100,6 +138,7 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 
 						@Override
 						public void onTimeout() {
+							System.out.println("TIMEOUT " + id.getId() + " " + mAlreadyLoaded + " " + mExpectedLoaded);
 							mAlreadyLoaded++;
 							if (mAlreadyLoaded >= mExpectedLoaded) {
 								mLoading.setVisibility(View.GONE);
@@ -139,7 +178,7 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 	}
 
     protected void setPhoto(ImageView imview, byte[] photo) {
-		if (photo.length > 0) {
+		if (photo != null && photo.length > 0) {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 			bmp = ImageUtils.getCroppedBitmap(bmp);
 			imview.setImageBitmap(bmp);
@@ -148,4 +187,50 @@ public abstract class ScrollableList<T extends TemporalModel> extends BaseAdapte
 		}
 	}
     
+    public View getView(int position, View convertView, ViewGroup parent, final OnRequestListener<T> callback) {
+    	if (convertView == null) {
+  			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+  			convertView = inflater.inflate(R.layout.list_group_comentario, parent, false);
+  		}
+    	final ImageView foto = (ImageView) convertView.findViewById(R.id.userPicture);
+    	final TextView nome = (TextView) convertView.findViewById(R.id.mensagem);
+    	final TextView comentario = (TextView) convertView.findViewById(R.id.comment);
+    	final TextView data = (TextView) convertView.findViewById(R.id.date);
+		final ImageView excluir = (ImageView) convertView.findViewById(R.id.excluir);
+		setPhoto(foto, null);
+		nome.setText("");
+		comentario.setText("");
+		data.setText("");
+		excluir.setVisibility(View.GONE);
+  		//convertView.setVisibility(View.GONE);
+  		T loadedObj = mList.get(position).getPureLoadedObj();
+  		if (loadedObj != null) {
+  			if (mUpdatedList.contains(loadedObj)) {
+  				callback.onSuccess(loadedObj);
+  			} else {
+  				callback.onSuccess(loadedObj);
+  				mList.get(position).getLoadedObj(mController, new OnRequestListener<T>(callback.getContext()) {
+
+					@Override
+					public void onSuccess(T result) {
+						//fConvertView.setVisibility(View.VISIBLE);
+						mUpdatedList.add(result);
+						callback.onSuccess(result); 
+					}
+
+					@Override
+					public void onError(String errorMessage) {
+						callback.onError(errorMessage);
+					}
+
+					@Override
+					public void onTimeout() {
+						callback.onTimeout();
+					}
+				});
+  			}
+  		}
+  		return convertView;
+  	}
+  			
 }

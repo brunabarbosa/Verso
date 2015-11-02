@@ -11,6 +11,7 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.dao.UsuarioDAO;
+import com.projetoles.model.Compartilhamento;
 import com.projetoles.model.Curtida;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
@@ -24,7 +25,7 @@ import android.content.Context;
 public class UsuarioController extends Controller<Usuario> {
  
 	private static ObjectLoader<Usuario> sLoader = new ObjectLoader<Usuario>();
-	public static Usuario usuarioLogado;
+	private static Usuario usuarioLogado;
 	
 	public UsuarioController(Context context) {
 		super(context);
@@ -55,7 +56,7 @@ public class UsuarioController extends Controller<Usuario> {
 			callback.onSuccess(usuarioLogado);
 		} else if (mSession.contains("id") && mSession.contains("senha")) {
 			Usuario usuario = new Usuario(mSession.getString("id", null), null,
-					null, null, null, null, null, null, null, null, false);
+					null, null, null, null, null, null, null, null, null, false);
 			usuario.setSenha(mSession.getString("senha", null), false);
 			this.login(usuario, regId, callback);
 		} else {
@@ -66,9 +67,10 @@ public class UsuarioController extends Controller<Usuario> {
 	public void login(String email, String senha, String regId, OnRequestListener<Usuario> callback) {
 		try {
 			Usuario usuario = new Usuario(email, Calendar.getInstance(), senha, null, null, new byte[]{}, 
-					new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
+					new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), 
+					new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), new ObjectListID<Compartilhamento>(), false);
 			this.login(usuario, regId, callback);
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			e.printStackTrace(); 
 			callback.onError(e.getMessage());
 		}
@@ -149,13 +151,47 @@ public class UsuarioController extends Controller<Usuario> {
 				callback.onError("Senhas não coincidem.");
 			} else {
 				Usuario usuario = new Usuario(id, Calendar.getInstance(), senha, nome, "", new byte[]{}, 
-						new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), false);
+						new ObjectListID<Poesia>(), new ObjectListID<Notificacao>(), new ObjectListID<Curtida>(), 
+						new ObjectListID<Seguida>(), new ObjectListID<Seguida>(), new ObjectListID<Compartilhamento>(), false);
 				super.post(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
-					public void onSuccess(Usuario result) {
-						login(result);
-						callback.onSuccess(result);
+					public void onSuccess(final Usuario result) {
+						get("appverso@gmail.com", new OnRequestListener<Usuario>(callback.getContext()) {
+
+							@Override
+							public void onSuccess(Usuario appVerso) {
+								SeguidaController controller = new SeguidaController(callback.getContext());
+								controller.post(appVerso, result, new OnRequestListener<Seguida>(callback.getContext()) {
+
+									@Override
+									public void onSuccess(Seguida seguida) {
+										login(result);
+										callback.onSuccess(result);
+									}
+
+									@Override
+									public void onError(String errorMessage) {
+										callback.onError(errorMessage);
+									}
+
+									@Override
+									public void onTimeout() {
+										callback.onTimeout();
+									}
+								});
+							}
+
+							@Override
+							public void onError(String errorMessage) {
+								callback.onError(errorMessage);
+							}
+
+							@Override
+							public void onTimeout() {
+								callback.onTimeout();
+							}
+						});
 					}
 
 					@Override
@@ -181,9 +217,9 @@ public class UsuarioController extends Controller<Usuario> {
 			if (!senha.equals(repetirSenha)) {
 				callback.onError("Senhas não coincidem.");
 			} else {
-				Usuario usuario = new Usuario(usuarioLogado.getId(), usuarioLogado.getDataCriacao(), senha.trim().isEmpty() ? null : senha, nome, biografia, usuarioLogado.getFoto(), 
-						usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas(), 
-						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores(), usuarioLogado.getNotificacoesHabilitadas());
+				Usuario usuario = new Usuario(usuarioLogado.getId(), usuarioLogado.getDataCriacao(), senha.trim().isEmpty() ? null : senha, nome, biografia, 
+						usuarioLogado.getFoto(), usuarioLogado.getPoesias(), usuarioLogado.getNotificacoes(), usuarioLogado.getCurtidas(), 
+						usuarioLogado.getSeguindo(), usuarioLogado.getSeguidores(), usuarioLogado.getCompartilhamentos(), usuarioLogado.getNotificacoesHabilitadas());
 				super.put(usuario, new OnRequestListener<Usuario>(callback.getContext()) {
 
 					@Override
@@ -224,6 +260,8 @@ public class UsuarioController extends Controller<Usuario> {
 					JSONObject json = new JSONObject(jsonResult);
 					boolean success = json.getBoolean("success");
 					if (success) {
+						long numSeguidores = json.getLong("followed");
+						object.setNumSeguidores(numSeguidores);
 						ArrayList<PreloadedObject<Curtida>> likes = new ArrayList<PreloadedObject<Curtida>>();
 						JSONArray array = json.getJSONArray("likes");
 						for (int i = 0; i < array.length(); i++) {
@@ -252,10 +290,18 @@ public class UsuarioController extends Controller<Usuario> {
 							long time = array.getJSONObject(i).getLong("date");
 							seguidores.add(new PreloadedObject<Seguida>(time, id));
 						}
+						ArrayList<PreloadedObject<Compartilhamento>> compartilhamentos = new ArrayList<PreloadedObject<Compartilhamento>>();
+						array = json.getJSONArray("shares");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							compartilhamentos.add(new PreloadedObject<Compartilhamento>(time, id));
+						}
 						object.getCurtidas().setList(likes);
 						object.getPoesias().setList(poesias);
 						object.getSeguindo().setList(seguindo);
 						object.getSeguidores().setList(seguidores);
+						object.getCompartilhamentos().setList(compartilhamentos);
 						callback.onSuccess(object);
 					} else {
 						callback.onError(json.getString("message"));
@@ -323,6 +369,44 @@ public class UsuarioController extends Controller<Usuario> {
 				}
 			}
 			
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		});
+	}
+	
+	public void getMaisSeguidos(final OnRequestListener<ObjectListID<Usuario> > callback) {
+		((UsuarioDAO)mDAO).getMaisSeguidos(new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					boolean success = jsonObject.getBoolean("success");
+					if (success) {
+						ObjectListID<Usuario> usuarios = new ObjectListID<Usuario>();
+						JSONArray array = jsonObject.getJSONArray("users");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("email");
+							long time = array.getJSONObject(i).getLong("date");
+							usuarios.add(new PreloadedObject<Usuario>(time, id));
+						}
+						callback.onSuccess(usuarios);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
 			@Override
 			public void onError(String errorMessage) {
 				callback.onError(errorMessage);

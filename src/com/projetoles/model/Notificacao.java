@@ -29,8 +29,8 @@ public class Notificacao extends TemporalModel {
 		setEnderecado((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
 		setTitulo((Usuario)in.readParcelable(Usuario.class.getClassLoader()));
 		setMensagem(in.readString());
-		setPoesia((Poesia)in.readParcelable(Usuario.class.getClassLoader()));
 		setTipo(in.readString());
+		setPoesia((Poesia)in.readParcelable(Usuario.class.getClassLoader()));
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class Notificacao extends TemporalModel {
 		setTitulo(titulo);
 		setMensagem(mensagem);
 		setEnderecado(enderecado);
-		setPoesia(poesia);
 		setTipo(tipo);
+		setPoesia(poesia);
 	}
 
 	private void setEnderecado(Usuario enderecado) {
@@ -92,7 +92,7 @@ public class Notificacao extends TemporalModel {
 	}
 
 	public void setPoesia(Poesia mPoesia) {
-		if (mPoesia == null) {
+		if (mPoesia == null && mTipo.equals("poesia")) {
 			throw new IllegalArgumentException("Poesia é obrigatória.");
 		}
 		this.mPoesia = mPoesia;

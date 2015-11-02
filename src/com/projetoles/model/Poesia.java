@@ -1,6 +1,8 @@
 package com.projetoles.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -19,7 +21,10 @@ public class Poesia extends TemporalModel {
 	private String mTags;
 	private ObjectListID<Comentario> mComentarios;
 	private ObjectListID<Curtida> mCurtidas;
-
+	private List<Compartilhamento> mCompartilhadoPor = new ArrayList<Compartilhamento>();
+	private long mNumCurtidas;
+	private long mNumComentarios;
+	
 	public static final Parcelable.Creator<Poesia> CREATOR = 
 			new Parcelable.Creator<Poesia>() {
         public Poesia createFromParcel(Parcel in) {
@@ -40,6 +45,8 @@ public class Poesia extends TemporalModel {
 		setTags(in.readString());
 		setComentarios((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
 		setCurtidas((ObjectListID)in.readParcelable(ObjectListID.class.getClassLoader()));
+		setNumCurtidas(in.readLong());
+		setNumComentarios(in.readLong());
 	}
 
 	@Override
@@ -52,6 +59,8 @@ public class Poesia extends TemporalModel {
 		dest.writeString(this.getTags());
 		dest.writeParcelable(this.getComentarios(), flags);
 		dest.writeParcelable(this.getCurtidas(), flags);
+		dest.writeLong(this.getNumCurtidas());
+		dest.writeLong(this.getNumComentarios());
 	}
 
 	public Poesia(String id, Calendar dataCriacao, String titulo, Usuario postador, String autor, String poesia,
@@ -96,9 +105,7 @@ public class Poesia extends TemporalModel {
 	}
 	
 	public void setAutor(String autor) {
-		if (autor == null || autor.trim().isEmpty()) {
-			throw new IllegalArgumentException("Autor é obrigatório.");
-		} else if (autor.length() > TAMANHO_MAXIMO_AUTOR) {
+		if (autor.length() > TAMANHO_MAXIMO_AUTOR) {
 			throw new IllegalArgumentException("Autor excede o tamanho máximo.");
 		}
 		this.mAutor = autor;
@@ -147,5 +154,32 @@ public class Poesia extends TemporalModel {
 	public ObjectListID<Curtida> getCurtidas() {
 		return this.mCurtidas;
 	}
-  
+ 
+	public List<Compartilhamento> getCompartilhadoPor() {
+		return this.mCompartilhadoPor;
+	}
+	
+	public boolean isCompartilhado(Usuario usuario) {
+		for (Compartilhamento compartilhamento : mCompartilhadoPor) {
+			if (compartilhamento.getPostador().equals(usuario)) return true;
+		}
+		return false;
+	}
+	
+	public long getNumCurtidas() {
+		return mNumCurtidas;
+	}
+	
+	public void setNumCurtidas(long numCurtidas) {
+		this.mNumCurtidas = numCurtidas;
+	}
+	
+	public long getNumComentarios() {
+		return mNumComentarios;
+	}
+	
+	public void setNumComentarios(long numComentarios) {
+		this.mNumComentarios = numComentarios;
+	}
+	
 }

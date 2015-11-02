@@ -145,7 +145,7 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         
-        Intent notificationIntent = new Intent(this, NotificacoesTelaActivity.class);
+        Intent notificationIntent = new Intent(this, NaoConectadoActivity.class);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 

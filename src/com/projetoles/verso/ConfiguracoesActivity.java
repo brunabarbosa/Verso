@@ -27,30 +27,47 @@ public class ConfiguracoesActivity extends Activity {
 		mController = new UsuarioController(this);
 		
 		mHabilitado = (CheckBox) findViewById(R.id.notificacoes_habilitado);
-		mHabilitado.setChecked(UsuarioController.usuarioLogado.getNotificacoesHabilitadas());
-		mHabilitado.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-				mController.setNotificacoesHabilitadas(isChecked, new OnRequestListener<Void>(ConfiguracoesActivity.this) {
-					
-					@Override
-					public void onSuccess(Void result) {
-						UsuarioController.usuarioLogado.setNotificacoesHabilitadas(isChecked);
-					}
-					
-					@Override
-					public void onError(String errorMessage) {
-						Toast.makeText(ConfiguracoesActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-					}
+		
+		mController.getUsuarioLogado(new OnRequestListener<Usuario>(this) {
 
+			@Override
+			public void onSuccess(final Usuario usuarioLogado) {
+				mHabilitado.setChecked(usuarioLogado.getNotificacoesHabilitadas());
+				mHabilitado.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
 					@Override
-					public void onTimeout() {
-						Toast.makeText(ConfiguracoesActivity.this, "Um erro ocorreu. Tente novamente.", Toast.LENGTH_LONG).show();
+					public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+						mController.setNotificacoesHabilitadas(isChecked, new OnRequestListener<Void>(ConfiguracoesActivity.this) {
+							
+							@Override
+							public void onSuccess(Void result) {
+								usuarioLogado.setNotificacoesHabilitadas(isChecked);
+							}
+							
+							@Override
+							public void onError(String errorMessage) {
+								Toast.makeText(ConfiguracoesActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+							}
+
+							@Override
+							public void onTimeout() {
+								Toast.makeText(ConfiguracoesActivity.this, "Um erro ocorreu. Tente novamente.", Toast.LENGTH_LONG).show();
+							}
+						});
 					}
 				});
 			}
-		});
+
+			@Override
+			public void onError(String errorMessage) {
+				finish();
+			}
+
+			@Override
+			public void onTimeout() {
+				finish();
+			}
+		}, null);
 	}
 
 	@Override
