@@ -62,7 +62,6 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 	private Bundle mBundle;
 	private Usuario mUsuario;
 	private View mLoading;
-	private Button btnCompartilharFacebook;
 	private Button btnCompartilharApp;
 	private Button btnCompartilhar;
 	private ExpandableListView mExpListView;
@@ -393,6 +392,7 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				});
 
 				txtListChild.setText(childText);
+				txtListChild.setVisibility(View.VISIBLE);
 				txtListChildTitle.setText(poesia.getTitulo());
 			}
 
