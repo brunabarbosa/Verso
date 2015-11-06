@@ -157,41 +157,8 @@ public class UsuarioController extends Controller<Usuario> {
 
 					@Override
 					public void onSuccess(final Usuario result) {
-						get("appverso@gmail.com", new OnRequestListener<Usuario>(callback.getContext()) {
-
-							@Override
-							public void onSuccess(Usuario appVerso) {
-								SeguidaController controller = new SeguidaController(callback.getContext());
-								controller.post(appVerso, result, new OnRequestListener<Seguida>(callback.getContext()) {
-
-									@Override
-									public void onSuccess(Seguida seguida) {
-										login(result);
-										callback.onSuccess(result);
-									}
-
-									@Override
-									public void onError(String errorMessage) {
-										callback.onError(errorMessage);
-									}
-
-									@Override
-									public void onTimeout() {
-										callback.onTimeout();
-									}
-								});
-							}
-
-							@Override
-							public void onError(String errorMessage) {
-								callback.onError(errorMessage);
-							}
-
-							@Override
-							public void onTimeout() {
-								callback.onTimeout();
-							}
-						});
+						login(result);
+						callback.onSuccess(result);
 					}
 
 					@Override

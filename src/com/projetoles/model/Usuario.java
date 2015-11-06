@@ -11,7 +11,7 @@ public class Usuario extends TemporalModel {
 	private static final int TAMANHO_MAXIMO_NOME = 30;
 	private static final int TAMANHO_MINIMO_SENHA = 6;
 	private static final int TAMANHO_MAXIMO_SENHA = 20;
-	private static final int TAMANHO_MAXIMO_EMAIL = 30;
+	private static final int TAMANHO_MAXIMO_EMAIL = 50;
 	private static final int TAMANHO_MAXIMO_BIOGRAFIA = 500;
 	private static final String EMAIL_REGEX = "^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]{2,7}$";
 
