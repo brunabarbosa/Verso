@@ -3,7 +3,7 @@ package com.projetoles.verso;
 import com.projetoles.adapter.ListNotificacoesAdapter;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.DateComparator;
+import com.projetoles.model.DataComparator;
 import com.projetoles.model.Notificacao;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
@@ -41,7 +41,7 @@ public class NotificacoesTelaActivity extends Activity {
 				}
 				
 				mListAdapter = new ListNotificacoesAdapter(NotificacoesTelaActivity.this, mLoading, mListView, 
-						mList, new DateComparator<Notificacao>());
+						mList, new DataComparator<Notificacao>());
 				
 				mListView.setAdapter(mListAdapter);
 			}

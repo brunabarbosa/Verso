@@ -267,5 +267,43 @@ public class PoesiaController extends Controller<Poesia> {
 			}
 		});
 	}
+
+	public void getMaisRecentes(final OnRequestListener<ObjectListID<Poesia>> callback) {
+		((PoesiaDAO)mDAO).getMaisRecentes(new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					boolean success = jsonObject.getBoolean("success");
+					if (success) { 
+						ObjectListID<Poesia> poesias = new ObjectListID<Poesia>();
+						JSONArray array = jsonObject.getJSONArray("poetries");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("id");
+							long time = array.getJSONObject(i).getLong("date");
+							poesias.add(new PreloadedObject<Poesia>(time, id));
+						}
+						callback.onSuccess(poesias);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		});
+	}
 	
 }

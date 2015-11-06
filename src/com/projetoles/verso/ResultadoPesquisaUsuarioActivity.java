@@ -1,69 +1,53 @@
 package com.projetoles.verso;
 
-import com.projetoles.adapter.ExpandablePoesiaAdapter;
-import com.projetoles.model.DataComparator;
+import com.projetoles.adapter.ListUsuarioAdapter;
+import com.projetoles.model.NumSeguidoresComparator;
 import com.projetoles.model.ObjectListID;
-import com.projetoles.model.Poesia;
+import com.projetoles.model.Usuario;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class ResultadoPesquisaActivity extends Activity {
+public class ResultadoPesquisaUsuarioActivity extends Activity {
 
-	private ExpandablePoesiaAdapter mAdapter;
-	private ExpandableListView mExpListView;
+	private ListUsuarioAdapter mAdapter;
+	private ListView mListView;
 	private View mLoading;
 	private TextView tvNenhumResultado;
-	private ObjectListID<Poesia> mListPoesias;
-	private Bundle mBundle;
-
-	private void fillPoesias() {
-
-		mExpListView.setOnGroupExpandListener(new OnGroupExpandListener() {
-			int previousGroup = -1;
-
-			@Override
-			public void onGroupExpand(int groupPosition) {
-				if (groupPosition != previousGroup)
-					mExpListView.collapseGroup(previousGroup);
-				previousGroup = groupPosition;
-			}
-		});
-		mAdapter = new ExpandablePoesiaAdapter(ResultadoPesquisaActivity.this, mExpListView, mListPoesias, 
-				mBundle, mLoading, tvNenhumResultado, false, new DataComparator<Poesia>());
-
-		mExpListView.setAdapter(mAdapter);
+	private ObjectListID<Usuario> mListUsuarios;
+	
+	private void fillUsuarios() {
+		mAdapter = new ListUsuarioAdapter(this, mLoading, mListView, mListUsuarios, new NumSeguidoresComparator());
+		mListView.setAdapter(mAdapter);	
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_resultado_pesquisa);
+		setContentView(R.layout.activity_resultado_pesquisa_usuario);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		Bundle b = getIntent().getExtras();
 		if (b.getBundle("bundle") != null) {
 			b = b.getBundle("bundle");
 		}
-		mBundle = b;
 
-		mExpListView = (ExpandableListView) findViewById(R.id.lvExpPesquisa);
+		mListView = (ListView) findViewById(R.id.lvExpPesquisa);
 		mLoading = findViewById(R.id.load);
 		tvNenhumResultado = (TextView) findViewById(R.id.nenhum_resultado_encontrado);
 		
 		mLoading.setVisibility(View.GONE);
 		
-		mListPoesias = (ObjectListID)b.getParcelable("resultados");
+		mListUsuarios = (ObjectListID)b.getParcelable("resultados");
 		
-		fillPoesias();
+		fillUsuarios();
 		
-		if (mListPoesias.isEmpty()) {
+		if (mListUsuarios.isEmpty()) {
 			tvNenhumResultado.setVisibility(View.VISIBLE);
 		} else {
 			tvNenhumResultado.setVisibility(View.GONE);

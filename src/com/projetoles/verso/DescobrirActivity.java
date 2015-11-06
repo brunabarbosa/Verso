@@ -25,6 +25,7 @@ public class DescobrirActivity extends TabActivity {
 		
 		TabSpec poesiasCurtidasSpec = mTabHost.newTabSpec("Poesias mais curtidas");
 		TabSpec poesiasComentadasSpec = mTabHost.newTabSpec("Poesias mais comentadas");
+		TabSpec pessoasRecentesSpec = mTabHost.newTabSpec("Poesias mais recentes");
 		TabSpec pessoasSeguidasSpec = mTabHost.newTabSpec("Pessoas mais seguidas");
 		
 		poesiasCurtidasSpec.setIndicator("Top curtidas");
@@ -35,12 +36,17 @@ public class DescobrirActivity extends TabActivity {
 		Intent poesiasComentadasIntent = new Intent(DescobrirActivity.this, MaisComentadasActivity.class);
 		poesiasComentadasSpec.setContent(poesiasComentadasIntent);
 
+		pessoasRecentesSpec.setIndicator("Mais recentes");
+		Intent poesiasRecentesIntent = new Intent(DescobrirActivity.this, MaisRecentesActivity.class);
+		pessoasRecentesSpec.setContent(poesiasRecentesIntent);
+		
 		pessoasSeguidasSpec.setIndicator("Top seguidos");
 		Intent pessoasSeguidasIntent = new Intent(DescobrirActivity.this, MaisSeguidosActivity.class);
 		pessoasSeguidasSpec.setContent(pessoasSeguidasIntent);
 
 		mTabHost.addTab(poesiasCurtidasSpec);
 		mTabHost.addTab(poesiasComentadasSpec);
+		mTabHost.addTab(pessoasRecentesSpec);
 		mTabHost.addTab(pessoasSeguidasSpec);
 
 		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {

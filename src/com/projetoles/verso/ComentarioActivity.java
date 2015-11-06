@@ -7,7 +7,7 @@ import com.projetoles.controller.PoesiaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
 import com.projetoles.model.Comentario;
-import com.projetoles.model.DateComparator;
+import com.projetoles.model.DataComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
@@ -154,7 +154,7 @@ public class ComentarioActivity extends Activity {
 		for (PreloadedObject<Comentario> id : mPoesia.getComentarios().getList()) {
 			mList.add(id);
 		}
-		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList, new DateComparator<Comentario>());
+		mListAdapter = new ListComentarioAdapter(ComentarioActivity.this, mLoading, mListView, mList, new DataComparator<Comentario>());
 		mListView.setAdapter(mListAdapter);
 
 		final ImageButton hideContent = (ImageButton) findViewById(R.id.hideContent); 

@@ -385,5 +385,43 @@ public class UsuarioController extends Controller<Usuario> {
 			}
 		});
 	}
+
+	public void pesquisar(final String name, final OnRequestListener<ObjectListID<Usuario> > callback) {
+		((UsuarioDAO)mDAO).pesquisar(name, new OnRequestListener<String>(callback.getContext()) {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					boolean success = jsonObject.getBoolean("success");
+					if (success) {
+						ObjectListID<Usuario> usuarios = new ObjectListID<Usuario>();
+						JSONArray array = jsonObject.getJSONArray("users");
+						for (int i = 0; i < array.length(); i++) {
+							String id = array.getJSONObject(i).getString("email");
+							long time = array.getJSONObject(i).getLong("date");
+							usuarios.add(new PreloadedObject<Usuario>(time, id));
+						}
+						callback.onSuccess(usuarios);
+					} else {
+						callback.onError(jsonObject.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					callback.onError(e.getMessage());
+				}
+			}
+
+			@Override
+			public void onError(String errorMessage) {
+				callback.onError(errorMessage);
+			}
+
+			@Override
+			public void onTimeout() {
+				callback.onTimeout();
+			}
+		});
+	}
 	
 }

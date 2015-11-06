@@ -90,10 +90,16 @@
         </activity>
         <activity android:name=".MaisComentadasActivity" >
         </activity>
+        <activity android:name=".MaisRecentesActivity" >
+        </activity>
         <activity android:name=".MaisSeguidosActivity" >
         </activity>
         <activity
             android:name=".ResultadoPesquisaActivity"
+            android:label="Verso - Resultados da pesquisa" >
+        </activity>
+        <activity
+            android:name=".ResultadoPesquisaUsuarioActivity"
             android:label="Verso - Resultados da pesquisa" >
         </activity>
         <activity

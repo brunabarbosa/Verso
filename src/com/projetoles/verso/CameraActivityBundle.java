@@ -124,7 +124,7 @@ public class CameraActivityBundle {
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent, final View loading) { 
-		loading.setVisibility(View.VISIBLE);
+		//loading.setVisibility(View.VISIBLE);
         if (resultCode == mContext.RESULT_OK) { 
         	Bitmap bitmap = null;
         	//camera
@@ -152,6 +152,11 @@ public class CameraActivityBundle {
         		int width = (int)((float)bitmap.getWidth() / bitmap.getHeight() * MAX_PHOTO_SIZE);
         		int height = MAX_PHOTO_SIZE;
         		bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        	}
+        	if (bitmap.getWidth() > bitmap.getHeight()) {
+        		bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getHeight(), bitmap.getHeight(), false);
+        	} else {
+        		bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getWidth(), false);
         	}
         	ByteArrayOutputStream stream = new ByteArrayOutputStream();
         	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);

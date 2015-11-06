@@ -3,7 +3,7 @@ package com.projetoles.verso;
 import com.projetoles.adapter.ListSeguidoresAdapter;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.DateComparator;
+import com.projetoles.model.DataComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.PreloadedObject;
 import com.projetoles.model.Seguida;
@@ -77,7 +77,7 @@ public class SeguidoresActivity extends Activity {
 				
 				// Preparing list view
 				mListAdapter = new ListSeguidoresAdapter(SeguidoresActivity.this, mLoading, mListView, 
-						mListSeguidas, new DateComparator<Seguida>(), mSeguindo);
+						mListSeguidas, new DataComparator<Seguida>(), mSeguindo);
 				mListView.setAdapter(mListAdapter);
 			}
 			

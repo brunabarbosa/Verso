@@ -122,6 +122,15 @@ public class UsuarioDAO extends DAO<Usuario> {
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	}
+
+	public void pesquisar(String name, OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+				.setDomain(DOMAIN)
+				.addParam("name", name)
+				.setPath("user/search");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
 	 
 	@Override
 	public Usuario getFromJSON(JSONObject obj, List<Object> params) throws JSONException {

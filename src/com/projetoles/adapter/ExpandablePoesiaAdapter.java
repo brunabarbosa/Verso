@@ -13,6 +13,7 @@ import com.projetoles.model.CalendarUtils;
 import com.projetoles.model.Comentario;
 import com.projetoles.model.Compartilhamento;
 import com.projetoles.model.Curtida;
+import com.projetoles.model.ImageUtils;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
@@ -32,6 +33,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -645,7 +648,17 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 			}
 		});
 	}
-	
+
+    protected void setPhoto(ImageView imview, byte[] photo) {
+		if (photo != null && photo.length > 0) {
+			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+			bmp = ImageUtils.getCroppedBitmap(bmp);
+			imview.setImageBitmap(bmp);
+		} else {
+			imview.setImageResource(R.drawable.icone_foto);
+		}
+	}
+    
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
@@ -658,7 +671,11 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				final Poesia poesia = result.second;
 				final TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
 				final TextView autor = (TextView) convertView.findViewById(R.id.author);
-				autor.setText(poesia.getAutor());
+				if (poesia.getAutor().isEmpty()) {
+					autor.setText(poesia.getPostador().getNome());
+				} else {
+					autor.setText(poesia.getAutor());
+				}
 				final TextView numLikes = (TextView) convertView.findViewById(R.id.num_likes);
 				numLikes.setText(String.valueOf(poesia.getNumCurtidas()));
 				final TextView numComments = (TextView) convertView.findViewById(R.id.num_comments);
@@ -666,6 +683,9 @@ public class ExpandablePoesiaAdapter extends BaseExpandableListAdapter {
 				final ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
 				final ImageView edit = (ImageView) convertView.findViewById(R.id.edit);
 				final TextView msgShare = (TextView) convertView.findViewById(R.id.msgShare);
+				final ImageView photo = (ImageView) convertView.findViewById(R.id.lblUserPhoto);
+				
+				setPhoto(photo, poesia.getPostador().getFoto());
 				
 				if (!poesia.getPostador().equals(mUsuario)) {
 					edit.setVisibility(View.GONE);

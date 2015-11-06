@@ -114,6 +114,14 @@ public class PoesiaDAO extends DAO<Poesia> {
 		GET get = (GET) getRequest.create();
 		get.execute(callback);
 	}
+
+	public void getMaisRecentes(OnRequestListener<String> callback) {
+		GET.Builder getRequest = (GET.Builder) new GET.Builder()
+				.setDomain(DOMAIN)
+				.setPath("poetry/most_recent");
+		GET get = (GET) getRequest.create();
+		get.execute(callback);
+	}
 	 
 	@Override
 	public Poesia getFromJSON(JSONObject json, List<Object> params) throws JSONException {

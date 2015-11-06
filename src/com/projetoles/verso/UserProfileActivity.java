@@ -4,7 +4,7 @@ import com.projetoles.adapter.ExpandablePoesiaAdapter;
 import com.projetoles.controller.SeguidaController;
 import com.projetoles.controller.UsuarioController;
 import com.projetoles.dao.OnRequestListener;
-import com.projetoles.model.DateComparator;
+import com.projetoles.model.DataComparator;
 import com.projetoles.model.ObjectListID;
 import com.projetoles.model.Poesia;
 import com.projetoles.model.PreloadedObject;
@@ -56,7 +56,7 @@ public class UserProfileActivity extends Activity {
 		});
 		
 		mAdapter = new ExpandablePoesiaAdapter(this, mExpListView, mListPoesias, mBundle, mLoading, mEmpty, 
-				false, new DateComparator<Poesia>());
+				false, new DataComparator<Poesia>());
 
 		mExpListView.setAdapter(mAdapter);
 	}
